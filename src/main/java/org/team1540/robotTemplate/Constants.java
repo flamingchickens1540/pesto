@@ -5,5 +5,14 @@
 package org.team1540.robotTemplate;
 
 public final class Constants {
-
+    public static final class Motors {
+        public static final int leftFront = 1;
+        public static final int leftFrontSwerve = 2; 
+        public static final int leftRear = 3;
+        public static final int leftRearSwerve = 4;
+        public static final int rightFront = 5;
+        public static final int rightFrontSwerve = 6;
+        public static final int rightRear = 7;
+        public static final int rightRearSwerve = 8;
+    }
 }
