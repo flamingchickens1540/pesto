@@ -1,4 +1,4 @@
-package org.team1540.robotTemplate.utils;
+package org.team1540.delphi.utils;
 
 public class MathUtils {
     /**
