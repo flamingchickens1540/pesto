@@ -22,13 +22,5 @@ public final class Constants {
         public static final int leftMotor = 10;
         public static final int rightMotor = 11;
     }
-    public static int getTurningMotor(int moduleID) {
-        return 20+moduleID;
-    }
-    public static int getCancoder(int moduleID) {
-        return 10+moduleID;
-    }
-    public static int getDrivingMotor(int moduleID) {
-        return 30+moduleID;
-    }
+
 }
