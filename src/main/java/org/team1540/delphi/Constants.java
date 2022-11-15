@@ -5,6 +5,7 @@
 package org.team1540.delphi;
 
 public final class Constants {
+    public static final String CANIVORE_NAME = "swerve";
     public static final class Motors {
         public static final int leftFront = 1;
         public static final int leftFrontSwerve = 2; 
