@@ -1,17 +1,31 @@
 package org.team1540.delphi.utils.swerve;
 
-public enum SwerveCANDevice {
-    CANCODER(10),
-    TURNING_MOTOR(20),
-    DRIVING_MOTOR(30);
-    
-    private int prefix;
-    private SwerveCANDevice(int prefix) {
-        this.prefix = prefix;
+public class SwerveCANDevice {
+
+    /**
+     * Derives the CAN ID of a CANCoder from its module ID
+     * @param moduleID the ID of the swerve module
+     * @return the CANCoder's CAN ID
+     */
+    public static int getCancoderID(int moduleID) {
+        return 10+moduleID;
     }
     
-    public int getDeviceID(int moduleID) {
-        return prefix+moduleID;
+    /**
+     * Derives the CAN ID of a swerve turning motor from its module ID
+     * @param moduleID the ID of the swerve module
+     * @return the motor's CAN ID
+     */
+    public static int getTurningMotorID(int moduleID) {
+        return 20+moduleID;
     }
-    
+
+    /**
+     * Derives the CAN ID of a swerve driving motor from its module ID
+     * @param moduleID the ID of the swerve module
+     * @return the motor's CAN ID
+     */
+    public static int getDrivingMotorID(int moduleID) {
+        return 30+moduleID;
+    }
 }

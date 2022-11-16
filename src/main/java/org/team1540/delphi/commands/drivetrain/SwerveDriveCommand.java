@@ -14,11 +14,11 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.drive(controller.getLeftX(), controller.getLeftY(), controller.getRightX(), false);
+        drivetrain.drive(controller.getLeftX(), controller.getLeftY(), Math.toRadians(controller.getRightX()*10), false);
     }
 
     @Override
     public void end(boolean isInterrupted) {
-        
+        drivetrain.drive(0, 0, 0, false);
     }
 }

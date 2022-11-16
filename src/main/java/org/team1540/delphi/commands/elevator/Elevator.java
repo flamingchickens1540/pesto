@@ -16,6 +16,10 @@ public class Elevator extends SubsystemBase {
         rightMotor.follow(leftMotor);
     }
 
+    /**
+     * Drives the elevator up and down
+     * @param percent [-1,1] How fast to move it
+     */
     public void setPercent(double percent) {
         leftMotor.set(ControlMode.PercentOutput, percent);
     }
