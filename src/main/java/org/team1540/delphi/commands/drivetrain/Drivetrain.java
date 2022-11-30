@@ -16,7 +16,7 @@ public class Drivetrain extends SubsystemBase{
     public static final double kMaxSpeed = 3.0; // 3 meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-    // TODO: Change based on actual positions (in meters)
+    // TODO: check measurements/ make more accurate
     private final Translation2d offsetFrontLeftLocation = new Translation2d(0.4826, 0.4826);
     private final Translation2d offsetFrontRightLocation = new Translation2d(0.4826, -0.4826);
     private final Translation2d offsetRearLeftLocation = new Translation2d(-0.4318, 0.4318);
@@ -27,7 +27,7 @@ public class Drivetrain extends SubsystemBase{
     private final SwerveModule moduleRearLeft = new SwerveModule(3, ModuleOffset.MODULE3, ModulePosition.REAR_LEFT);
     private final SwerveModule moduleRearRight = new SwerveModule(4, ModuleOffset.MODULE4, ModulePosition.REAR_RIGHT);
     
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);//change to navx 
+    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
         offsetFrontLeftLocation, 
@@ -76,55 +76,3 @@ public class Drivetrain extends SubsystemBase{
         );
     }
 }
-
-/////////
-/*private final TalonFX leftMotorFront = new TalonFX(Constants.Motors.leftFront);
-private final TalonFX leftMotorRear = new TalonFX(Constants.Motors.leftRear);
-private final TalonFX rightMotorFront = new TalonFX(Constants.Motors.rightFront);
-private final TalonFX rightMotorRear = new TalonFX(Constants.Motors.rightRear);
-
-private final TalonFX leftMotorFrontSwerve = new TalonFX(Constants.Motors.leftFrontSwerve);
-private final TalonFX leftMotorRearSwerve = new TalonFX(Constants.Motors.leftRearSwerve);
-private final TalonFX rightMotorFrontSwerve = new TalonFX(Constants.Motors.rightFrontSwerve);
-private final TalonFX rightMotorRearSwerve = new TalonFX(Constants.Motors.rightRearSwerve);
-
-private final TalonFX driveMotors[] = { leftMotorFront, leftMotorRear, rightMotorFront, rightMotorRear };
-private final TalonFX leftDriveMotors[] = { leftMotorFront, leftMotorRear, leftMotorFrontSwerve, leftMotorRearSwerve};
-private final TalonFX rightDriveMotors[] = { rightMotorFront, rightMotorRear, rightMotorFrontSwerve, rightMotorRearSwerve};
-
-public Drivetrain() {
-    initMotors(NeutralMode.Coast);
-}
-public Drivetrain(NeutralMode brakeType) {
-    initMotors(brakeType); 
-}
-
-private void initMotors(NeutralMode brakeType){
-    for (TalonFX motor : driveMotors) {
-        motor.configFactoryDefault();
-        motor.setNeutralMode(brakeType);
-    }
-    // Set configuration for left motors
-    for (TalonFX motor : leftDriveMotors) {
-        motor.setInverted(false);
-    }
-    // Set configuration for right motors
-    for (TalonFX motor : rightDriveMotors) {
-        motor.setInverted(true);
-    }
-    // Make rear motors follow front motors
-    leftMotorRear.follow(leftMotorFront);
-    rightMotorRear.follow(rightMotorFront);
-    leftMotorRearSwerve.follow(leftMotorFrontSwerve); 
-    rightMotorRearSwerve.follow(rightMotorFrontSwerve); 
-    
-}
-
-public void setPercent(double leftPercent, double rightPercent, double leftSwervePercent, double rightSwervePercent) {
-    leftMotorFront.set(ControlMode.PercentOutput, leftPercent);
-    rightMotorFront.set(ControlMode.PercentOutput, rightPercent);
-    leftMotorFrontSwerve.set(ControlMode.PercentOutput, leftSwervePercent);
-    rightMotorFrontSwerve.set(ControlMode.PercentOutput, rightSwervePercent);
-}
-}
-*/
