@@ -17,10 +17,10 @@ public class Drivetrain extends SubsystemBase{
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     // TODO: Change based on actual positions (in meters)
-    private final Translation2d offsetFrontLeftLocation = new Translation2d(0.381, 0.381);
-    private final Translation2d offsetFrontRightLocation = new Translation2d(0.381, -0.381);
-    private final Translation2d offsetRearLeftLocation = new Translation2d(-0.381, 0.381);
-    private final Translation2d offsetRearRightLocation = new Translation2d(-0.381, -0.381); 
+    private final Translation2d offsetFrontLeftLocation = new Translation2d(0.4826, 0.4826);
+    private final Translation2d offsetFrontRightLocation = new Translation2d(0.4826, -0.4826);
+    private final Translation2d offsetRearLeftLocation = new Translation2d(-0.4318, 0.4318);
+    private final Translation2d offsetRearRightLocation = new Translation2d(-0.4318, -0.4318); 
     
     private final SwerveModule moduleFrontLeft = new SwerveModule(1, ModuleOffset.MODULE1, ModulePosition.FRONT_LEFT);
     private final SwerveModule moduleFrontRight = new SwerveModule(2, ModuleOffset.MODULE2, ModulePosition.FRONT_RIGHT);
