@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.delphi.commands.drivetrain.Drivetrain;
+import org.team1540.delphi.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.delphi.commands.elevator.Elevator;
 import org.team1540.delphi.commands.elevator.ElevatorMoveCommand;
 import org.team1540.delphi.commands.intake.Intake;
@@ -43,6 +44,7 @@ public class RobotContainer {
 
     public void setTeleopDefaultCommands() {
         elevator.setDefaultCommand(new ElevatorMoveCommand(driver, elevator)); //coop:button(LTrigger,[HOLD] Elevator Down,pilot) coop:button(RTrigger,[HOLD] Elevator Up,pilot)
+        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
     }
 
     private void initSmartDashboard() {

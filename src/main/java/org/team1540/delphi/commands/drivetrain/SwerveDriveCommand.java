@@ -10,6 +10,7 @@ public class SwerveDriveCommand extends CommandBase {
     public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller) {
         this.drivetrain = drivetrain;
         this.controller = controller;
+        addRequirements(drivetrain);
     }
 
     @Override

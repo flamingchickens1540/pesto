@@ -6,16 +6,20 @@ package org.team1540.delphi;
 
 public final class Constants {
     public static final String CANIVORE_NAME = "swerve";
-    public static final class Motors {
-        public static final int leftFront = 1;
-        public static final int leftFrontSwerve = 2; 
-        public static final int leftRear = 3;
-        public static final int leftRearSwerve = 4;
-        public static final int rightFront = 5;
-        public static final int rightFrontSwerve = 6;
-        public static final int rightRear = 7;
-        public static final int rightRearSwerve = 8;
-    }
+    /**
+     * The left-to-right distance between the drivetrain wheels
+     *
+     * Should be measured from center to center.
+     */
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 1.0; // FIXME Measure and set trackwidth
+    /**
+     * The front-to-back distance between the drivetrain wheels.
+     *
+     * Should be measured from center to center.
+     */
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
+
+    public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
     public static final class Intake {
         public static final int motor = 9;
     }

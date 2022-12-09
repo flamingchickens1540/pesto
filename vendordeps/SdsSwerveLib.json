@@ -1,0 +1,18 @@
+{
+  "fileName": "SdsSwerveLib.json",
+  "name": "swerve-lib",
+  "version": "2.0.1",
+  "uuid": "9619F7EA-7F96-4236-9D94-02338DFED592",
+  "mavenUrls": [
+  ],
+  "jsonUrl": "https://raw.githubusercontent.com/SwerveDriveSpecialties/swerve-lib/master/SdsSwerveLib.json",
+  "javaDependencies": [
+    {
+      "groupId": "com.swervedrivespecialties",
+      "artifactId": "swerve-lib",
+      "version": "2.0.1"
+    }
+  ],
+  "jniDependencies": [],
+  "cppDependencies": []
+}

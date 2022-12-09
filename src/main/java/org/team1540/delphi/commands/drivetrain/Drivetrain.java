@@ -1,4 +1,6 @@
 package org.team1540.delphi.commands.drivetrain;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.geometry.Rotation2d;
 import org.team1540.delphi.utils.swerve.ModuleOffset;
 import org.team1540.delphi.utils.swerve.ModulePosition;
 
@@ -12,67 +14,81 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static org.team1540.delphi.Constants.DRIVETRAIN_TRACKWIDTH_METERS;
+import static org.team1540.delphi.Constants.DRIVETRAIN_WHEELBASE_METERS;
+
 public class Drivetrain extends SubsystemBase{
-    public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+
 
     // TODO: check measurements/ make more accurate
-    private final Translation2d offsetFrontLeftLocation = new Translation2d(0.4826, 0.4826);
-    private final Translation2d offsetFrontRightLocation = new Translation2d(0.4826, -0.4826);
-    private final Translation2d offsetRearLeftLocation = new Translation2d(-0.4318, 0.4318);
-    private final Translation2d offsetRearRightLocation = new Translation2d(-0.4318, -0.4318); 
-    
-    private final SwerveModule moduleFrontLeft = new SwerveModule(1, ModuleOffset.MODULE1, ModulePosition.FRONT_LEFT);
-    private final SwerveModule moduleFrontRight = new SwerveModule(2, ModuleOffset.MODULE2, ModulePosition.FRONT_RIGHT);
-    private final SwerveModule moduleRearLeft = new SwerveModule(3, ModuleOffset.MODULE3, ModulePosition.REAR_LEFT);
-    private final SwerveModule moduleRearRight = new SwerveModule(4, ModuleOffset.MODULE4, ModulePosition.REAR_RIGHT);
+    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+            // Front left
+            new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Front right
+            new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Back left
+            new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Back right
+            new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+    );
+
+
+
+    private final ChickenSwerveModule moduleFrontLeft = new ChickenSwerveModule(4, ModuleOffset.MODULE4, ModulePosition.FRONT_LEFT);
+    private final ChickenSwerveModule moduleFrontRight = new ChickenSwerveModule(1, ModuleOffset.MODULE1, ModulePosition.FRONT_RIGHT);
+    private final ChickenSwerveModule moduleRearLeft = new ChickenSwerveModule(3, ModuleOffset.MODULE3, ModulePosition.REAR_LEFT);
+    private final ChickenSwerveModule moduleRearRight = new ChickenSwerveModule(2, ModuleOffset.MODULE2, ModulePosition.REAR_RIGHT);
     
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    
-    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        offsetFrontLeftLocation, 
-        offsetFrontRightLocation, 
-        offsetRearLeftLocation, 
-        offsetRearRightLocation
-    );
+
     
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
-    
+    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0,0,0);
 
     public Drivetrain() {
         gyro.reset();
     }
-    
+
+    @Override
+    public void periodic() {
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND);
+        moduleFrontLeft.set(states[0]);
+        moduleFrontRight.set(states[1]);
+        moduleRearLeft.set(states[2]);
+        moduleRearRight.set(states[3]);
+    }
+
     /**
-    * Adjusts all of the wheels to achieve the desired movement
+    * Adjusts all the wheels to achieve the desired movement
     * @param xSpeed The forward and backward movement
     * @param ySpeed The left and right movement
     * @param rot The amount to turn (in radians)
     * @param fieldRelative If the directions are relative to the field instead of the robot 
     */
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-        SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
-        fieldRelative
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
-        : new ChassisSpeeds(xSpeed, ySpeed, rot)
-        );
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
-        moduleFrontLeft.setDesiredState(swerveModuleStates[0]);
-        moduleFrontRight.setDesiredState(swerveModuleStates[1]);
-        moduleRearLeft.setDesiredState(swerveModuleStates[2]);
-        moduleRearRight.setDesiredState(swerveModuleStates[3]);
+        chassisSpeeds =
+            fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot);
     }
-    
+
     /**
-     * Updates the SwerveDriveOdometry with the current robot state
+     * Sets the gyroscope angle to zero. This can be used to set the direction the robot is currently facing to the
+     * 'forwards' direction.
      */
-    public void updateOdometry() {
-        m_odometry.update(
-            gyro.getRotation2d(),
-            moduleFrontLeft.getPosition(),
-            moduleFrontRight.getPosition(),
-            moduleRearLeft.getPosition(),
-            moduleRearRight.getPosition()
-        );
+    public void zeroGyroscope() {
+        gyro.zeroYaw();
     }
+
+    public Rotation2d getGyroscopeRotation() {
+        if (gyro.isMagnetometerCalibrated()) {
+          // We will only get valid fused headings if the magnetometer is calibrated
+          return Rotation2d.fromDegrees(gyro.getFusedHeading());
+        }
+
+        // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+        return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
+    }
+
 }
