@@ -15,7 +15,7 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        drivetrain.drive(-controller.getLeftY(), -controller.getLeftX(), -Math.toRadians(controller.getRightX()*100), true);
+        drivetrain.drive(-controller.getLeftY()/2, -controller.getLeftX()/2, -Math.toRadians(controller.getRightX()*100), true);
     }
 
     @Override

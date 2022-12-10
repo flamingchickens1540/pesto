@@ -19,8 +19,8 @@ public class ChickenSwerveModule {
     private final SwerveModule module;
     public static final Mk4ModuleConfiguration config = new Mk4ModuleConfiguration();
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-            SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
-            SdsModuleConfigurations.MK4I_L1.getWheelDiameter() * Math.PI;
+            SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
+            SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
     public static final double kMaxAngularSpeed = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);; // 1/2 rotation per second
 
@@ -43,12 +43,14 @@ public class ChickenSwerveModule {
                 SwerveCANDevice.getCancoderID(moduleID),
                 // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
                 -Math.toRadians(position.get())
+//                -Math.toRadians(0.0)
         );
 //        throw new NullPointerException(config.getCanivoreName());
 
     }
 
     public void set(SwerveModuleState state) {
+        System.out.println(state.speedMetersPerSecond);
         module.set(state.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * 12, state.angle.getRadians());
     }
 

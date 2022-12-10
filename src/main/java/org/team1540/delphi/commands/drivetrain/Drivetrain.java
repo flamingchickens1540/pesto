@@ -49,7 +49,7 @@ public class Drivetrain extends SubsystemBase{
     @Override
     public void periodic() {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND*2);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND);
         moduleFrontLeft.set(states[0]);
         moduleFrontRight.set(states[1]);
         moduleRearLeft.set(states[2]);
@@ -58,12 +58,14 @@ public class Drivetrain extends SubsystemBase{
 
     /**
     * Adjusts all the wheels to achieve the desired movement
-    * @param xSpeed The forward and backward movement
-    * @param ySpeed The left and right movement
+    * @param xPercent The forward and backward movement
+    * @param yPercent The left and right movement
     * @param rot The amount to turn (in radians)
     * @param fieldRelative If the directions are relative to the field instead of the robot 
     */
-    public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    public void drive(double xPercent, double yPercent, double rot, boolean fieldRelative) {
+        double xSpeed = xPercent * ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND;
+        double ySpeed = yPercent * ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND;
         chassisSpeeds =
             fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
