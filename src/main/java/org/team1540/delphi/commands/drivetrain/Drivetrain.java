@@ -1,5 +1,4 @@
 package org.team1540.delphi.commands.drivetrain;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.team1540.delphi.utils.swerve.ModuleOffset;
 import org.team1540.delphi.utils.swerve.ModulePosition;
@@ -20,7 +19,6 @@ import static org.team1540.delphi.Constants.DRIVETRAIN_WHEELBASE_METERS;
 public class Drivetrain extends SubsystemBase{
 
 
-    // TODO: check measurements/ make more accurate
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front left
             new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
@@ -41,8 +39,7 @@ public class Drivetrain extends SubsystemBase{
     
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-    
-    private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
+
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0,0,0);
 
     public Drivetrain() {
@@ -52,7 +49,7 @@ public class Drivetrain extends SubsystemBase{
     @Override
     public void periodic() {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND*2);
         moduleFrontLeft.set(states[0]);
         moduleFrontRight.set(states[1]);
         moduleRearLeft.set(states[2]);

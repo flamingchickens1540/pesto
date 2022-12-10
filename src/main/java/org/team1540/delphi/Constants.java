@@ -11,15 +11,14 @@ public final class Constants {
      *
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 1.0; // FIXME Measure and set trackwidth
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.6604;
     /**
      * The front-to-back distance between the drivetrain wheels.
      *
      * Should be measured from center to center.
      */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = 1.0; // FIXME Measure and set wheelbase
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.5842;
 
-    public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
     public static final class Intake {
         public static final int motor = 9;
     }

@@ -18,8 +18,8 @@ public class RobotContainer {
     // Subsystems
     
     Drivetrain drivetrain = new Drivetrain();
-    Elevator elevator = new Elevator();
-    Intake intake = new Intake();
+//    Elevator elevator = new Elevator();
+//    Intake intake = new Intake();
     // Controllers
     XboxController driver = new XboxController(0);
     // Commands
@@ -34,8 +34,8 @@ public class RobotContainer {
         // Driver
 
 
-        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
-
+//        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
+        new Trigger(driver::getAButton).whenActive(drivetrain::zeroGyroscope);
         // Copilot
 
         // SmartDashboard Commands
@@ -43,7 +43,7 @@ public class RobotContainer {
     }
 
     public void setTeleopDefaultCommands() {
-        elevator.setDefaultCommand(new ElevatorMoveCommand(driver, elevator)); //coop:button(LTrigger,[HOLD] Elevator Down,pilot) coop:button(RTrigger,[HOLD] Elevator Up,pilot)
+//        elevator.setDefaultCommand(new ElevatorMoveCommand(driver, elevator)); //coop:button(LTrigger,[HOLD] Elevator Down,pilot) coop:button(RTrigger,[HOLD] Elevator Up,pilot)
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
     }
 
