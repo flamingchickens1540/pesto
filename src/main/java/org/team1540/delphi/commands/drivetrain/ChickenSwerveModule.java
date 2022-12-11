@@ -22,19 +22,20 @@ public class ChickenSwerveModule {
             SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
             SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
     public static final double kMaxAngularSpeed = MAX_VELOCITY_METERS_PER_SECOND /
-            Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);; // 1/2 rotation per second
+            Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
+    ; // 1/2 rotation per second
 
     public ChickenSwerveModule(int moduleID, ModuleOffset offset, ModulePosition position) {
 //        throw new NullPointerException(config.toString());
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
         module = Mk4iSwerveModuleHelper.createFalcon500(
                 // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-                tab.getLayout(position.label+" Module", BuiltInLayouts.kList)
+                tab.getLayout(position.label + " Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(0, 0),
                 config,
                 // This can either be STANDARD or FAST depending on your gear configuration
-                Mk4iSwerveModuleHelper.GearRatio.L1,
+                Mk4iSwerveModuleHelper.GearRatio.L2,
                 // This is the ID of the drive motor
                 SwerveCANDevice.getDrivingMotorID(moduleID),
                 // This is the ID of the steer motor
@@ -50,7 +51,6 @@ public class ChickenSwerveModule {
     }
 
     public void set(SwerveModuleState state) {
-        System.out.println(state.speedMetersPerSecond);
         module.set(state.speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * 12, state.angle.getRadians());
     }
 
