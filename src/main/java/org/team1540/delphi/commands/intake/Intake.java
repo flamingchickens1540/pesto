@@ -11,6 +11,10 @@ public class Intake extends SubsystemBase {
         intakeMotor.setInverted(false);
     }
 
+    /**
+     * Sets the speed of the motors
+     * @param percent [-1,1] How fast to spin the motor
+     */
     public void setPercent(double percent) {
         this.intakeMotor.set(percent);
     }
