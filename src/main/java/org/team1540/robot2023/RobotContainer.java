@@ -29,7 +29,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Driver
 
-
+        new Trigger(driver::getBButton).whenActive(drivetrain::stopLocked);
 //        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
         new Trigger(driver::getAButton).whenActive(drivetrain::zeroGyroscope);
         // Copilot

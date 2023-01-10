@@ -1,11 +1,19 @@
 package org.team1540.robot2023.commands.drivetrain;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import static org.team1540.robot2023.utils.MathUtils.deadzone;
 
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final XboxController controller;
+    private final double deadzone = 0.01;
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.99);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.99);
+    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(0.99);
+
     
     public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller) {
         this.drivetrain = drivetrain;
@@ -14,8 +22,18 @@ public class SwerveDriveCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        xLimiter.reset(0);
+        yLimiter.reset(0);
+        rotLimiter.reset(0);
+    }
+
+    @Override
     public void execute() {
-        drivetrain.drive(-controller.getLeftY()/2, -controller.getLeftX()/2, -Math.toRadians(controller.getRightX()*100), true);
+        drivetrain.drive(
+                xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone))/2,
+                yLimiter.calculate(deadzone(-controller.getLeftX(), deadzone))/2,
+                -Math.toRadians(rotLimiter.calculate(deadzone(controller.getRightX(), deadzone))*200), true);
     }
 
     @Override

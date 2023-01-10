@@ -73,7 +73,23 @@ public class Drivetrain extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
-        setChassisSpeeds(chassisSpeeds);
+        double deadzone = 0.02;
+        double rotDeadzone = 0.1;
+        if (Math.abs(xPercent) > 0 || Math.abs(yPercent) > deadzone || Math.abs(rot) > rotDeadzone) {
+            setChassisSpeeds(chassisSpeeds);
+        } else {
+            stopLocked();
+        }
+    }
+
+    public void stopLocked() {
+        System.out.println("LOCKING YAY");
+        setModuleStates(new SwerveModuleState[]{
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)), //Front Left
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), //Front Right
+                new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), //Back Left
+                new SwerveModuleState(0, Rotation2d.fromDegrees(45)) //Back Right
+        });
     }
 
     private void setModuleStates(SwerveModuleState[] newStates) {
