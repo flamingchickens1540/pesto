@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team1540.delphi;
+package org.team1540.robot2023;
 
 public final class Constants {
     /**

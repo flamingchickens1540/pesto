@@ -1,12 +1,12 @@
-package org.team1540.delphi;
+package org.team1540.robot2023;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import org.team1540.delphi.commands.drivetrain.Drivetrain;
-import org.team1540.delphi.commands.drivetrain.PathPlannerDriveCommand;
-import org.team1540.delphi.commands.drivetrain.SwerveDriveCommand;
+import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
+import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 
 public class RobotContainer {
     // Hardware

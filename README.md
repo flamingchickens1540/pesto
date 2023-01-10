@@ -1,3 +1,3 @@
-# Robot Template
+# Robot 2023
 
-After creating a copy of this repository, 
+FRC Team 1540's code for the 2023 season: Charged Up
