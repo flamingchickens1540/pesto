@@ -15,13 +15,13 @@ public class RamseteConfig {
     public static final double kMaxSpeedMetersPerSecond = 1;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.2;
 
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.DRIVETRAIN_TRACKWIDTH_METERS);
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.Swerve.trackWidth);
 
     public static final DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
             new SimpleMotorFeedforward(
-                    Constants.KS_VOLTS,
-                    Constants.KV_VOLT_SECONDS_PER_METER,
-                    Constants.KA_VOLT_SECONDS_SQUARED_PER_METER
+                    Constants.Swerve.driveKS,
+                    Constants.Swerve.driveKV,
+                    Constants.Swerve.driveKA
             ),
             kDriveKinematics,
             10
@@ -33,5 +33,5 @@ public class RamseteConfig {
             .addConstraint(autoVoltageConstraint);
 
     public static final RamseteController ramseteController = new RamseteController(kRamseteB, kRamseteZeta);
-    public static final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(Constants.KS_VOLTS, Constants.KV_VOLT_SECONDS_PER_METER, Constants.KA_VOLT_SECONDS_SQUARED_PER_METER);
+    public static final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 }

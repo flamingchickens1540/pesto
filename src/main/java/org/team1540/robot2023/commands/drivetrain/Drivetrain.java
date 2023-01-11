@@ -5,46 +5,43 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj2.command.*;
-import org.team1540.robot2023.utils.swerve.ModuleOffset;
-import org.team1540.robot2023.utils.swerve.ModulePosition;
+
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import org.team1540.robot2023.utils.swerve.SwerveModule;
 
-import static org.team1540.robot2023.Constants.DRIVETRAIN_TRACKWIDTH_METERS;
-import static org.team1540.robot2023.Constants.DRIVETRAIN_WHEELBASE_METERS;
+import static org.team1540.robot2023.Constants.Swerve;
 
 public class Drivetrain extends SubsystemBase {
 
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             // Front left
-            new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(Swerve.trackWidth / 2.0, Swerve.wheelBase / 2.0),
             // Front right
-            new Translation2d(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(Swerve.trackWidth / 2.0, -Swerve.wheelBase / 2.0),
             // Back left
-            new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(-Swerve.trackWidth / 2.0, Swerve.wheelBase / 2.0),
             // Back right
-            new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
+            new Translation2d(-Swerve.trackWidth / 2.0, -Swerve.wheelBase / 2.0)
     );
 
-
-    private final ChickenSwerveModule moduleFrontLeft = new ChickenSwerveModule(4, ModuleOffset.MODULE4, ModulePosition.FRONT_LEFT);
-    private final ChickenSwerveModule moduleFrontRight = new ChickenSwerveModule(1, ModuleOffset.MODULE1, ModulePosition.FRONT_RIGHT);
-    private final ChickenSwerveModule moduleRearLeft = new ChickenSwerveModule(3, ModuleOffset.MODULE3, ModulePosition.REAR_LEFT);
-    private final ChickenSwerveModule moduleRearRight = new ChickenSwerveModule(2, ModuleOffset.MODULE2, ModulePosition.REAR_RIGHT);
+    private final SwerveModule[] modules = new SwerveModule[]{
+            new SwerveModule(0, Swerve.Mod0.constants),
+            new SwerveModule(1, Swerve.Mod1.constants),
+            new SwerveModule(2, Swerve.Mod2.constants),
+            new SwerveModule(3, Swerve.Mod3.constants)
+    };
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     private SwerveModuleState[] states = new SwerveModuleState[]{new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw());
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw(), getModulePositions());
 
     public Drivetrain() {
         gyro.reset();
@@ -52,11 +49,11 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND);
-        moduleFrontLeft.set(states[0]);
-        moduleFrontRight.set(states[1]);
-        moduleRearLeft.set(states[2]);
-        moduleRearRight.set(states[3]);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxVelocity);
+        modules[0].setDesiredState(states[0], true);
+        modules[1].setDesiredState(states[1], true);
+        modules[2].setDesiredState(states[2], true);
+        modules[3].setDesiredState(states[3], true);
     }
 
     /**
@@ -64,12 +61,13 @@ public class Drivetrain extends SubsystemBase {
      *
      * @param xPercent      The forward and backward movement
      * @param yPercent      The left and right movement
-     * @param rot           The amount to turn (in radians)
+     * @param rotPercent           The amount to turn
      * @param fieldRelative If the directions are relative to the field instead of the robot
      */
-    public void drive(double xPercent, double yPercent, double rot, boolean fieldRelative) {
-        double xSpeed = xPercent * ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND;
-        double ySpeed = yPercent * ChickenSwerveModule.MAX_VELOCITY_METERS_PER_SECOND;
+    public void drive(double xPercent, double yPercent, double rotPercent, boolean fieldRelative) {
+        double xSpeed = xPercent * Swerve.maxVelocity;
+        double ySpeed = yPercent * Swerve.maxVelocity;
+        double rot = Math.toRadians(rotPercent*360);
         ChassisSpeeds chassisSpeeds = fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
@@ -145,7 +143,16 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(pose, getYaw());
+        odometry.resetPosition(getYaw(), null, pose);
+    }
+
+
+    public SwerveModulePosition[] getModulePositions(){
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        for(SwerveModule mod : modules){
+            positions[mod.moduleNumber] = mod.getPosition();
+        }
+        return positions;
     }
 
 }

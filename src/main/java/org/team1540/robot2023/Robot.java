@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * project.
  */
 public class Robot extends TimedRobot {
-
+    public static CTREConfigs ctreConfigs;
     private RobotContainer robotContainer;
 
     private Command autonomousCommand;
@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        ctreConfigs = new CTREConfigs();
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         this.robotContainer = new RobotContainer();

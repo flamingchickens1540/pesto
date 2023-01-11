@@ -8,7 +8,7 @@ public class SwerveCANDevice {
      * @return the CANCoder's CAN ID
      */
     public static int getCancoderID(int moduleID) {
-        return 10+moduleID;
+        return 11+moduleID;
     }
     
     /**
@@ -17,7 +17,7 @@ public class SwerveCANDevice {
      * @return the motor's CAN ID
      */
     public static int getTurningMotorID(int moduleID) {
-        return 20+moduleID;
+        return 21+moduleID;
     }
 
     /**
@@ -26,6 +26,6 @@ public class SwerveCANDevice {
      * @return the motor's CAN ID
      */
     public static int getDrivingMotorID(int moduleID) {
-        return 30+moduleID;
+        return 31+moduleID;
     }
 }

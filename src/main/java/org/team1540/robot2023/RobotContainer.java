@@ -3,6 +3,7 @@ package org.team1540.robot2023;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
@@ -29,9 +30,9 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Driver
 
-        new Trigger(driver::getBButton).whenActive(drivetrain::stopLocked);
+        new Trigger(driver::getBButton).onTrue(new InstantCommand(drivetrain::stopLocked));
 //        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
-        new Trigger(driver::getAButton).whenActive(drivetrain::zeroGyroscope);
+        new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::zeroGyroscope));
         // Copilot
 
         // SmartDashboard Commands
