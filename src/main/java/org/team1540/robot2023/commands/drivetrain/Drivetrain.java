@@ -58,6 +58,7 @@ public class Drivetrain extends SubsystemBase {
 
 
     public void resetAllToAbsolute() {
+        System.out.println("RESETTING ALL");
         for (SwerveModule module: modules) {
             module.resetToAbsolute();
         }
