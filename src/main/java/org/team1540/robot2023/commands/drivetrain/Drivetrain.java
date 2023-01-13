@@ -42,7 +42,7 @@ public class Drivetrain extends SubsystemBase {
 
     private SwerveModuleState[] states = new SwerveModuleState[]{new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw(), getModulePositions());
-
+    private boolean isParkMode = false;
     public Drivetrain() {
         gyro.reset();
     }
@@ -50,10 +50,17 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxVelocity);
-        modules[0].setDesiredState(states[0], true);
-        modules[1].setDesiredState(states[1], true);
-        modules[2].setDesiredState(states[2], true);
-        modules[3].setDesiredState(states[3], true);
+        modules[0].setDesiredState(states[0], true, isParkMode);
+        modules[1].setDesiredState(states[1], true, isParkMode);
+        modules[2].setDesiredState(states[2], true, isParkMode);
+        modules[3].setDesiredState(states[3], true, isParkMode);
+    }
+
+
+    public void resetAllToAbsolute() {
+        for (SwerveModule module: modules) {
+            module.resetToAbsolute();
+        }
     }
 
     /**
@@ -65,6 +72,7 @@ public class Drivetrain extends SubsystemBase {
      * @param fieldRelative If the directions are relative to the field instead of the robot
      */
     public void drive(double xPercent, double yPercent, double rotPercent, boolean fieldRelative) {
+
         double xSpeed = xPercent * Swerve.maxVelocity;
         double ySpeed = yPercent * Swerve.maxVelocity;
         double rot = Math.toRadians(rotPercent*360);
@@ -74,6 +82,7 @@ public class Drivetrain extends SubsystemBase {
         double deadzone = 0.02;
         double rotDeadzone = 0.1;
         if (Math.abs(xPercent) > 0 || Math.abs(yPercent) > deadzone || Math.abs(rot) > rotDeadzone) {
+            isParkMode = false;
             setChassisSpeeds(chassisSpeeds);
         } else {
             stopLocked();
@@ -81,7 +90,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void stopLocked() {
-        System.out.println("LOCKING YAY");
+        isParkMode = true;
+        System.out.println("PARKING");
         setModuleStates(new SwerveModuleState[]{
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)), //Front Left
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), //Front Right

@@ -46,12 +46,13 @@ public class SwerveModule {
         lastAngle = getState().angle;
     }
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop){
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean isParkMode){
         /* This is a custom optimize function, since default WPILib optimize assumes continuous controller which CTRE and Rev onboard is not */
         desiredState = CTREModuleState.optimize(desiredState, getState().angle);
-        setAngle(desiredState);
+        setAngle(desiredState, isParkMode);
         setSpeed(desiredState, isOpenLoop);
     }
+
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         if(isOpenLoop){
@@ -64,12 +65,14 @@ public class SwerveModule {
         }
     }
 
-    private void setAngle(SwerveModuleState desiredState){
-        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxVelocity * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+    private void setAngle(SwerveModuleState desiredState, boolean forceTurn){
+        System.out.println(forceTurn);
+        Rotation2d angle = ((Math.abs(desiredState.speedMetersPerSecond) <= (Constants.Swerve.maxVelocity * 0.01)) && !forceTurn) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
 
         mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle.getDegrees(), Constants.Swerve.angleGearRatio));
         lastAngle = angle;
     }
+
 
     private Rotation2d getAngle(){
         return Rotation2d.fromDegrees(Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
@@ -79,7 +82,9 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(angleEncoder.getAbsolutePosition());
     }
 
-    private void resetToAbsolute(){
+    public void resetToAbsolute(){
+        System.out.println(moduleNumber+" CURRENT "+getCanCoder().getDegrees());
+        System.out.println(moduleNumber+" OFFSET  "+(getCanCoder().getDegrees() - angleOffset.getDegrees()));
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset.getDegrees(), Constants.Swerve.angleGearRatio);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
     }

@@ -9,7 +9,7 @@ import static org.team1540.robot2023.utils.MathUtils.deadzone;
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final XboxController controller;
-    private final double deadzone = 0.01;
+    private final double deadzone = 0.1;
 //    private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.999);
 //    private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.999);
 //    private final SlewRateLimiter rotLimiter = new SlewRateLimiter(0.999);
@@ -37,7 +37,7 @@ public class SwerveDriveCommand extends CommandBase {
 //                -Math.toRadians(rotLimiter.calculate(deadzone(controller.getRightX(), deadzone))*360), true);
                 deadzone(-controller.getLeftY(), deadzone)/2,
                 deadzone(-controller.getLeftX(), deadzone)/2,
-                deadzone(controller.getRightX(), deadzone), true);
+                -deadzone(controller.getRightX(), deadzone), true);
     }
 
     @Override
