@@ -91,7 +91,6 @@ public class Drivetrain extends SubsystemBase {
 
     public void stopLocked() {
         isParkMode = true;
-        System.out.println("PARKING");
         setModuleStates(new SwerveModuleState[]{
                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)), //Front Left
                 new SwerveModuleState(0, Rotation2d.fromDegrees(-45)), //Front Right
