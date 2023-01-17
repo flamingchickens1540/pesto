@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import org.team1540.robot2023.commands.drivetrain.AutoBalanceCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
@@ -33,8 +32,6 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Driver
 
-        driver.y().whileTrue(new AutoBalanceCommand(drivetrain, false));
-        driver.x().whileTrue(new AutoBalanceCommand(drivetrain, true));
         driver.b().onTrue(new InstantCommand(drivetrain::resetAllToAbsolute));
 //        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope));
