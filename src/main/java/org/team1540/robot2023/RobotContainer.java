@@ -1,13 +1,15 @@
 package org.team1540.robot2023;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.robot2023.commands.drivetrain.AutoBalanceCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
+import org.team1540.robot2023.utils.ButtonPanel;
 
 public class RobotContainer {
     // Hardware
@@ -18,7 +20,8 @@ public class RobotContainer {
 //    Elevator elevator = new Elevator();
 //    Intake intake = new Intake();
     // Controllers
-    XboxController driver = new XboxController(0);
+    CommandXboxController driver = new CommandXboxController(0);
+    ButtonPanel controlPanel = new ButtonPanel(1);
     // Commands
 
     public RobotContainer() {
@@ -30,11 +33,18 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Driver
 
-        new Trigger(driver::getBButton).onTrue(new InstantCommand(drivetrain::resetAllToAbsolute));
+        driver.y().whileTrue(new AutoBalanceCommand(drivetrain, false));
+        driver.x().whileTrue(new AutoBalanceCommand(drivetrain, true));
+        driver.b().onTrue(new InstantCommand(drivetrain::resetAllToAbsolute));
 //        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
-        new Trigger(driver::getAButton).onTrue(new InstantCommand(drivetrain::zeroGyroscope));
+        driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope));
         // Copilot
 
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT).whileTrue(new PrintCommand("1")).onFalse(new PrintCommand("-1"));
+        controlPanel.onButton(2).whileTrue(new PrintCommand("2")).onFalse(new PrintCommand("-2"));
+        controlPanel.onButton(3).whileTrue(new PrintCommand("3")).onFalse(new PrintCommand("-3"));
+        controlPanel.onButton(4).whileTrue(new PrintCommand("4")).onFalse(new PrintCommand("-4"));
+        controlPanel.onAny().whileTrue(new PrintCommand("ANY")).onFalse(new PrintCommand("-ANY"));
         // SmartDashboard Commands
         
     }
