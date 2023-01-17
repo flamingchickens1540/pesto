@@ -1,5 +1,6 @@
 package org.team1540.robot2023.commands.drivetrain;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
@@ -49,6 +50,7 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxVelocity);
         modules[0].setDesiredState(states[0], true, isParkMode);
         modules[1].setDesiredState(states[1], true, isParkMode);
@@ -143,9 +145,21 @@ public class Drivetrain extends SubsystemBase {
             // We will only get valid fused headings if the magnetometer is calibrated
             return Rotation2d.fromDegrees(gyro.getFusedHeading());
         }
-
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
         return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
+    }
+
+    public Rotation2d getPitch() {
+        return Rotation2d.fromDegrees(gyro.getPitch());
+    }
+
+    public void setNeutralMode(NeutralMode neutralMode) {
+        for (SwerveModule module : modules) {
+            module.setNeutralMode(neutralMode);
+        }
+    }
+    public Rotation2d getRoll() {
+        return Rotation2d.fromDegrees(gyro.getRoll());
     }
 
     public Pose2d getPose() {

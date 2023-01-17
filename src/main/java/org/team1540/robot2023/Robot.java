@@ -4,6 +4,7 @@
 
 package org.team1540.robot2023;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,7 +39,10 @@ public class Robot extends TimedRobot {
         this.robotContainer = new RobotContainer();
 
         // Zero swerve modules 4 seconds after init
-        new WaitCommand(5).andThen(robotContainer.drivetrain::resetAllToAbsolute, robotContainer.drivetrain).ignoringDisable(true).schedule();
+        new WaitCommand(5).andThen(() -> {
+            robotContainer.drivetrain.resetAllToAbsolute();
+            robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
+        }, robotContainer.drivetrain).ignoringDisable(true).schedule();
     }
 
     /**
@@ -69,6 +73,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        new WaitCommand(5)
+                .andThen(() -> robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast))
+                .ignoringDisable(true)
+                .schedule();
     }
 
     @Override
@@ -77,6 +85,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
@@ -93,6 +102,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

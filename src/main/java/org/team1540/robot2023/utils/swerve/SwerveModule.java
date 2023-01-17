@@ -1,5 +1,6 @@
 package org.team1540.robot2023.utils.swerve;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -53,6 +54,10 @@ public class SwerveModule {
         setSpeed(desiredState, isOpenLoop);
     }
 
+    public void setNeutralMode(NeutralMode neutralMode) {
+        mDriveMotor.setNeutralMode(neutralMode);
+        mAngleMotor.setNeutralMode(neutralMode);
+    }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop){
         if(isOpenLoop){
