@@ -41,7 +41,7 @@ public class RobotContainer {
         controlPanel.onButton(2).whileTrue(new PrintCommand("2")).onFalse(new PrintCommand("-2"));
         controlPanel.onButton(3).whileTrue(new PrintCommand("3")).onFalse(new PrintCommand("-3"));
         controlPanel.onButton(4).whileTrue(new PrintCommand("4")).onFalse(new PrintCommand("-4"));
-        controlPanel.onAny().whileTrue(new PrintCommand("ANY")).onFalse(new PrintCommand("-ANY"));
+        controlPanel.onAnyGrid().whileTrue(new PrintCommand("ANY")).onFalse(new PrintCommand("-ANY"));
         // SmartDashboard Commands
         
     }

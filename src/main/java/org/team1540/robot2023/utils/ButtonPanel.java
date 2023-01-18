@@ -16,9 +16,12 @@ public class ButtonPanel extends GenericHID {
         MIDDLE_RIGHT(6),
         BOTTOM_LEFT(7),
         BOTTOM_CENTER(8),
-        BOTTOM_RIGHT(9);
+        BOTTOM_RIGHT(9),
+        STYLE_PURPLE(10),
+        STYLE_YELLOW(11);
 
-        final int value;
+        final int
+                value;
 
         PanelButton(int value) {
             this.value = value;
@@ -73,12 +76,12 @@ public class ButtonPanel extends GenericHID {
     }
 
     /**
-     * Finds the first (closest to 0) button ID that is currently pressed
+     * Finds the first (closest to 0) grid button ID that is currently pressed
      * Returns -1 if no button is found
      *
      * @return The ID of the button
      */
-    public int getPressed() {
+    public int getGridPressed() {
         for (int i = 1; i <= 9; i++) {
             if (getRawButton(i)) {
                 return i;
@@ -88,22 +91,22 @@ public class ButtonPanel extends GenericHID {
     }
 
     /**
-     * Returns true if any button is currently pressed
+     * Returns true if any grid button is currently pressed
      *
-     * @return true if any button on the panel is pressed
+     * @return true if any grid button on the panel is pressed
      */
-    public boolean areAnyPressed() {
-        return getPressed() != -1;
+    public boolean areAnyGridPressed() {
+        return getGridPressed() != -1;
     }
 
     /**
-     * Constructs an event instance around the collective digital signal of the buttons.
+     * Constructs an event instance around the collective digital signal of the grid buttons.
      *
      * @return an event instance representing if any of the buttons are pressed attached to the {@link
      * CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
      */
-    public Trigger onAny() {
-        return new Trigger(CommandScheduler.getInstance().getDefaultButtonLoop(), this::areAnyPressed);
+    public Trigger onAnyGrid() {
+        return new Trigger(CommandScheduler.getInstance().getDefaultButtonLoop(), this::areAnyGridPressed);
     }
 
 }
