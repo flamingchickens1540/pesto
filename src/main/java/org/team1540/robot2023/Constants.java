@@ -10,7 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
-
+import org.team1540.robot2023.utils.swerve.ModuleMagnetOffset;
+import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 
 public final class Constants {
@@ -97,29 +98,27 @@ public final class Constants {
         /* Front Left Module - Module 0 */
         public static final class Mod0 { //TODO: This must be tuned to specific robot
             private static final int moduleID = 4;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.0);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, angleOffset);
+            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_LEFT);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 { //TODO: This must be tuned to specific robot
             private static final int moduleID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(330.469);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, angleOffset);
+
+            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_RIGHT);
         }
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 { //TODO: This must be tuned to specific robot
             private static final int moduleID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(76.729);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, angleOffset);
+            public static final Rotation2d angleOffset = ModuleCorner.REAR_LEFT.asRotation2d(3);
+            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_LEFT);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 { //TODO: This must be tuned to specific robot
             private static final int moduleID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(1.318);
-            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, angleOffset);
+            public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }
 

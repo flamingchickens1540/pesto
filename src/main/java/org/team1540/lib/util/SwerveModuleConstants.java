@@ -1,6 +1,7 @@
 package org.team1540.lib.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import org.team1540.robot2023.utils.swerve.ModuleCorner;
 import org.team1540.robot2023.utils.swerve.SwerveCANDevice;
 
 public class SwerveModuleConstants {
@@ -9,24 +10,13 @@ public class SwerveModuleConstants {
     public final int cancoderID;
     public final Rotation2d angleOffset;
 
-    /**
-     * Swerve Module Constants to be used when creating swerve modules.
-     * @param driveMotorID
-     * @param angleMotorID
-     * @param canCoderID
-     * @param angleOffset
-     */
-    public SwerveModuleConstants(int driveMotorID, int angleMotorID, int canCoderID, Rotation2d angleOffset) {
-        this.driveMotorID = driveMotorID;
-        this.angleMotorID = angleMotorID;
-        this.cancoderID = canCoderID;
-        this.angleOffset = angleOffset;
-    }
 
-    public SwerveModuleConstants(int moduleID, Rotation2d angleOffset) {
+    public SwerveModuleConstants(int moduleID, ModuleCorner corner) {
+        this.angleOffset = corner.asRotation2d(moduleID);
+
         this.driveMotorID = SwerveCANDevice.getDrivingMotorID(moduleID);
         this.angleMotorID = SwerveCANDevice.getTurningMotorID(moduleID);
         this.cancoderID = SwerveCANDevice.getCancoderID(moduleID);
-        this.angleOffset = angleOffset;
+        System.out.println(moduleID+" --- "+angleOffset.getDegrees());
     }
 }
