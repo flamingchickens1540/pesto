@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.*;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.SPI;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
 
@@ -20,17 +19,6 @@ import static org.team1540.robot2023.Constants.Swerve;
 
 public class Drivetrain extends SubsystemBase {
 
-
-    private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-            // Front left
-            new Translation2d(Swerve.trackWidth / 2.0, Swerve.wheelBase / 2.0),
-            // Front right
-            new Translation2d(Swerve.trackWidth / 2.0, -Swerve.wheelBase / 2.0),
-            // Back left
-            new Translation2d(-Swerve.trackWidth / 2.0, Swerve.wheelBase / 2.0),
-            // Back right
-            new Translation2d(-Swerve.trackWidth / 2.0, -Swerve.wheelBase / 2.0)
-    );
 
     private final SwerveModule[] modules = new SwerveModule[]{
             new SwerveModule(0, Swerve.Mod0.constants),
@@ -42,7 +30,7 @@ public class Drivetrain extends SubsystemBase {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     private SwerveModuleState[] states = new SwerveModuleState[]{new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, getYaw(), getModulePositions());
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Swerve.swerveKinematics, getYaw(), getModulePositions());
     private boolean isParkMode = false;
     public Drivetrain() {
         gyro.reset();
@@ -107,7 +95,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private void setChassisSpeeds(ChassisSpeeds speeds) {
-        states = kinematics.toSwerveModuleStates(speeds);
+        states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
+    }
+    private void setFieldRelativeChassisSpeeds(ChassisSpeeds speeds) {
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, gyro.getRotation2d());
+        states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
     }
 
 
@@ -115,11 +107,11 @@ public class Drivetrain extends SubsystemBase {
         return new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
-                this.kinematics, // SwerveDriveKinematics
+                // TODO: Tune
                 new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                this::setModuleStates, // Module states consumer
+                this::setFieldRelativeChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
         );
     }
