@@ -10,7 +10,7 @@ public class PathPlannerDriveCommand extends SequentialCommandGroup {
     public PathPlannerDriveCommand(Drivetrain drivetrain) {
         addRequirements(drivetrain);
         drivetrain.zeroGyroscope();
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("TestPath", new PathConstraints(3, 2));
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("EpicSwervyThing", new PathConstraints(3, 2));
         Command ramseteCommand = drivetrain.getResettingPathCommand(trajectory);
 
 

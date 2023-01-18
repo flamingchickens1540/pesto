@@ -5,6 +5,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +38,14 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         this.robotContainer = new RobotContainer();
+
+        // ---------------
+        // TODO: ALWAYS REMOVE BEFORE COMMITTING
+        // TODO: BAD THINGS HAPPEN IF IT GETS LEFT FOR A COMP
+        // TODO: DO NOT APPROVE PRS WITH THE BELOW LINE LEFT IN
+
+//        PathPlannerServer.startServer(5811);
+        // ---------------
 
         // Zero swerve modules 4 seconds after init
         new WaitCommand(5).andThen(() -> {
