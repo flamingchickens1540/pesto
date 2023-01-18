@@ -44,6 +44,7 @@ public class Drivetrain extends SubsystemBase {
         modules[1].setDesiredState(states[1], true, isParkMode);
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
+        odometry.update(getYaw(), getModulePositions());
     }
 
 
@@ -80,6 +81,9 @@ public class Drivetrain extends SubsystemBase {
         }
     }
 
+    /**
+     * Stops the robot and forms an X with the wheels
+     */
     public void stopLocked() {
         isParkMode = true;
         setModuleStates(new SwerveModuleState[]{
@@ -97,11 +101,6 @@ public class Drivetrain extends SubsystemBase {
     private void setChassisSpeeds(ChassisSpeeds speeds) {
         states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
     }
-    private void setFieldRelativeChassisSpeeds(ChassisSpeeds speeds) {
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, gyro.getRotation2d());
-        states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
-    }
-
 
     protected Command getPathCommand(PathPlannerTrajectory trajectory) {
         return new PPSwerveControllerCommand(
@@ -111,7 +110,7 @@ public class Drivetrain extends SubsystemBase {
                 new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                this::setFieldRelativeChassisSpeeds, // Module states consumer
+                this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
         );
     }
@@ -159,16 +158,17 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw(), null, pose);
+        odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
 
     public SwerveModulePosition[] getModulePositions(){
-        SwerveModulePosition[] positions = new SwerveModulePosition[4];
-        for(SwerveModule mod : modules){
-            positions[mod.moduleNumber] = mod.getPosition();
-        }
-        return positions;
+        return new SwerveModulePosition[]{
+                modules[0].getPosition(),
+                modules[1].getPosition(),
+                modules[2].getPosition(),
+                modules[3].getPosition()
+        };
     }
 
 }
