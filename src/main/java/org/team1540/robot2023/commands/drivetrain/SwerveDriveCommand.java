@@ -1,14 +1,14 @@
 package org.team1540.robot2023.commands.drivetrain;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static org.team1540.robot2023.utils.MathUtils.deadzone;
 
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
-    private final XboxController controller;
+    private final CommandXboxController controller;
     private final double deadzone = 0.1;
 
     // The rate limit should be relative to the input percent. A value of 1 will take 1 second to get from 0% to 100%, a value of 2 will do that in half a second
@@ -17,7 +17,7 @@ public class SwerveDriveCommand extends CommandBase {
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
     
-    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller) {
+    public SwerveDriveCommand(Drivetrain drivetrain, CommandXboxController controller) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         addRequirements(drivetrain);
