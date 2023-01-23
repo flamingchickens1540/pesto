@@ -124,6 +124,7 @@ public final class Constants {
         public static final int TELESCOPE_ID = 12;
         public static final int CANCODER_ID = 13;
 
+        public static final double PIVOT_FF = 0;
         public static final double PIVOT_KP = 0;
         public static final double PIVOT_KI = 0;
         public static final double PIVOT_KD = 0;
@@ -133,6 +134,7 @@ public final class Constants {
         // The distance of the pivot from the edge of the frame perimeter
         public static final double PIVOT_DISTANCE = 12;
 
+        public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
