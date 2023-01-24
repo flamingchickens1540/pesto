@@ -1,17 +1,18 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.utils.RollingAverage;
 
 public class SetArmPosition extends CommandBase {
     private final Arm arm;
     private final double angle;
     private final double extension;
 
-    private double angleThreshold = 10;
-    private double extensionThreshold = 10;
-    private int settle = 10;
-    private int withinThreshold = 0;
+    private double rotThresh = 10;
+    private double extThresh = 10;
     private boolean notSet = false;
+    private final RollingAverage rotAvg = new RollingAverage(10);
+    private final RollingAverage extAvg = new RollingAverage(10);
 
     public SetArmPosition(Arm arm, double x, double y){
         this.arm = arm;
@@ -37,19 +38,13 @@ public class SetArmPosition extends CommandBase {
             notSet = false;
         }
 
-
-        if(Math.abs(arm.getAngleRadians() - angle) < angleThreshold &&
-                Math.abs(arm.getExtension() - extension) < extensionThreshold){
-            withinThreshold += 1;
-        }
-        else {
-            withinThreshold = 0;
-        }
+        rotAvg.add(arm.getAngleRadians() - angle);
+        extAvg.add(arm.getExtension() - extension);
     }
 
     @Override
     public boolean isFinished() {
-        return withinThreshold > settle;
+        return extAvg.getAverageAbs() < extThresh && rotAvg.getAverageAbs() < rotThresh;
     }
 
     @Override
