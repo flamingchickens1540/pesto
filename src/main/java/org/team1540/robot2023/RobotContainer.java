@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
-import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 
 public class RobotContainer {
     // Hardware
@@ -41,7 +40,7 @@ public class RobotContainer {
 
     public void setTeleopDefaultCommands() {
 //        elevator.setDefaultCommand(new ElevatorMoveCommand(driver, elevator)); //coop:button(LTrigger,[HOLD] Elevator Down,pilot) coop:button(RTrigger,[HOLD] Elevator Up,pilot)
-        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
+//        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
     }
 
     private void initSmartDashboard() {

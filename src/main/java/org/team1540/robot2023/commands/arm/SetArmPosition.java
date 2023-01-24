@@ -7,26 +7,49 @@ public class SetArmPosition extends CommandBase {
     private final double angle;
     private final double extension;
 
-    public SetArmPosition(Arm arm, double angle, double extension){
+    private double angleThreshold = 10;
+    private double extensionThreshold = 10;
+    private int settle = 10;
+    private int withinThreshold = 0;
+    private boolean notSet = false;
+
+    public SetArmPosition(Arm arm, double x, double y){
         this.arm = arm;
-        this.angle = angle;
-        this.extension = extension;
+        this.angle = Math.atan(x/y);
+        this.extension = Math.sqrt(x*x+y*y);
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
         arm.setAngleRadians(angle);
+        arm.setExtension(extension);
     }
 
     @Override
     public void execute() {
-        arm.setExtension(Math.min(extension, arm.getMaxExtension()));
+        if(arm.getMaxExtension() < extension){
+            arm.setExtension(arm.getMaxExtension());
+            notSet = true;
+        }
+        else if(notSet){
+            arm.setExtension(extension);
+            notSet = false;
+        }
+
+
+        if(Math.abs(arm.getAngleRadians() - angle) < angleThreshold &&
+                Math.abs(arm.getExtension() - extension) < extensionThreshold){
+            withinThreshold += 1;
+        }
+        else {
+            withinThreshold = 0;
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(arm.getAngleRadians() - angle) < 0.01 && Math.abs(arm.getExtension() - extension) < 0.01;
+        return withinThreshold > settle;
     }
 
     @Override

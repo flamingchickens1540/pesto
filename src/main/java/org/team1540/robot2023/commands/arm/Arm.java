@@ -1,10 +1,9 @@
 package org.team1540.robot2023.commands.arm;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants.ArmConstants;
 
@@ -13,6 +12,7 @@ public class Arm extends SubsystemBase {
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
     private final TalonFX telescope = new TalonFX(ArmConstants.TELESCOPE_ID);
     private final CANCoder cancoder = new CANCoder(ArmConstants.CANCODER_ID);
+
 
     public Arm() {
         pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
@@ -44,7 +44,9 @@ public class Arm extends SubsystemBase {
 
     public double getAngleRadians() {
         // TODO: figure out cancoder stuff for this
-        return 0;
+        //We need to set up the cancoder so that it has the correct sensor direction, boot initialization,
+        //-180 to 180 sensor range, and correct offset
+        return Math.toRadians(cancoder.getPosition());
     }
 
     public double getExtension() {
@@ -54,10 +56,21 @@ public class Arm extends SubsystemBase {
 
     public void setAngleRadians(double angle) {
         // TODO: something
+        //Feedforward needs to incorporate how extended the arm is
+        //We should also try calculating kF instead of arbitrary
+        double feedforward = Math.cos(getAngleRadians())*ArmConstants.PIVOT_FF;
+        pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
     }
 
     public void setExtension(double extension) {
         // TODO: magic
+        //Talk to Kevin about a feedforward for this
+        //Might need to be something similar to an arm but with max at straight up not straight out
+        //Or in other words, sin
+        double feedforward = Math.sin(getAngleRadians())*ArmConstants.TELESCOPE_FF;
+        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
+//        telescope.set(ControlMode.Position,extension);
+
     }
 
     public void stopAll() {
