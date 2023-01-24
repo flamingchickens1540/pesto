@@ -36,10 +36,9 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension() {
-        double maxX = 48 + ArmConstants.PIVOT_DISTANCE;
-        double maxY = 78 - ArmConstants.PIVOT_HEIGHT;
         double theta = getAngleRadians();
-        return Math.min(maxX / Math.cos(theta), maxY / Math.sin(theta));
+        return theta>=0?Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), ArmConstants.MAX_HEIGHT / Math.sin(theta))
+                : Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), -ArmConstants.PIVOT_HEIGHT / Math.sin(theta));
     }
 
     public double getAngleRadians() {

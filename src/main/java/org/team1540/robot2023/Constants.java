@@ -133,7 +133,14 @@ public final class Constants {
         public static final double PIVOT_HEIGHT = 24;
         // The distance of the pivot from the edge of the frame perimeter
         public static final double PIVOT_DISTANCE = 12;
-
+        // The base arm length
+        public static final double ARM_LENGTH = 36;
+        // The max height from the floor
+        public static final double MAX_HEIGHT = 78 - PIVOT_HEIGHT;
+        // The max distance extended from the frame perimeter
+        public static final double MAX_DISTANCE = 48 + PIVOT_DISTANCE;
+        // The maximum distance the arm will point to
+        public static final double MAX_POINT_DISTANCE = MAX_DISTANCE + 100;
         public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0;
         public static final double TELESCOPE_KI = 0;

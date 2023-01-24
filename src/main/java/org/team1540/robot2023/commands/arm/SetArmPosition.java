@@ -1,7 +1,9 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.RollingAverage;
+import org.team1540.robot2023.Constants.ArmConstants;
 
 public class SetArmPosition extends CommandBase {
     private final Arm arm;
@@ -17,7 +19,12 @@ public class SetArmPosition extends CommandBase {
     public SetArmPosition(Arm arm, double x, double y){
         this.arm = arm;
         this.angle = Math.atan(x/y);
-        this.extension = Math.sqrt(x*x+y*y);
+
+        if(x > ArmConstants.MAX_DISTANCE && x < ArmConstants.MAX_POINT_DISTANCE){
+            this.extension = ArmConstants.ARM_LENGTH + 1;
+        }
+        else this.extension = Math.sqrt(x*x+y*y);
+
         addRequirements(arm);
     }
 
