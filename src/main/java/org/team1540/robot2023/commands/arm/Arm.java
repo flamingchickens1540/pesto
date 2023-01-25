@@ -13,6 +13,11 @@ public class Arm extends SubsystemBase {
     private final TalonFX telescope = new TalonFX(ArmConstants.TELESCOPE_ID);
     private final CANCoder cancoder = new CANCoder(ArmConstants.CANCODER_ID);
 
+    private double extensionSetPoint = 0;
+    private boolean notSet = false;
+
+    private boolean extending = false;
+
 
     public Arm() {
         pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
@@ -61,7 +66,13 @@ public class Arm extends SubsystemBase {
         pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
     }
 
-    public void setExtension(double extension) {
+    public void setExtensionSetPoint(double extensionSetPoint) {
+        this.extensionSetPoint = extensionSetPoint;
+        setExtension(extensionSetPoint);
+        extending = true;
+    }
+
+    private void setExtension(double extension) {
         // TODO: magic
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
@@ -75,5 +86,23 @@ public class Arm extends SubsystemBase {
     public void stopAll() {
         pivot1.set(ControlMode.PercentOutput, 0);
         telescope.set(ControlMode.PercentOutput, 0);
+        extending = false;
+    }
+
+    private void limitArmExtension(){
+        if(extending){
+            if(getMaxExtension() < extensionSetPoint){
+                setExtension(getMaxExtension());
+                notSet = true;
+            }
+            else if(notSet){
+                setExtension(extensionSetPoint);
+                notSet = false;
+            }
+        }
+    }
+    @Override
+    public void periodic() {
+        limitArmExtension();
     }
 }
