@@ -12,9 +12,9 @@ public class SetExtension extends CommandBase {
 
     private final double extension;
 
-    public SetExtension(Arm arm, double x, double y) {
+    public SetExtension(Arm arm, double extension) {
         this.arm = arm;
-        this.extension = Math.sqrt(x*x+y*y);
+        this.extension = extension;
         addRequirements(arm);
     }
 

@@ -11,9 +11,9 @@ public class SetRotation extends CommandBase {
 
     private final double angle;
 
-    public SetRotation(Arm arm, double x, double y) {
+    public SetRotation(Arm arm, double angle) {
         this.arm = arm;
-        this.angle = Math.atan(x / y);
+        this.angle = angle;
         addRequirements(arm);
     }
 
