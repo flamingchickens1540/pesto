@@ -90,7 +90,12 @@ public class Arm extends SubsystemBase {
     }
 
     private void limitArmExtension(){
-        if(extending){
+        // TODO: 1/28/2023 Keep an eye on this if problems arise
+        if(getMaxExtension() < getExtension()){
+            setExtension(getMaxExtension());
+            notSet = true;
+        }
+        else if(isExtending()){
             if(getMaxExtension() < extensionSetPoint){
                 setExtension(getMaxExtension());
                 notSet = true;
@@ -101,6 +106,15 @@ public class Arm extends SubsystemBase {
             }
         }
     }
+
+    public boolean isRotating(){
+        return pivot1.getSelectedSensorVelocity() > 0.1;
+    }
+
+    public boolean isExtending(){
+        return telescope.getSelectedSensorVelocity() > 0.1;
+    }
+
     @Override
     public void periodic() {
         limitArmExtension();
