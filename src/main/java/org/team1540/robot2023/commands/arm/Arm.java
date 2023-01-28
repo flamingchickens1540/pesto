@@ -13,6 +13,11 @@ public class Arm extends SubsystemBase {
     private final TalonFX telescope = new TalonFX(ArmConstants.TELESCOPE_ID);
     private final CANCoder cancoder = new CANCoder(ArmConstants.CANCODER_ID);
 
+    private double extensionSetPoint = 0;
+    private boolean notSet = false;
+
+    private boolean extending = false;
+
 
     public Arm() {
         pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
@@ -36,10 +41,9 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension() {
-        double maxX = 48 + ArmConstants.PIVOT_DISTANCE;
-        double maxY = 78 - ArmConstants.PIVOT_HEIGHT;
         double theta = getAngleRadians();
-        return Math.min(maxX / Math.cos(theta), maxY / Math.sin(theta));
+        return theta>=0?Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), ArmConstants.MAX_HEIGHT / Math.sin(theta))
+                : Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), -ArmConstants.PIVOT_HEIGHT / Math.sin(theta));
     }
 
     public double getAngleRadians() {
@@ -62,7 +66,13 @@ public class Arm extends SubsystemBase {
         pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
     }
 
-    public void setExtension(double extension) {
+    public void setExtensionSetPoint(double extensionSetPoint) {
+        this.extensionSetPoint = extensionSetPoint;
+        setExtension(extensionSetPoint);
+        extending = true;
+    }
+
+    private void setExtension(double extension) {
         // TODO: magic
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
@@ -76,5 +86,37 @@ public class Arm extends SubsystemBase {
     public void stopAll() {
         pivot1.set(ControlMode.PercentOutput, 0);
         telescope.set(ControlMode.PercentOutput, 0);
+        extending = false;
+    }
+
+    private void limitArmExtension(){
+        // TODO: 1/28/2023 Keep an eye on this if problems arise
+        if(getMaxExtension() < getExtension()){
+            setExtension(getMaxExtension());
+            notSet = true;
+        }
+        else if(isExtending()){
+            if(getMaxExtension() < extensionSetPoint){
+                setExtension(getMaxExtension());
+                notSet = true;
+            }
+            else if(notSet){
+                setExtension(extensionSetPoint);
+                notSet = false;
+            }
+        }
+    }
+
+    public boolean isRotating(){
+        return pivot1.getSelectedSensorVelocity() > 0.1;
+    }
+
+    public boolean isExtending(){
+        return telescope.getSelectedSensorVelocity() > 0.1;
+    }
+
+    @Override
+    public void periodic() {
+        limitArmExtension();
     }
 }
