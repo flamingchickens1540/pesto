@@ -12,11 +12,12 @@ public class SwerveModuleConstants {
 
 
     public SwerveModuleConstants(int moduleID, ModuleCorner corner) {
-        this.angleOffset = corner.asRotation2d(moduleID);
+        this.angleOffset = corner.getRotation2dOffset(moduleID);
 
         this.driveMotorID = SwerveCANDevice.getDrivingMotorID(moduleID);
         this.angleMotorID = SwerveCANDevice.getTurningMotorID(moduleID);
         this.cancoderID = SwerveCANDevice.getCancoderID(moduleID);
+
         System.out.println(moduleID+" --- "+angleOffset.getDegrees());
     }
 }

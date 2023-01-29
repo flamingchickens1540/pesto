@@ -21,7 +21,7 @@ public enum ModuleCorner {
      *
      * @return the offset for this corner (in degrees)
      */
-    public double transform(int moduleID) {
+    public double getOffset(int moduleID) {
         return (ModuleMagnetOffset.get(moduleID)+offset)%360;
     }
 
@@ -30,7 +30,7 @@ public enum ModuleCorner {
      *
      * @return the offset for this corner
      */
-    public Rotation2d asRotation2d(int moduleID) {
-        return Rotation2d.fromDegrees(transform(moduleID));
+    public Rotation2d getRotation2dOffset(int moduleID) {
+        return Rotation2d.fromDegrees(getOffset(moduleID));
     }
 }
