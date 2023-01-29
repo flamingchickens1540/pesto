@@ -4,22 +4,26 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
+import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
 
 import static org.team1540.robot2023.Constants.Swerve;
 
 public class Drivetrain extends SubsystemBase {
 
-
+    private SwerveModuleState[] states = new SwerveModuleState[]{new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
     private final SwerveModule[] modules = new SwerveModule[]{
             new SwerveModule(0, Swerve.Mod0.constants),
             new SwerveModule(1, Swerve.Mod1.constants),
@@ -29,9 +33,13 @@ public class Drivetrain extends SubsystemBase {
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-    private SwerveModuleState[] states = new SwerveModuleState[]{new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(Swerve.swerveKinematics, getYaw(), getModulePositions());
+    // Whether to allow the wheels to park
     private boolean isParkMode = false;
+
+    // Odometry
+    private final Field2d field2d = new Field2d();
+    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
+
     public Drivetrain() {
         gyro.reset();
     }
@@ -44,7 +52,19 @@ public class Drivetrain extends SubsystemBase {
         modules[1].setDesiredState(states[1], true, isParkMode);
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
-        odometry.update(getYaw(), getModulePositions());
+        poseEstimator.update(getYaw(), getModulePositions());
+        Pose2d botPose = Limelight.getFilteredBotPose();
+        if (botPose != null) {
+            poseEstimator.addVisionMeasurement(botPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
+            field2d.getObject("VisionPoseFiltered").setPose(botPose);
+            field2d.getObject("VisionPoseReal").setPose(Limelight.getBotPose());
+        } else {
+            field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
+            field2d.getObject("VisionPoseReal").setPose(new Pose2d());
+        }
+        SmartDashboard.putData("field", field2d);
+        field2d.setRobotPose(poseEstimator.getEstimatedPosition());
+
     }
 
 
@@ -154,11 +174,11 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        return poseEstimator.getEstimatedPosition();
     }
 
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(getYaw(), getModulePositions(), pose);
+        poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
 
