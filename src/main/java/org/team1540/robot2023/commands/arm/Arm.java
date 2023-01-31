@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase {
         // TODO: figure out cancoder stuff for this
         //We need to set up the cancoder so that it has the correct sensor direction, boot initialization,
         //-180 to 180 sensor range, and correct offset
-        return Rotation2d.fromRadians(cancoder.getPosition());
+        return Rotation2d.fromDegrees(cancoder.getPosition());
     }
 
     private double getExtension() {
