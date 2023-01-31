@@ -61,14 +61,14 @@ public class Arm extends SubsystemBase {
     }
 
     public ArmState getArmState() {
-        return ArmState.fromRotationExtension(Rotation2d.fromRadians(cancoder.getPosition()), getExtension());
+        return ArmState.fromRotationExtension(Rotation2d.fromDegrees(cancoder.getPosition()), getExtension());
     }
 
     public void setRotation(Rotation2d rotation) {
         // TODO: something
         //Feedforward needs to incorporate how extended the arm is
         //We should also try calculating kF instead of arbitrary
-        double angle = rotation.getRadians();
+        double angle = rotation.getDegrees();
         double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
         pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
     }
