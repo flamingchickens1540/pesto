@@ -3,7 +3,7 @@ package org.team1540.robot2023.commands.arm;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants.ArmConstants;
 
@@ -15,8 +15,6 @@ public class Arm extends SubsystemBase {
 
     private double extensionSetPoint = 0;
     private boolean notSet = false;
-
-    private boolean extending = false;
 
 
     public Arm() {
@@ -41,35 +39,43 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension() {
-        double theta = getAngleRadians();
-        return theta>=0?Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), ArmConstants.MAX_HEIGHT / Math.sin(theta))
-                : Math.min(ArmConstants.MAX_DISTANCE / Math.cos(theta), -ArmConstants.PIVOT_HEIGHT / Math.sin(theta));
+        return getMaxExtension(getRotation2d());
     }
 
-    public double getAngleRadians() {
+    public double getMaxExtension(Rotation2d rotation) {
+        double angle = rotation.getRadians();
+        return angle>=0?Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle))
+                : Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
+    }
+
+    private Rotation2d getRotation2d() {
         // TODO: figure out cancoder stuff for this
         //We need to set up the cancoder so that it has the correct sensor direction, boot initialization,
         //-180 to 180 sensor range, and correct offset
-        return Math.toRadians(cancoder.getPosition());
+        return Rotation2d.fromRadians(cancoder.getPosition());
     }
 
-    public double getExtension() {
+    private double getExtension() {
         // TODO: figure this out
-        return 0;
+        return 0 + ArmConstants.ARM_BASE_LENGTH;
     }
 
-    public void setAngleRadians(double angle) {
+    public ArmState getArmState() {
+        return ArmState.fromRotationExtension(Rotation2d.fromRadians(cancoder.getPosition()), getExtension());
+    }
+
+    public void setRotation(Rotation2d rotation) {
         // TODO: something
         //Feedforward needs to incorporate how extended the arm is
         //We should also try calculating kF instead of arbitrary
-        double feedforward = Math.cos(getAngleRadians())*ArmConstants.PIVOT_FF;
+        double angle = rotation.getRadians();
+        double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
         pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
     }
 
     public void setExtensionSetPoint(double extensionSetPoint) {
         this.extensionSetPoint = extensionSetPoint;
         setExtension(extensionSetPoint);
-        extending = true;
     }
 
     private void setExtension(double extension) {
@@ -77,7 +83,7 @@ public class Arm extends SubsystemBase {
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
-        double feedforward = Math.sin(getAngleRadians())*ArmConstants.TELESCOPE_FF;
+        double feedforward = Math.sin(getRotation2d().getRadians())*ArmConstants.TELESCOPE_FF;
         telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);
 
@@ -86,7 +92,6 @@ public class Arm extends SubsystemBase {
     public void stopAll() {
         pivot1.set(ControlMode.PercentOutput, 0);
         telescope.set(ControlMode.PercentOutput, 0);
-        extending = false;
     }
 
     private void limitArmExtension(){

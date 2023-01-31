@@ -19,12 +19,12 @@ public class SetRotation extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setAngleRadians(angle);
+        arm.setRotation(angle);
     }
 
     @Override
     public void execute() {
-        rollingAverage.add(arm.getAngleRadians() - angle);
+        rollingAverage.add(arm.getRotation2d() - angle);
     }
 
     @Override
