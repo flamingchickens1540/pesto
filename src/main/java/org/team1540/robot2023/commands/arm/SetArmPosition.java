@@ -1,14 +1,13 @@
 package org.team1540.robot2023.commands.arm;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.RollingAverage;
 import org.team1540.robot2023.Constants.ArmConstants;
 
 public class SetArmPosition extends CommandBase {
     private final Arm arm;
-    private final double angle;
-    private final double extension;
+    private final ArmState goalState;
 
     private double rotThresh = 10;
     private double extThresh = 10;
@@ -16,31 +15,59 @@ public class SetArmPosition extends CommandBase {
     private final RollingAverage extAvg = new RollingAverage(10);
     private boolean isFinished = false;
 
-    public SetArmPosition(Arm arm, double x, double y){
+    /**
+     * Initializes this command to move the arm according to the goal state:
+     *  <ul>
+     *      <li>
+     *          If the goal state is an illegal position, such as when the arm is above its
+     *          height limit, behind the robot, or too far away, this command does nothing
+     *      </li>
+     *      <li>
+     *          If the goal state is within {@value ArmConstants#MAX_POINT_DISTANCE}, point
+     *          the arm in the general direction but do not extend to it
+     *      </li>
+     *      <li>
+     *          Otherwise, check if the goal state represents a state where the arm would be
+     *          below ground, in which case extend to just before the arm hits the ground.
+     *      </li>
+     *      <li>
+     *          If these checks pass with needing to adjust the goal state, start moving the
+     *          arm to the specified state
+     *      </li>
+     *  </ul>
+     * @param arm the arm this command runs on
+     * @param goalState the goal position of the arm
+     */
+    public SetArmPosition(Arm arm, ArmState goalState) {
         this.arm = arm;
-        this.angle = Math.atan(x/y);
-        if(x > ArmConstants.MAX_POINT_DISTANCE){
-            isFinished = true;
-            this.extension = arm.getExtension();
-        }
-        else if(x > ArmConstants.MAX_DISTANCE && x < ArmConstants.MAX_POINT_DISTANCE){
-            this.extension = ArmConstants.ARM_LENGTH + 1;
-        }
-        else this.extension = Math.sqrt(x*x+y*y);
+        Rotation2d angle = Rotation2d.fromRadians(
+                Math.max(goalState.getRotation2d().getRadians(), ArmConstants.PIVOT_MIN_ANGLE)
+        );
+        double extension;
 
-        addRequirements(arm);
+        if (goalState.getX() > ArmConstants.MAX_POINT_DISTANCE || goalState.getX() < 0 || goalState.getX() > ArmConstants.MAX_LEGAL_HEIGHT) {
+            isFinished = true;
+            this.goalState = arm.getArmState();
+            System.err.println("Illegal arm state given to SetArmPosition");
+            return;
+        } else if (goalState.getX() > ArmConstants.MAX_LEGAL_DISTANCE) {
+            extension = ArmConstants.ARM_BASE_LENGTH + 1;
+        } else if (goalState.getX() <= 0){
+            extension = Math.max(ArmConstants.ARM_BASE_LENGTH + 1, arm.getMaxExtension(angle));
+        } else extension = goalState.getExtension();
+        this.goalState = ArmState.fromRotationExtension(angle, extension);
     }
 
     @Override
     public void initialize() {
-        arm.setAngleRadians(angle);
-        arm.setExtensionSetPoint(extension);
+        arm.setRotation(goalState.getRotation2d());
+        arm.setExtensionSetPoint(goalState.getExtension());
     }
 
     @Override
     public void execute() {
-        rotAvg.add(arm.getAngleRadians() - angle);
-        extAvg.add(arm.getExtension() - extension);
+        rotAvg.add(arm.getArmState().getRotation2d().getRadians() - goalState.getRotation2d().getRadians());
+        extAvg.add(arm.getArmState().getExtension() - goalState.getExtension());
     }
 
     @Override

@@ -133,14 +133,18 @@ public final class Constants {
         public static final double PIVOT_HEIGHT = 24;
         // The distance of the pivot from the edge of the frame perimeter
         public static final double PIVOT_DISTANCE = 12;
+        // Minimum pivot angle before arm collides with robot (radians)
+        public static final double PIVOT_MIN_ANGLE = -0.689;
         // The base arm length
-        public static final double ARM_LENGTH = 36;
+        public static final double ARM_BASE_LENGTH = 36;
+        // The extended arm length
+        public static final double ARM_LENGTH_EXT = 144; // TODO: 1/29/2023 figure this out
         // The max height from the floor
-        public static final double MAX_HEIGHT = 78 - PIVOT_HEIGHT;
+        public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;
         // The max distance extended from the frame perimeter
-        public static final double MAX_DISTANCE = 48 + PIVOT_DISTANCE;
+        public static final double MAX_LEGAL_DISTANCE = 48 + PIVOT_DISTANCE;
         // The maximum distance the arm will point to
-        public static final double MAX_POINT_DISTANCE = MAX_DISTANCE + 100;
+        public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
         public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0;
         public static final double TELESCOPE_KI = 0;
