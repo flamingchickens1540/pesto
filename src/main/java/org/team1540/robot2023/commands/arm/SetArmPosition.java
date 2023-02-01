@@ -52,7 +52,7 @@ public class SetArmPosition extends CommandBase {
             return;
         } else if (goalState.getX() > ArmConstants.MAX_LEGAL_DISTANCE) {
             extension = ArmConstants.ARM_BASE_LENGTH + 1;
-        } else if (goalState.getX() <= 0){
+        } else if (goalState.getX() <= -ArmConstants.PIVOT_HEIGHT){
             extension = Math.max(ArmConstants.ARM_BASE_LENGTH + 1, arm.getMaxExtension(angle));
         } else extension = goalState.getExtension();
         this.goalState = ArmState.fromRotationExtension(angle, extension);
