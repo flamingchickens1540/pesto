@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.SPI;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
 
+import java.util.Objects;
+
 import static org.team1540.robot2023.Constants.Swerve;
 
 public class Drivetrain extends SubsystemBase {
@@ -53,17 +55,23 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        Pose2d botPose = Limelight.getFilteredBotPose();
-        if (botPose != null) {
-            poseEstimator.addVisionMeasurement(botPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
-            field2d.getObject("VisionPoseFiltered").setPose(botPose);
-            field2d.getObject("VisionPoseReal").setPose(Limelight.getBotPose());
+        Pose2d rawBotPose = Limelight.getBotPose();
+        Pose2d filteredBotPose = Limelight.getFilteredBotPose();
+        if (filteredBotPose != null) {
+            poseEstimator.addVisionMeasurement(filteredBotPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
+            field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
         } else {
             field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
-            field2d.getObject("VisionPoseReal").setPose(new Pose2d());
         }
+        field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
         SmartDashboard.putData("field", field2d);
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
+        double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+        if (angle > -25 && angle < 25 ) {
+            Limelight.setLedState(Limelight.LEDMode.ON);
+        } else {
+            Limelight.setLedState(Limelight.LEDMode.OFF);
+        }
 
     }
 
