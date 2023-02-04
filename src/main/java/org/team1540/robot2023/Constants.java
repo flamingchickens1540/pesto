@@ -152,4 +152,13 @@ public final class Constants {
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
     }
+
+    public static final class GrabberConstants {
+        public static final int CLAW_SOLENOID_CHANNEL = 0;
+
+        public static final int INTAKE_1_ID = 14;
+        public static final int INTAKE_2_ID = 15;
+
+        public static final double INTAKE_CURRENT_THRESH = 25;
+    }
 }
