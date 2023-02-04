@@ -143,7 +143,7 @@ public final class Constants {
         public static final int PIVOT1_ID = 10;
         public static final int PIVOT2_ID = 11;
         public static final int TELESCOPE_ID = 12;
-        public static final int CANCODER_ID = 13;
+        public static final int PIGEON_ID = 13;
 
         public static final double PIVOT_FF = 0;
         public static final double PIVOT_KP = 0;
@@ -166,6 +166,8 @@ public final class Constants {
         public static final double MAX_LEGAL_DISTANCE = 48 + PIVOT_DISTANCE;
         // The maximum distance the arm will point to
         public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
+
+        public static final double PIVOT_TICKS_TO_DEGREES = 0;// TODO: 2/1/2023 figure this out so that position things work
         public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0;
         public static final double TELESCOPE_KI = 0;

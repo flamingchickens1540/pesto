@@ -3,6 +3,12 @@ package org.team1540.robot2023.commands.arm;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.Pigeon2;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants.ArmConstants;
@@ -10,9 +16,11 @@ import org.team1540.robot2023.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
-    private final TalonFX telescope = new TalonFX(ArmConstants.TELESCOPE_ID);
-    private final CANCoder cancoder = new CANCoder(ArmConstants.CANCODER_ID);
-
+    private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
+            CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final RelativeEncoder telescopeEncoder = telescope.getEncoder();
+    private final SparkMaxPIDController telescopePID = telescope.getPIDController();
+    private final Pigeon2 pigeon2 = new Pigeon2(ArmConstants.PIGEON_ID);
     private double extensionSetPoint = 0;
     private boolean notSet = false;
 
@@ -20,11 +28,11 @@ public class Arm extends SubsystemBase {
     public Arm() {
         pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
         pivot2.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
-        telescope.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+        telescope.setSmartCurrentLimit(40);
 
         pivot1.setNeutralMode(NeutralMode.Brake);
         pivot2.setNeutralMode(NeutralMode.Brake);
-        telescope.setNeutralMode(NeutralMode.Brake);
+        telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         pivot2.setInverted(true);
         pivot2.follow(pivot1);
@@ -33,9 +41,12 @@ public class Arm extends SubsystemBase {
         pivot1.config_kI(0, ArmConstants.PIVOT_KI);
         pivot1.config_kD(0, ArmConstants.PIVOT_KD);
 
-        telescope.config_kP(0, ArmConstants.TELESCOPE_KP);
-        telescope.config_kI(0, ArmConstants.TELESCOPE_KI);
-        telescope.config_kD(0, ArmConstants.TELESCOPE_KD);
+
+        telescopePID.setP(ArmConstants.TELESCOPE_KP);
+        telescopePID.setI(ArmConstants.TELESCOPE_KI);
+        telescopePID.setD(ArmConstants.TELESCOPE_KD);
+
+        pivot1.setSelectedSensorPosition(pigeon2.getPitch() / ArmConstants.PIVOT_TICKS_TO_DEGREES);
     }
 
     public double getMaxExtension() {
@@ -52,7 +63,7 @@ public class Arm extends SubsystemBase {
         // TODO: figure out cancoder stuff for this
         //We need to set up the cancoder so that it has the correct sensor direction, boot initialization,
         //-180 to 180 sensor range, and correct offset
-        return Rotation2d.fromDegrees(cancoder.getPosition());
+        return Rotation2d.fromDegrees(pivot1.getSelectedSensorPosition() * ArmConstants.PIVOT_TICKS_TO_DEGREES);
     }
 
     private double getExtension() {
@@ -61,7 +72,7 @@ public class Arm extends SubsystemBase {
     }
 
     public ArmState getArmState() {
-        return ArmState.fromRotationExtension(Rotation2d.fromDegrees(cancoder.getPosition()), getExtension());
+        return ArmState.fromRotationExtension(getRotation2d(), getExtension());
     }
 
     public void setRotation(Rotation2d rotation) {
@@ -84,14 +95,15 @@ public class Arm extends SubsystemBase {
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
         double feedforward = Math.sin(getRotation2d().getRadians())*ArmConstants.TELESCOPE_FF;
-        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
+        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
+//        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);
 
     }
 
     public void stopAll() {
         pivot1.set(ControlMode.PercentOutput, 0);
-        telescope.set(ControlMode.PercentOutput, 0);
+        telescope.set(0);
     }
 
     private void limitArmExtension(){
@@ -117,7 +129,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isExtending(){
-        return telescope.getSelectedSensorVelocity() > 0.1;
+        return telescopeEncoder.getVelocity() > 0.1;
     }
 
     @Override
