@@ -130,11 +130,11 @@ public final class Constants {
         public static final double PIVOT_KD = 0;
 
         // The distance of the pivot from the ground
-        public static final double PIVOT_HEIGHT = 24;
+        public static final double PIVOT_HEIGHT = 21.5;
         // The distance of the pivot from the edge of the frame perimeter
         public static final double PIVOT_DISTANCE = 12;
-        // Minimum pivot angle before arm collides with robot (radians)
-        public static final double PIVOT_MIN_ANGLE = -0.689;
+        // Minimum pivot angle before arm collides with robot (radians) (should be negative)
+        public static final double PIVOT_MIN_ANGLE = -0.689; //TODO figure this out for the weird system
         // The base arm length
         public static final double ARM_BASE_LENGTH = 36;
         // The extended arm length
