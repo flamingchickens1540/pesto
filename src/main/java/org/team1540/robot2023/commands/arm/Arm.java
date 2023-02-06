@@ -55,16 +55,13 @@ public class Arm extends SubsystemBase {
 
     public double getMaxExtension(Rotation2d rotation) {
         double angle = ArmState.actualToCartesian(rotation).getRadians();
-        try {
-            if (angle < Math.PI / 2) {
-                return angle >= 0 ? Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle))
-                        : Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
-            } else if (angle > Math.PI / 2) {
-                return angle >= Math.PI ? Math.min(-ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle))
-                        : Math.min(-ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
-            } else return ArmConstants.MAX_LEGAL_HEIGHT;
-        } catch (ArithmeticException e) {
-            return angle < Math.PI / 2 ? ArmConstants.MAX_LEGAL_DISTANCE : -ArmConstants.MAX_LEGAL_DISTANCE;
+        if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
+        if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
+        else if (angle > 0 && angle < Math.PI){
+            return Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle));
+        }
+        else {
+            return Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
         }
     }
 
