@@ -138,6 +138,14 @@ public class Arm extends SubsystemBase {
         return telescopeEncoder.getVelocity() > 0.1;
     }
 
+    public void setExtendingSpeed(double speed){
+        telescope.set(speed);
+    }
+
+    public void setRotatingSpeed(double speed){
+        pivot1.set(ControlMode.PercentOutput, speed);
+    }
+
     @Override
     public void periodic() {
         limitArmExtension();
