@@ -58,10 +58,10 @@ public class Arm extends SubsystemBase {
         if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
         if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
         else if (angle > 0 && angle < Math.PI){
-            return Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle));
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.abs(Math.sin(angle))));
         }
         else {
-            return Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));
         }
     }
 
