@@ -12,7 +12,7 @@ public class ArmState {
     }
 
     public static ArmState fromCartesian(double x, double y) {
-        return new ArmState(Math.hypot(x, y), Rotation2d.fromRadians(Math.atan(x / y)));
+        return new ArmState(Math.hypot(x, y), cartesianToActual(Rotation2d.fromRadians(Math.atan2(x, y))));
     }
 
     public static ArmState fromRotationExtension(Rotation2d rotation, double extension) {
@@ -28,10 +28,20 @@ public class ArmState {
     }
 
     public double getX() {
-        return extension * Math.sin(angle.getRadians());
+        return extension * Math.sin(actualToCartesian(angle).getRadians());
     }
 
     public double getY() {
-        return extension * Math.cos(angle.getRadians());
+        return extension * Math.cos(actualToCartesian(angle).getRadians());
+    }
+
+    public static Rotation2d cartesianToActual(Rotation2d angle) {
+        double theta = angle.getDegrees();
+        return Rotation2d.fromDegrees(theta - 90 < -180 ? theta + 270 : theta - 90);
+    }
+
+    public static Rotation2d actualToCartesian(Rotation2d angle) {
+        double theta = angle.getDegrees();
+        return Rotation2d.fromDegrees(theta + 90 > 180 ? theta - 270 : theta + 90);
     }
 }

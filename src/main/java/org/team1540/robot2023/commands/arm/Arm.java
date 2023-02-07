@@ -2,13 +2,11 @@ package org.team1540.robot2023.commands.arm;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants.ArmConstants;
@@ -46,7 +44,9 @@ public class Arm extends SubsystemBase {
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
 
-        pivot1.setSelectedSensorPosition(pigeon2.getPitch() / ArmConstants.PIVOT_TICKS_TO_DEGREES);
+        pivot1.setSelectedSensorPosition(
+                ArmState.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getPitch())).getDegrees() /
+                        ArmConstants.PIVOT_TICKS_TO_DEGREES);
     }
 
     public double getMaxExtension() {
@@ -54,9 +54,15 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension(Rotation2d rotation) {
-        double angle = rotation.getRadians();
-        return angle>=0?Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle))
-                : Math.min(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle), -ArmConstants.PIVOT_HEIGHT / Math.sin(angle));
+        double angle = ArmState.actualToCartesian(rotation).getRadians();
+        if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
+        if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
+        else if (angle > 0 && angle < Math.PI){
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.abs(Math.sin(angle))));
+        }
+        else {
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));
+        }
     }
 
     private Rotation2d getRotation2d() {
@@ -94,7 +100,7 @@ public class Arm extends SubsystemBase {
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
-        double feedforward = Math.sin(getRotation2d().getRadians())*ArmConstants.TELESCOPE_FF;
+        double feedforward = Math.sin(ArmState.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
         telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
 //        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);

@@ -20,7 +20,7 @@ public class SetArmPosition extends CommandBase {
      *  <ul>
      *      <li>
      *          If the goal state is an illegal position, such as when the arm is above its
-     *          height limit, behind the robot, or too far away, this command does nothing
+     *          height limit or too far away, this command does nothing
      *      </li>
      *      <li>
      *          If the goal state is within {@value ArmConstants#MAX_POINT_DISTANCE}, point
@@ -41,18 +41,21 @@ public class SetArmPosition extends CommandBase {
     public SetArmPosition(Arm arm, ArmState goalState) {
         this.arm = arm;
         Rotation2d angle = Rotation2d.fromRadians(
-                Math.max(goalState.getRotation2d().getRadians(), ArmConstants.PIVOT_MIN_ANGLE)
+                //Math.max(goalState.getRotation2d().getRadians(), ArmConstants.PIVOT_MIN_ANGLE)
+                goalState.getRotation2d().getRadians() < 0 ?
+                        Math.max(goalState.getRotation2d().getRadians(), ArmConstants.PIVOT_MIN_ANGLE) :
+                        Math.min(goalState.getRotation2d().getRadians(), -ArmConstants.PIVOT_MIN_ANGLE)
         );
         double extension;
 
-        if (goalState.getX() > ArmConstants.MAX_POINT_DISTANCE || goalState.getX() < 0 || goalState.getX() > ArmConstants.MAX_LEGAL_HEIGHT) {
+        if (Math.abs(goalState.getX()) > ArmConstants.MAX_POINT_DISTANCE || goalState.getY() > ArmConstants.MAX_LEGAL_HEIGHT) {
             isFinished = true;
             this.goalState = arm.getArmState();
             System.err.println("Illegal arm state given to SetArmPosition");
             return;
-        } else if (goalState.getX() > ArmConstants.MAX_LEGAL_DISTANCE) {
+        } else if (Math.abs(goalState.getX()) > ArmConstants.MAX_LEGAL_DISTANCE) {
             extension = ArmConstants.ARM_BASE_LENGTH + 1;
-        } else if (goalState.getX() <= -ArmConstants.PIVOT_HEIGHT){
+        } else if (goalState.getY() <= -ArmConstants.PIVOT_HEIGHT){
             extension = Math.max(ArmConstants.ARM_BASE_LENGTH + 1, arm.getMaxExtension(angle));
         } else extension = goalState.getExtension();
         this.goalState = ArmState.fromRotationExtension(angle, extension);
