@@ -4,11 +4,14 @@
 
 package org.team1540.robot2023;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.team1540.robot2023.utils.Limelight;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,13 +35,25 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        Limelight.setLedState(Limelight.LEDMode.OFF);
         ctreConfigs = new CTREConfigs();
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         this.robotContainer = new RobotContainer();
 
+        // ---------------
+        // TODO: ALWAYS REMOVE BEFORE COMMITTING
+        // TODO: BAD THINGS HAPPEN IF IT GETS LEFT FOR A COMP
+        // TODO: DO NOT APPROVE PRS WITH THE BELOW LINE LEFT IN
+
+//        PathPlannerServer.startServer(5811);
+        // ---------------
+
         // Zero swerve modules 4 seconds after init
-        new WaitCommand(5).andThen(robotContainer.drivetrain::resetAllToAbsolute, robotContainer.drivetrain).ignoringDisable(true).schedule();
+        new WaitCommand(5).andThen(() -> {
+            robotContainer.drivetrain.resetAllToAbsolute();
+            robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
+        }, robotContainer.drivetrain).ignoringDisable(true).schedule();
     }
 
     /**
@@ -69,6 +84,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
+        new WaitCommand(5)
+                .andThen(() -> robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast))
+                .ignoringDisable(true)
+                .schedule();
     }
 
     @Override
@@ -77,6 +96,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
@@ -93,6 +113,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
