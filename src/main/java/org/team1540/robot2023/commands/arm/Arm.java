@@ -22,6 +22,8 @@ public class Arm extends SubsystemBase {
     private double extensionSetPoint = 0;
     private boolean notSet = false;
 
+    private boolean isManualControl = false;
+
 
     public Arm() {
         pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
@@ -146,8 +148,12 @@ public class Arm extends SubsystemBase {
         pivot1.set(ControlMode.PercentOutput, speed);
     }
 
+    public void setManualControl(boolean manualControl) {
+        isManualControl = manualControl;
+    }
+
     @Override
     public void periodic() {
-        limitArmExtension();
+        if(!isManualControl) limitArmExtension();
     }
 }

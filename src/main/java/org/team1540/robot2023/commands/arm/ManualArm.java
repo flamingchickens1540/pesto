@@ -14,14 +14,22 @@ public class ManualArm extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        arm.setManualControl(true);
+    }
+
+    @Override
     public void execute() {
         arm.setRotatingSpeed(controller.getLeftY());
+        // TODO: 2/7/2023 Make sure nothing bad happens from repetitive reversing
         if(arm.getMaxExtension() < arm.getArmState().getExtension())arm.setExtendingSpeed(-0.7);
+        else if(arm.getMaxExtension() - arm.getArmState().getExtension() < 5)arm.setExtendingSpeed(0);
         else arm.setExtendingSpeed(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
     }
 
     @Override
     public void end(boolean interrupted) {
         arm.stopAll();
+        arm.setManualControl(false);
     }
 }

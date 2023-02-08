@@ -67,6 +67,7 @@ public class SetArmPosition extends CommandBase {
     public void initialize() {
         arm.setRotation(goalState.getRotation2d());
         arm.setExtensionSetPoint(goalState.getExtension());
+        arm.setManualControl(false);
     }
 
     @Override
