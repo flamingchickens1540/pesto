@@ -2,7 +2,7 @@ package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.team1540.robot2023.utils.RollingAverage;
+import org.team1540.robot2023.utils.AverageFilter;
 import org.team1540.robot2023.Constants.ArmConstants;
 
 public class SetArmPosition extends CommandBase {
@@ -11,8 +11,8 @@ public class SetArmPosition extends CommandBase {
 
     private double rotThresh = 10;
     private double extThresh = 10;
-    private final RollingAverage rotAvg = new RollingAverage(10);
-    private final RollingAverage extAvg = new RollingAverage(10);
+    private final AverageFilter rotAvg = new AverageFilter(10);
+    private final AverageFilter extAvg = new AverageFilter(10);
     private boolean isFinished = false;
 
     /**
@@ -78,7 +78,7 @@ public class SetArmPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (extAvg.getAverageAbs() < extThresh && rotAvg.getAverageAbs() < rotThresh) || isFinished;
+        return (Math.abs(extAvg.getAverage()) < extThresh && Math.abs(rotAvg.getAverage()) < rotThresh) || isFinished;
     }
 
     @Override
