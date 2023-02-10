@@ -1,6 +1,8 @@
 package org.team1540.robot2023.commands.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
@@ -8,6 +10,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -122,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
         });
     }
 
-    private void setModuleStates(SwerveModuleState[] newStates) {
+    void setModuleStates(SwerveModuleState[] newStates) {
         this.states = newStates;
     }
 
@@ -130,13 +133,14 @@ public class Drivetrain extends SubsystemBase {
         states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
     }
 
+
     protected Command getPathCommand(PathPlannerTrajectory trajectory) {
         return new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
