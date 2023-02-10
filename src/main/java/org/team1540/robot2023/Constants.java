@@ -10,7 +10,10 @@ import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 
 public final class Constants {
+    private static final boolean isNewRobot = false;
+
     public static final class Swerve {
+        public static final String canbus = isNewRobot ? "swerve" : ""; // Set to "" to use RIO's can bus
 
         public static final COTSFalconSwerveConstants chosenModule = COTSFalconSwerveConstants.SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.SDSMK4i_L2);
 
@@ -61,16 +64,17 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 0.05; //TODO: This must be tuned to specific robot
+//        public static final double driveKP = 0.34982; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.05;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
         /* Drive Motor Characterization Values
          * Divide SYSID values by 12 to convert from volts to percent output for CTRE */
-        public static final double driveKS = (0.32 / 12); //TODO: This must be tuned to specific robot
-        public static final double driveKV = (1.51 / 12);
-        public static final double driveKA = (0.27 / 12);
+        public static final double driveKS = (0.18132 / 12); //TODO: This must be tuned to specific robot
+        public static final double driveKV = (2.2502 / 12);
+        public static final double driveKA = (0.2682 / 12);
 
         /* Swerve Profiling Values */
         /**
@@ -86,29 +90,30 @@ public final class Constants {
         public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
         public static final NeutralMode driveNeutralMode = NeutralMode.Brake;
 
+
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            private static final int moduleID = 4;
+            private static final int moduleID = isNewRobot ? 8: 4;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_LEFT);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            private static final int moduleID = 1;
+            private static final int moduleID = isNewRobot ? 7 : 1;
 
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_RIGHT);
         }
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            private static final int moduleID = 3;
+            private static final int moduleID = isNewRobot ? 5:3;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_LEFT);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            private static final int moduleID = 2;
+            private static final int moduleID = isNewRobot? 6 : 2;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }
