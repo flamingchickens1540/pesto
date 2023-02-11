@@ -38,6 +38,7 @@ public class RobotContainer {
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT).whileTrue(new ProxiedGridDriveCommand(drivetrain, 4));
 
         // SmartDashboard Commands
         

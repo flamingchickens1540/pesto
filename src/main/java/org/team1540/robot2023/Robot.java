@@ -54,6 +54,9 @@ public class Robot extends TimedRobot {
             robotContainer.drivetrain.resetAllToAbsolute();
             robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
         }, robotContainer.drivetrain).ignoringDisable(true).schedule();
+
+        // OK so this one is really stupid and really shouldn't have to be here but it does, just deal with it.
+        aprilTagLayout.getTagPose(-1);
     }
 
     /**
