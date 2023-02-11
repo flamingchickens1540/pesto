@@ -3,8 +3,9 @@ package org.team1540.robot2023;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.robot2023.commands.drivetrain.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
@@ -16,8 +17,7 @@ public class RobotContainer {
     // Subsystems
     
     Drivetrain drivetrain = new Drivetrain();
-//    Elevator elevator = new Elevator();
-//    Intake intake = new Intake();
+
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
     ButtonPanel controlPanel = new ButtonPanel(1);
@@ -37,17 +37,14 @@ public class RobotContainer {
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope));
         // Copilot
 
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT).whileTrue(new PrintCommand("1")).onFalse(new PrintCommand("-1"));
-        controlPanel.onButton(2).whileTrue(new PrintCommand("2")).onFalse(new PrintCommand("-2"));
-        controlPanel.onButton(3).whileTrue(new PrintCommand("3")).onFalse(new PrintCommand("-3"));
-        controlPanel.onButton(4).whileTrue(new PrintCommand("4")).onFalse(new PrintCommand("-4"));
-        controlPanel.onAnyGrid().whileTrue(new PrintCommand("ANY")).onFalse(new PrintCommand("-ANY"));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT).whileTrue(new ProxiedGridDriveCommand(drivetrain, 4));
+
         // SmartDashboard Commands
         
     }
 
     public void setTeleopDefaultCommands() {
-//        elevator.setDefaultCommand(new ElevatorMoveCommand(driver, elevator)); //coop:button(LTrigger,[HOLD] Elevator Down,pilot) coop:button(RTrigger,[HOLD] Elevator Up,pilot)
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
     }
 
