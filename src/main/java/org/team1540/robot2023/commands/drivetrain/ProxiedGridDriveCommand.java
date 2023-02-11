@@ -5,19 +5,15 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 
 import java.util.function.Supplier;
 
+// This was the best way I found to force GridDriveCommand to be constructed at schedule time rather than command construction time
 public class ProxiedGridDriveCommand extends ProxyCommand {
 
-    public ProxiedGridDriveCommand(Drivetrain drivetrain, int tagID) {
-        this(() -> new GridDriveCommand(drivetrain, tagID));
-    }
-
     /**
-     * Creates a new ProxyCommand that schedules the supplied command when initialized, and ends when
-     * it is no longer scheduled. Useful for lazily creating commands at runtime.
-     *
-     * @param supplier the command supplier
+     * Constructs a ProxiedGridDriveCommand. It will construct a new GridDriveCommand when it is run?
+     * @param drivetrain
+     * @param tagID
      */
-    public ProxiedGridDriveCommand(Supplier<Command> supplier) {
-        super(supplier);
+    public ProxiedGridDriveCommand(Drivetrain drivetrain, int tagID) {
+        super(() -> new GridDriveCommand(drivetrain, tagID));
     }
 }
