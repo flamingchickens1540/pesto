@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.team1540.robot2023.utils.Limelight;
 
+import static org.team1540.robot2023.Globals.aprilTagLayout;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
