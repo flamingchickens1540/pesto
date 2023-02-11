@@ -4,15 +4,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
-public class PoseOutlierFilter {
+public class PoseMedianFilter {
     private final LinkedList<Pose2d> items = new LinkedList<>();
     private final int count;
     private final LinkedList<Double> xVals = new LinkedList<>();
     private final LinkedList<Double> yVals = new LinkedList<>();
 
 
-    public PoseOutlierFilter(int count) {
+    public PoseMedianFilter(int count) {
         this.count = count;
 
     }
@@ -22,7 +23,6 @@ public class PoseOutlierFilter {
         yVals.addLast(item.getY());
         if (xVals.size() > count)  {
             xVals.removeFirst();
-            yVals.removeFirst();
         }
         if (yVals.size() > count) {
             yVals.removeFirst();
@@ -38,8 +38,15 @@ public class PoseOutlierFilter {
             return (copyList.get(copyList.size()/2)+copyList.get(copyList.size()/2-1))/2;
         }
     }
-    public Translation2d medianPose() {
-        return new Translation2d(median(xVals), median(yVals));
+    public Optional<Pose2d> checkOutlier(Pose2d pose) {
+        Translation2d median = new Translation2d(median(xVals), median(yVals));
+        Translation2d diff = pose.getTranslation().minus(median);
+        if (diff.getNorm()>0.16*count/2) {
+            return Optional.empty();
+        } else {
+            return Optional.of(pose);
+        }
+
 
     }
 }

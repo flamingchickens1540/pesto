@@ -1,6 +1,8 @@
 package org.team1540.robot2023.commands.drivetrain;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
@@ -8,6 +10,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -18,6 +21,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
+
+import java.util.Objects;
 
 import static org.team1540.robot2023.Constants.Swerve;
 
@@ -53,17 +58,23 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        Pose2d botPose = Limelight.getFilteredBotPose();
-        if (botPose != null) {
-            poseEstimator.addVisionMeasurement(botPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
-            field2d.getObject("VisionPoseFiltered").setPose(botPose);
-            field2d.getObject("VisionPoseReal").setPose(Limelight.getBotPose());
+        Pose2d rawBotPose = Limelight.getBotPose();
+        Pose2d filteredBotPose = Limelight.getFilteredBotPose();
+        if (filteredBotPose != null) {
+            poseEstimator.addVisionMeasurement(filteredBotPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
+            field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
         } else {
             field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
-            field2d.getObject("VisionPoseReal").setPose(new Pose2d());
         }
+        field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
         SmartDashboard.putData("field", field2d);
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
+        double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+        if (angle > -25 && angle < 25 ) {
+            Limelight.setLedState(Limelight.LEDMode.ON);
+        } else {
+            Limelight.setLedState(Limelight.LEDMode.OFF);
+        }
 
     }
 
@@ -114,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
         });
     }
 
-    private void setModuleStates(SwerveModuleState[] newStates) {
+    void setModuleStates(SwerveModuleState[] newStates) {
         this.states = newStates;
     }
 
@@ -122,13 +133,14 @@ public class Drivetrain extends SubsystemBase {
         states = Swerve.swerveKinematics.toSwerveModuleStates(speeds);
     }
 
+
     protected Command getPathCommand(PathPlannerTrajectory trajectory) {
         return new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem

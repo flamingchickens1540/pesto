@@ -14,11 +14,10 @@ import java.util.HashMap;
 public class PathPlannerDriveCommand extends SequentialCommandGroup {
     public PathPlannerDriveCommand(Drivetrain drivetrain) {
         addRequirements(drivetrain);
-        drivetrain.zeroGyroscope();
         PathPlannerTrajectory trajectory = PathPlanner.loadPath("EpicSwervyThing", new PathConstraints(3, 2));
-        Command ramseteCommand = drivetrain.getResettingPathCommand(trajectory);
+        Command ramseteCommand = drivetrain.getPathCommand(trajectory);
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("testevent", new SequentialCommandGroup(new PrintCommand("starting"), new WaitCommand(3), new PrintCommand("ending")));
+
 
         FollowPathWithEvents command = new FollowPathWithEvents(
                 ramseteCommand,

@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.team1540.robot2023.utils.Limelight;
 
+import static org.team1540.robot2023.Globals.aprilTagLayout;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -54,6 +56,9 @@ public class Robot extends TimedRobot {
             robotContainer.drivetrain.resetAllToAbsolute();
             robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
         }, robotContainer.drivetrain).ignoringDisable(true).schedule();
+
+        // OK so this one is really stupid and really shouldn't have to be here but it does, just deal with it.
+        aprilTagLayout.getTagPose(-1);
     }
 
     /**
