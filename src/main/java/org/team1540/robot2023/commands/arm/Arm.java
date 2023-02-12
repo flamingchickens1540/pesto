@@ -3,10 +3,7 @@ package org.team1540.robot2023.commands.arm;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants.ArmConstants;
@@ -14,11 +11,15 @@ import org.team1540.robot2023.Constants.ArmConstants;
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
+
     private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
             CANSparkMaxLowLevel.MotorType.kBrushless);
     private final RelativeEncoder telescopeEncoder = telescope.getEncoder();
     private final SparkMaxPIDController telescopePID = telescope.getPIDController();
+    private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+
     private final Pigeon2 pigeon2 = new Pigeon2(ArmConstants.PIGEON_ID);
+
     private double extensionSetPoint = 0;
     private boolean notSet = false;
 
@@ -68,19 +69,20 @@ public class Arm extends SubsystemBase {
     }
 
     private Rotation2d getRotation2d() {
-        // TODO: figure out cancoder stuff for this
-        //We need to set up the cancoder so that it has the correct sensor direction, boot initialization,
-        //-180 to 180 sensor range, and correct offset
         return Rotation2d.fromDegrees(pivot1.getSelectedSensorPosition() * ArmConstants.PIVOT_TICKS_TO_DEGREES);
     }
 
     private double getExtension() {
         // TODO: figure this out
-        return 0 + ArmConstants.ARM_BASE_LENGTH;
+        return telescopeEncoder.getPosition() * ArmConstants.EXT_ROTS_TO_INCHES + ArmConstants.ARM_BASE_LENGTH;
     }
 
     public ArmState getArmState() {
         return ArmState.fromRotationExtension(getRotation2d(), getExtension());
+    }
+
+    public boolean getLimitSwitch() {
+        return telescopeLimitSwitch.isPressed();
     }
 
     public void setRotation(Rotation2d rotation) {
@@ -155,5 +157,6 @@ public class Arm extends SubsystemBase {
     @Override
     public void periodic() {
         if(!isManualControl) limitArmExtension();
+        if (getLimitSwitch()) telescopeEncoder.setPosition(0);
     }
 }
