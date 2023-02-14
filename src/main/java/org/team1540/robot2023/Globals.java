@@ -10,7 +10,7 @@ public class Globals {
 
     static {
         try {
-            aprilTagLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            aprilTagLayout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

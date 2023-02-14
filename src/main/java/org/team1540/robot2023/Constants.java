@@ -11,7 +11,9 @@ import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 public final class Constants {
     private static final boolean isNewRobot = false;
-
+    // 22 in
+    public static final double poleOffsetMeters = Units.inchesToMeters(30);
+//    public static final double poleOffsetMeters = 0.5;
     public static final class Swerve {
         public static final String canbus = isNewRobot ? "swerve" : ""; // Set to "" to use RIO's can bus
 
@@ -64,8 +66,8 @@ public final class Constants {
         public static final double angleKF = chosenModule.angleKF;
 
         /* Drive Motor PID Values */
-//        public static final double driveKP = 0.34982; //TODO: This must be tuned to specific robot
-        public static final double driveKP = 0.05;
+        public static final double driveKP = 0.34982; //TODO: This must be tuned to specific robot
+//        public static final double driveKP = 0.05;
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
