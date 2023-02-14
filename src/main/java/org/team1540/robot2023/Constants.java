@@ -135,7 +135,8 @@ public final class Constants {
         public static final double PIVOT_DISTANCE = 12;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
         public static final double PIVOT_MIN_ANGLE = -2.260;
-        public static final double PIVOT_TICKS_TO_DEGREES = 0;// TODO: 2/1/2023 figure this out so that position things work
+        // Pivot motor revolutions to pivot revolutions
+        public static final double PIVOT_GEAR_RATIO = 1; // TODO: 2/13/2023 figure this out
 
         // The base arm length
         public static final double ARM_BASE_LENGTH = 36;

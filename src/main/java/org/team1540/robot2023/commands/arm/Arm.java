@@ -6,6 +6,7 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
 
 public class Arm extends SubsystemBase {
@@ -48,8 +49,11 @@ public class Arm extends SubsystemBase {
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
 
         pivot1.setSelectedSensorPosition(
-                ArmState.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getPitch())).getDegrees() /
-                        ArmConstants.PIVOT_TICKS_TO_DEGREES);
+                Conversions.degreesToFalcon(
+                        Conversions.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getPitch())).getDegrees(),
+                        ArmConstants.PIVOT_GEAR_RATIO
+                )
+        );
     }
 
     public double getMaxExtension() {
@@ -57,7 +61,7 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension(Rotation2d rotation) {
-        double angle = ArmState.actualToCartesian(rotation).getRadians();
+        double angle = Conversions.actualToCartesian(rotation).getRadians();
         if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
         if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
         else if (angle > 0 && angle < Math.PI){
@@ -69,7 +73,9 @@ public class Arm extends SubsystemBase {
     }
 
     private Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(pivot1.getSelectedSensorPosition() * ArmConstants.PIVOT_TICKS_TO_DEGREES);
+        return Rotation2d.fromDegrees(
+                Conversions.falconToDegrees(pivot1.getSelectedSensorPosition(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
     }
 
     private double getExtension() {
@@ -91,7 +97,11 @@ public class Arm extends SubsystemBase {
         //We should also try calculating kF instead of arbitrary
         double angle = rotation.getDegrees();
         double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
-        pivot1.set(ControlMode.MotionMagic, angle, DemandType.ArbitraryFeedForward, feedforward);
+        pivot1.set(
+                ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO),
+                DemandType.ArbitraryFeedForward,
+                feedforward
+        );
     }
 
     public void setExtensionSetPoint(double extensionSetPoint) {
@@ -104,7 +114,7 @@ public class Arm extends SubsystemBase {
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
-        double feedforward = Math.sin(ArmState.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
+        double feedforward = Math.sin(Conversions.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
         telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
 //        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);

@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.robot2023.commands.arm.Arm;
+import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.drivetrain.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
@@ -17,9 +19,10 @@ public class RobotContainer {
     // Subsystems
     
     Drivetrain drivetrain = new Drivetrain();
-
+    Arm arm = new Arm();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
+    CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(1);
     // Commands
 
@@ -46,6 +49,7 @@ public class RobotContainer {
 
     public void setTeleopDefaultCommands() {
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
+        arm.setDefaultCommand(new ManualArm(arm, driver));
     }
 
     private void initSmartDashboard() {
