@@ -28,8 +28,8 @@ public class Arm extends SubsystemBase {
 
 
     public Arm() {
-        pivot1.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
-        pivot2.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 40, 0));
+        pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0));
+        pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0));
         telescope.setSmartCurrentLimit(40);
 
         pivot1.setNeutralMode(NeutralMode.Brake);
