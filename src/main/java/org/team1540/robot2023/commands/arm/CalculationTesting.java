@@ -1,6 +1,7 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import org.team1540.lib.math.Conversions;
 
 public class CalculationTesting {
     public static void main(String[] args) {
@@ -13,7 +14,7 @@ public class CalculationTesting {
 //        System.out.println(Math.atan2(y, x));
         System.out.println("Extension: " + armState.getExtension());
         System.out.println("Actual Rotation: " + armState.getRotation2d().getDegrees());
-        System.out.println("Cartesian Rotation: " + ArmState.actualToCartesian(armState.getRotation2d()).getDegrees());
+        System.out.println("Cartesian Rotation: " + Conversions.actualToCartesian(armState.getRotation2d()).getDegrees());
         System.out.println("X: " + armState.getX());
         System.out.println("Y: " + armState.getY());
 
