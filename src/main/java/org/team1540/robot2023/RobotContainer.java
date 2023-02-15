@@ -22,7 +22,7 @@ public class RobotContainer {
     Arm arm = new Arm();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
-    CommandXboxController copilot = new CommandXboxController(1);
+    CommandXboxController copilot = new CommandXboxController(2);
     ButtonPanel controlPanel = new ButtonPanel(1);
     // Commands
 
