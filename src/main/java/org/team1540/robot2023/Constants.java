@@ -134,23 +134,27 @@ public final class Constants {
         // The distance of the pivot from the edge of the frame perimeter
         public static final double PIVOT_DISTANCE = 12;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
-        public static final double PIVOT_MIN_ANGLE = -0.689; //TODO figure this out for the weird system
+        public static final double PIVOT_MIN_ANGLE = -2.260;
+        // Pivot motor revolutions to pivot revolutions
+        public static final double PIVOT_GEAR_RATIO = 1; // TODO: 2/13/2023 figure this out
+
         // The base arm length
         public static final double ARM_BASE_LENGTH = 36;
         // The extended arm length
-        public static final double ARM_LENGTH_EXT = 144; // TODO: 1/29/2023 figure this out
+        public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
+        public static final double EXT_ROTS_TO_INCHES = 0; // TODO: 2/11/2023 figure this out so that position things work
+
+        public static final double TELESCOPE_FF = 0;
+        public static final double TELESCOPE_KP = 0;
+        public static final double TELESCOPE_KI = 0;
+        public static final double TELESCOPE_KD = 0;
+
         // The max height from the floor
         public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;
         // The max distance extended from the frame perimeter
         public static final double MAX_LEGAL_DISTANCE = 48 + PIVOT_DISTANCE;
         // The maximum distance the arm will point to
         public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
-
-        public static final double PIVOT_TICKS_TO_DEGREES = 0;// TODO: 2/1/2023 figure this out so that position things work
-        public static final double TELESCOPE_FF = 0;
-        public static final double TELESCOPE_KP = 0;
-        public static final double TELESCOPE_KI = 0;
-        public static final double TELESCOPE_KD = 0;
     }
 
     public static final class GrabberConstants {

@@ -1,6 +1,7 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import org.team1540.lib.math.Conversions;
 
 public class ArmState {
     private final double extension;
@@ -12,7 +13,7 @@ public class ArmState {
     }
 
     public static ArmState fromCartesian(double x, double y) {
-        return new ArmState(Math.hypot(x, y), cartesianToActual(Rotation2d.fromRadians(Math.atan2(y, x))));
+        return new ArmState(Math.hypot(x, y), Conversions.cartesianToActual(Rotation2d.fromRadians(Math.atan2(y, x))));
     }
 
     public static ArmState fromRotationExtension(Rotation2d rotation, double extension) {
@@ -28,20 +29,10 @@ public class ArmState {
     }
 
     public double getX() {
-        return extension * Math.cos(actualToCartesian(angle).getRadians());
+        return extension * Math.cos(Conversions.actualToCartesian(angle).getRadians());
     }
 
     public double getY() {
-        return extension * Math.sin(actualToCartesian(angle).getRadians());
-    }
-
-    public static Rotation2d cartesianToActual(Rotation2d angle) {
-        double theta = angle.getDegrees();
-        return Rotation2d.fromDegrees(theta - 90 < -180 ? theta + 270 : theta - 90);
-    }
-
-    public static Rotation2d actualToCartesian(Rotation2d angle) {
-        double theta = angle.getDegrees();
-        return Rotation2d.fromDegrees(theta + 90 > 180 ? theta - 270 : theta + 90);
+        return extension * Math.sin(Conversions.actualToCartesian(angle).getRadians());
     }
 }
