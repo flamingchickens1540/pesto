@@ -2,7 +2,7 @@ package org.team1540.robot2023.commands.arm;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,7 +19,7 @@ public class Arm extends SubsystemBase {
     private final SparkMaxPIDController telescopePID = telescope.getPIDController();
     private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
-    private final Pigeon2 pigeon2 = new Pigeon2(ArmConstants.PIGEON_ID);
+    private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
 
     private double extensionSetPoint = 0;
     private boolean notSet = false;
@@ -48,9 +48,11 @@ public class Arm extends SubsystemBase {
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
 
+        pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
+
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(
-                        Conversions.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getPitch())).getDegrees(),
+                        Conversions.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getRoll())).getDegrees(),
                         ArmConstants.PIVOT_GEAR_RATIO
                 )
         );
@@ -65,7 +67,7 @@ public class Arm extends SubsystemBase {
         if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
         if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
         else if (angle > 0 && angle < Math.PI){
-            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.abs(Math.sin(angle))));
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle)));
         }
         else {
             return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));

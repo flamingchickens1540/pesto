@@ -154,6 +154,10 @@ public final class Constants {
         public static final double MAX_LEGAL_DISTANCE = 48 + PIVOT_DISTANCE;
         // The maximum distance the arm will point to
         public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
+
+        public static final double PIGEON_MNT_YAW = 0; // TODO: 2/15/2023 figure this out (depends on how the pigeon is mounted)
+        public static final double PIGEON_MNT_PITCH = -90;
+        public static final double PIGEON_MNT_ROLL = 0;
     }
 
     public static final class GrabberConstants {
