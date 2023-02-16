@@ -10,7 +10,7 @@ import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 
 public final class Constants {
-    private static final boolean isNewRobot = false;
+    private static final boolean isNewRobot = true;
 
     public static final class Swerve {
         public static final String canbus = isNewRobot ? "swerve" : ""; // Set to "" to use RIO's can bus
@@ -138,10 +138,11 @@ public final class Constants {
         // Pivot motor revolutions to pivot revolutions
         public static final double PIVOT_GEAR_RATIO = 196.875;
         // The base arm length
-        public static final double ARM_BASE_LENGTH = 36;
+        public static final double ARM_BASE_LENGTH = 22.325;
         // The extended arm length
         public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
-        public static final double EXT_ROTS_TO_INCHES = 0; // TODO: 2/11/2023 figure this out so that position things work
+        public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
+        public static final double EXT_GEAR_RATIO = 16;
 
         public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0;
