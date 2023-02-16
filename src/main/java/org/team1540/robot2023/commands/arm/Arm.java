@@ -54,7 +54,7 @@ public class Arm extends SubsystemBase {
 
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(
-                        Conversions.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getRoll())).getDegrees(),
+                        pigeon2.getRoll() + ArmConstants.PIGEON_OFFSET,
                         ArmConstants.PIVOT_GEAR_RATIO
                 )
         );
