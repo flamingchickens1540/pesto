@@ -135,6 +135,8 @@ public final class Constants {
         public static final double PIVOT_DISTANCE = 12;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
         public static final double PIVOT_MIN_ANGLE = -2.260;
+        public static final int PIVOT_FORWARD_LIMIT = 135_000;
+        public static final int PIVOT_REVERSE_LIMIT = -130_000;
         // Pivot motor revolutions to pivot revolutions
         public static final double PIVOT_GEAR_RATIO = 196.875;
         // The base arm length
@@ -156,7 +158,7 @@ public final class Constants {
         // The maximum distance the arm will point to
         public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
 
-        public static final double PIGEON_MNT_YAW = 4; // TODO: 2/15/2023 figure this out (depends on how the pigeon is mounted)
+        public static final double PIGEON_MNT_YAW = 0; // TODO: 2/15/2023 figure this out (depends on how the pigeon is mounted)
         public static final double PIGEON_MNT_PITCH = 90;
         public static final double PIGEON_MNT_ROLL = 0;
         public static final double PIGEON_OFFSET = 4.04;

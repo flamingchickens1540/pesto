@@ -38,6 +38,10 @@ public class Arm extends SubsystemBase {
         telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         pivot1.setInverted(true);
+        pivot1.configForwardSoftLimitThreshold(ArmConstants.PIVOT_FORWARD_LIMIT);
+        pivot1.configForwardSoftLimitEnable(true);
+        pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
+        pivot1.configReverseSoftLimitEnable(true);
         pivot2.follow(pivot1);
         telescope.setInverted(true);
 
@@ -174,6 +178,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.setDefaultNumber("arm/pigeonRoll", 0);
         SmartDashboard.setDefaultNumber("arm/pivotAngleDegrees", 0);
         SmartDashboard.setDefaultNumber("arm/extension", 0);
+        SmartDashboard.setDefaultNumber("arm/pivotEncoder", 0);
         SmartDashboard.setDefaultBoolean("arm/limit", false);
     }
 
@@ -181,6 +186,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
         SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
         SmartDashboard.putNumber("arm/extension", getExtension());
+        SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
         SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
     }
 
