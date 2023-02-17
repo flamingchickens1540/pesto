@@ -188,6 +188,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/extension", getExtension());
         SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
         SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
+        SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
+        SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
     }
 
     @Override
