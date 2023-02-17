@@ -22,8 +22,8 @@ public class RobotContainer {
     Arm arm = new Arm();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
-    CommandXboxController copilot = new CommandXboxController(2);
-    ButtonPanel controlPanel = new ButtonPanel(1);
+    CommandXboxController copilot = new CommandXboxController(1);
+    ButtonPanel controlPanel = new ButtonPanel(2);
     // Commands
 
     public RobotContainer() {
@@ -49,7 +49,7 @@ public class RobotContainer {
 
     public void setTeleopDefaultCommands() {
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
-        arm.setDefaultCommand(new ManualArm(arm, driver));
+        arm.setDefaultCommand(new ManualArm(arm, copilot));
     }
 
     private void initSmartDashboard() {

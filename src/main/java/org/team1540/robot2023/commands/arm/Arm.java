@@ -2,9 +2,10 @@ package org.team1540.robot2023.commands.arm;
 
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
@@ -17,9 +18,9 @@ public class Arm extends SubsystemBase {
             CANSparkMaxLowLevel.MotorType.kBrushless);
     private final RelativeEncoder telescopeEncoder = telescope.getEncoder();
     private final SparkMaxPIDController telescopePID = telescope.getPIDController();
-    private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
-    private final Pigeon2 pigeon2 = new Pigeon2(ArmConstants.PIGEON_ID);
+    private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
 
     private double extensionSetPoint = 0;
     private boolean notSet = false;
@@ -36,8 +37,13 @@ public class Arm extends SubsystemBase {
         pivot2.setNeutralMode(NeutralMode.Brake);
         telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        pivot2.setInverted(true);
+        pivot1.setInverted(true);
+        pivot1.configForwardSoftLimitThreshold(ArmConstants.PIVOT_FORWARD_LIMIT);
+        pivot1.configForwardSoftLimitEnable(true);
+        pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
+        pivot1.configReverseSoftLimitEnable(true);
         pivot2.follow(pivot1);
+        telescope.setInverted(true);
 
         pivot1.config_kP(0, ArmConstants.PIVOT_KP);
         pivot1.config_kI(0, ArmConstants.PIVOT_KI);
@@ -48,12 +54,16 @@ public class Arm extends SubsystemBase {
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
 
+        pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
+
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(
-                        Conversions.cartesianToActual(Rotation2d.fromDegrees(pigeon2.getPitch())).getDegrees(),
+                        pigeon2.getRoll() + ArmConstants.PIGEON_OFFSET,
                         ArmConstants.PIVOT_GEAR_RATIO
                 )
         );
+
+        smashDartboardInit();
     }
 
     public double getMaxExtension() {
@@ -65,7 +75,7 @@ public class Arm extends SubsystemBase {
         if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
         if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
         else if (angle > 0 && angle < Math.PI){
-            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.abs(Math.sin(angle))));
+            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle)));
         }
         else {
             return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));
@@ -80,7 +90,7 @@ public class Arm extends SubsystemBase {
 
     private double getExtension() {
         // TODO: figure this out
-        return telescopeEncoder.getPosition() * ArmConstants.EXT_ROTS_TO_INCHES + ArmConstants.ARM_BASE_LENGTH;
+        return telescopeEncoder.getPosition() * ArmConstants.EXT_ROTS_TO_INCHES / ArmConstants.EXT_GEAR_RATIO + ArmConstants.ARM_BASE_LENGTH;
     }
 
     public ArmState getArmState() {
@@ -164,9 +174,26 @@ public class Arm extends SubsystemBase {
         isManualControl = manualControl;
     }
 
+    private void smashDartboardInit() {
+        SmartDashboard.setDefaultNumber("arm/pigeonRoll", 0);
+        SmartDashboard.setDefaultNumber("arm/pivotAngleDegrees", 0);
+        SmartDashboard.setDefaultNumber("arm/extension", 0);
+        SmartDashboard.setDefaultNumber("arm/pivotEncoder", 0);
+        SmartDashboard.setDefaultBoolean("arm/limit", false);
+    }
+
+    private void smashDartboard() {
+        SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
+        SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
+        SmartDashboard.putNumber("arm/extension", getExtension());
+        SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
+        SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
+    }
+
     @Override
     public void periodic() {
         if(!isManualControl) limitArmExtension();
         if (getLimitSwitch()) telescopeEncoder.setPosition(0);
+        smashDartboard();
     }
 }
