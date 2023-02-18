@@ -107,11 +107,12 @@ public class Arm extends SubsystemBase {
         //We should also try calculating kF instead of arbitrary
         double angle = rotation.getDegrees();
         double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
-        pivot1.set(
-                ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO),
-                DemandType.ArbitraryFeedForward,
-                feedforward
-        );
+//        pivot1.set(
+//                ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO),
+//                DemandType.ArbitraryFeedForward,
+//                feedforward
+//        );
+        pivot1.set(ControlMode.Position, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
     public void setExtensionSetPoint(double extensionSetPoint) {
@@ -125,9 +126,10 @@ public class Arm extends SubsystemBase {
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
         double feedforward = Math.sin(Conversions.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
-        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
+//        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
 //        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);
+        pivot1.set(ControlMode.Position, (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES);
 
     }
 

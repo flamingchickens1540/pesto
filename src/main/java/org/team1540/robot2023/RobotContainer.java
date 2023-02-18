@@ -63,12 +63,15 @@ public class RobotContainer {
 //        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
 
 
-//        copilot.x().whileTrue(new SetArmPosition(arm, ArmState.fromCartesian(
-//                SmartDashboard.getNumber("arm/targetX", 22),
-//                SmartDashboard.getNumber("arm/targetY", 0))));
-//        copilot.y().whileTrue(new SetArmPosition(arm,
-//                ArmState.fromRotationExtension(Rotation2d.fromDegrees(SmartDashboard.getNumber("arm/targetAngle", 0)),
-//                SmartDashboard.getNumber("arm/targetExtension", 22))));
+        copilot.x().whileTrue(new SetArmPosition(arm, ArmState.fromCartesian(
+                SmartDashboard.getNumber("arm/targetX", 22),
+                SmartDashboard.getNumber("arm/targetY", 0))));
+        copilot.y().whileTrue(new SetArmPosition(arm,
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(SmartDashboard.getNumber("arm/targetAngle", 0)),
+                SmartDashboard.getNumber("arm/targetExtension", arm.getArmState().getExtension()))));
+        InstantCommand thing = new InstantCommand(()-> arm.setRotation(new Rotation2d(0)));
+        thing.addRequirements(arm);
+        copilot.rightBumper().whileTrue(thing);
 
         // SmartDashboard Commands
         

@@ -125,9 +125,9 @@ public final class Constants {
         public static final int PIGEON_ID = 13;
 
         public static final double PIVOT_FF = 0;
-        public static final double PIVOT_KP = 0;
+        public static final double PIVOT_KP = 0.000017614;
         public static final double PIVOT_KI = 0;
-        public static final double PIVOT_KD = 0;
+        public static final double PIVOT_KD = 0.000010465;
 
         // The distance of the pivot from the ground
         public static final double PIVOT_HEIGHT = 21.5;
@@ -147,7 +147,7 @@ public final class Constants {
         public static final double EXT_GEAR_RATIO = 16;
 
         public static final double TELESCOPE_FF = 0;
-        public static final double TELESCOPE_KP = 0;
+        public static final double TELESCOPE_KP = 0.3;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
 
