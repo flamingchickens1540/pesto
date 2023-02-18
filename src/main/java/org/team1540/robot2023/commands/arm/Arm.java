@@ -60,12 +60,7 @@ public class Arm extends SubsystemBase {
 
         pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
 
-        pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(
-                        pigeon2.getRoll() + ArmConstants.PIGEON_OFFSET,
-                        ArmConstants.PIVOT_GEAR_RATIO
-                )
-        );
+        resetAngle();
 
         smashDartboardInit();
     }
@@ -116,7 +111,6 @@ public class Arm extends SubsystemBase {
 //                DemandType.ArbitraryFeedForward,
 //                feedforward
 //        );
-//        pivot1.set(ControlMode.Position, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
          pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
@@ -125,7 +119,7 @@ public class Arm extends SubsystemBase {
         setExtension(extensionSetPoint);
     }
 
-    private void setExtension(double extension) {
+    protected void setExtension(double extension) {
         // TODO: magic
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
@@ -141,6 +135,21 @@ public class Arm extends SubsystemBase {
     public void stopAll() {
         pivot1.set(ControlMode.PercentOutput, 0);
         telescope.set(0);
+    }
+
+    public void resetAngle() {
+        short[] pigeonAccel = new short[3];
+        pigeon2.getBiasedAccelerometer(pigeonAccel);
+        double pigeonRoll;
+        if (pigeonAccel[0] > 0) {
+            pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
+        } else pigeonRoll = pigeon2.getRoll();
+        pivot1.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(
+                        pigeonRoll + ArmConstants.PIGEON_OFFSET,
+                        ArmConstants.PIVOT_GEAR_RATIO
+                )
+        );
     }
 
     private void limitArmExtension(){
@@ -204,5 +213,8 @@ public class Arm extends SubsystemBase {
         if(!isManualControl) limitArmExtension();
         if (getLimitSwitch()) telescopeEncoder.setPosition(0);
         smashDartboard();
+        short[] pigeonAccel = new short[3];
+        pigeon2.getBiasedAccelerometer(pigeonAccel);
+        System.out.println(pigeonAccel[0]);
     }
 }

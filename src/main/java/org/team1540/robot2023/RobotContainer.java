@@ -63,6 +63,7 @@ public class RobotContainer {
         copilot.y().whileTrue(new ExtensionPID(arm, 40));
         copilot.rightBumper().whileTrue(new PivotPID(arm, Rotation2d.fromDegrees(90)));
         copilot.leftBumper().whileTrue(new PivotPID(arm, Rotation2d.fromDegrees(0)));
+        copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
 
         // SmartDashboard Commands
         
