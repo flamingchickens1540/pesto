@@ -43,7 +43,10 @@ public class Arm extends SubsystemBase {
         pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
         pivot1.configReverseSoftLimitEnable(true);
         pivot2.follow(pivot1);
+
         telescope.setInverted(true);
+        telescope.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.TELESCOPE_FORWARD_LIMIT);
+        telescope.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
 
         pivot1.config_kP(0, ArmConstants.PIVOT_KP);
         pivot1.config_kI(0, ArmConstants.PIVOT_KI);
@@ -206,6 +209,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
         SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
+        SmartDashboard.putNumber("arm/extensionRots", telescopeEncoder.getPosition());
     }
 
     @Override

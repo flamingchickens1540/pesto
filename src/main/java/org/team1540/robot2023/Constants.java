@@ -150,6 +150,7 @@ public final class Constants {
         public static final double TELESCOPE_KP = 0.3;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
+        public static final float TELESCOPE_FORWARD_LIMIT = 116;
 
         // The max height from the floor
         public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;
