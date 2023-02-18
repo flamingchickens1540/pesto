@@ -7,16 +7,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.ArmState;
-import org.team1540.robot2023.commands.arm.ManualArm;
-import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttake;
-import org.team1540.robot2023.commands.grabber.PneumaticClaw;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.commands.grabber.GrabberIntake;
 import org.team1540.robot2023.utils.ButtonPanel;
@@ -63,15 +59,10 @@ public class RobotContainer {
 //        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
 
 
-        copilot.x().whileTrue(new SetArmPosition(arm, ArmState.fromCartesian(
-                SmartDashboard.getNumber("arm/targetX", 22),
-                SmartDashboard.getNumber("arm/targetY", 0))));
-        copilot.y().whileTrue(new SetArmPosition(arm,
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(SmartDashboard.getNumber("arm/targetAngle", 0)),
-                SmartDashboard.getNumber("arm/targetExtension", arm.getArmState().getExtension()))));
-        InstantCommand thing = new InstantCommand(()-> arm.setRotation(new Rotation2d(0)));
-        thing.addRequirements(arm);
-        copilot.rightBumper().whileTrue(thing);
+        copilot.x().whileTrue(new ExtensionPID(arm, 30));
+        copilot.y().whileTrue(new ExtensionPID(arm, 40));
+        copilot.rightBumper().whileTrue(new PivotPID(arm, Rotation2d.fromDegrees(90)));
+        copilot.leftBumper().whileTrue(new PivotPID(arm, Rotation2d.fromDegrees(0)));
 
         // SmartDashboard Commands
         

@@ -29,8 +29,8 @@ public class Arm extends SubsystemBase {
 
 
     public Arm() {
-        pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0));
-        pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 40, 0));
+        pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
+        pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
 
         pivot1.setNeutralMode(NeutralMode.Brake);
@@ -48,6 +48,10 @@ public class Arm extends SubsystemBase {
         pivot1.config_kP(0, ArmConstants.PIVOT_KP);
         pivot1.config_kI(0, ArmConstants.PIVOT_KI);
         pivot1.config_kD(0, ArmConstants.PIVOT_KD);
+        pivot1.configMotionCruiseVelocity(20000);
+        pivot1.configMotionAcceleration(40000);
+//        pivot1.set
+
 
 
         telescopePID.setP(ArmConstants.TELESCOPE_KP);
@@ -106,13 +110,14 @@ public class Arm extends SubsystemBase {
         //Feedforward needs to incorporate how extended the arm is
         //We should also try calculating kF instead of arbitrary
         double angle = rotation.getDegrees();
-        double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
+//        double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
 //        pivot1.set(
 //                ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO),
 //                DemandType.ArbitraryFeedForward,
 //                feedforward
 //        );
-        pivot1.set(ControlMode.Position, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
+//        pivot1.set(ControlMode.Position, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
+         pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
     public void setExtensionSetPoint(double extensionSetPoint) {
@@ -125,7 +130,7 @@ public class Arm extends SubsystemBase {
         //Talk to Kevin about a feedforward for this
         //Might need to be something similar to an arm but with max at straight up not straight out
         //Or in other words, sin
-        double feedforward = Math.sin(Conversions.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
+//        double feedforward = Math.sin(Conversions.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
 //        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
 //        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);
