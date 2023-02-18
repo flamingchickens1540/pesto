@@ -31,10 +31,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Driver
-
-        driver.b().onTrue(new InstantCommand(drivetrain::resetAllToAbsolute));
-//        new Trigger(driver::getLeftBumper).whileActiveOnce(new IntakeCommand(intake)); //coop:button(LBumper,[HOLD] Intake,pilot)
-        driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope));
+        driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.LEFT));
