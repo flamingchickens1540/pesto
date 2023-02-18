@@ -170,6 +170,6 @@ public final class Constants {
         public static final int INTAKE_1_ID = 14;
         public static final int INTAKE_2_ID = 15;
 
-        public static final double INTAKE_CURRENT_THRESH = 25;
+        public static final double INTAKE_CURRENT_THRESH = 40;
     }
 }
