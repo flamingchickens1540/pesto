@@ -139,8 +139,8 @@ public class Drivetrain extends SubsystemBase {
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(Swerve.driveKP, Swerve.driveKI, Swerve.driveKP), // Y controller (usually the same values as X controller)
+                new PIDController(0,0,0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(0,0,0), // Y controller (usually the same values as X controller)
                 new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
