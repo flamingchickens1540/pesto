@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
@@ -13,7 +14,8 @@ import org.team1540.robot2023.utils.PolePosition;
 
 public class RobotContainer {
     // Hardware
-
+    RevBlinkin frontBlinken = new RevBlinkin(2, RevBlinkin.ColorPattern.WAVES_FOREST);
+    RevBlinkin rearBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_FOREST);
     // Subsystems
 
     Drivetrain drivetrain = new Drivetrain();
@@ -33,6 +35,9 @@ public class RobotContainer {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
         // Copilot
+
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(frontBlinken.commandSetPattern(RevBlinkin.ColorPattern.BLUE_VIOLET));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(frontBlinken.commandSetPattern(RevBlinkin.ColorPattern.ORANGE));
 
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.LEFT));
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.CENTER));
