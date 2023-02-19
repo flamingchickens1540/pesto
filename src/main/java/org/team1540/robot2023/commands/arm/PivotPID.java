@@ -20,6 +20,6 @@ public class PivotPID extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.stopAll();
+        arm.setRotatingSpeed(0);
     }
 }
