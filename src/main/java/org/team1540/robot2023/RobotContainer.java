@@ -74,9 +74,12 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
 
 
-
+        // coop:button(A,Run Intake [PRESS],copilot)
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
+        // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
+
+
 
         //Pneumatic Control
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.toggle()));
@@ -86,7 +89,9 @@ public class RobotContainer {
 
         copilot.x().whileTrue(new ExtensionCommand(arm, 30));
         copilot.y().whileTrue(new ExtensionCommand(arm, 40));
+        // coop:button(RBumper, Move to arm straight forward [HOLD],copilot)
         copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(90)));
+        // coop:button(LBumper, Move to arm straight up [HOLD],copilot)
         copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
         copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
 
@@ -95,7 +100,12 @@ public class RobotContainer {
     }
 
     public void setTeleopDefaultCommands() {
+        // coop:button(LJoystick, Translate swerve,pilot)
+        // coop:button(RJoystick, Rotate swerve [LEFTRIGHT],pilot)
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
+        // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
+        // coop:button(LTrigger, Retract telescope [HOLD],copilot)
+        // coop:button(RTrigger, Extend telescope [HOLD],copilot)
         arm.setDefaultCommand(new ManualArm(arm, copilot));
     }
 
