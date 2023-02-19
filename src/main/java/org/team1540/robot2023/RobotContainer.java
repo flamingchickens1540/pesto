@@ -96,8 +96,8 @@ public class RobotContainer {
         copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
         //Substation pickup, extension is needed
         copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(-58)));
-        // copilot.y().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
-        copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
+
+        //copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
         // SmartDashboard Commands
     }
 

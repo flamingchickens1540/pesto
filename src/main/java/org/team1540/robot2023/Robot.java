@@ -124,9 +124,9 @@ public class Robot extends TimedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
-        if (!DriverStation.isFMSAttached()) {
-            robotContainer.arm.resetAngle();
-        }
+//        if (!DriverStation.isFMSAttached()) {
+//            robotContainer.arm.resetAngle();
+//        }
         robotContainer.setTeleopDefaultCommands();
     }
 
