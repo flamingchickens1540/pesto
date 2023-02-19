@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class ManualArm extends CommandBase {
-    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5,-0.5,0);
+    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5,-0.7,0);
     private final Arm arm;
     private final CommandXboxController controller;
     private final double deadzone = 0.1;
