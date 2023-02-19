@@ -51,15 +51,14 @@ public class Arm extends SubsystemBase {
         pivot1.config_kP(0, ArmConstants.PIVOT_KP);
         pivot1.config_kI(0, ArmConstants.PIVOT_KI);
         pivot1.config_kD(0, ArmConstants.PIVOT_KD);
-        pivot1.configMotionCruiseVelocity(20000);
-        pivot1.configMotionAcceleration(40000);
-//        pivot1.set
-
-
+        pivot1.configMotionCruiseVelocity(ArmConstants.PIVOT_CRUISE_SPEED);
+        pivot1.configMotionAcceleration(ArmConstants.PIVOT_MAX_ACCEL);
 
         telescopePID.setP(ArmConstants.TELESCOPE_KP);
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
+        telescopePID.setSmartMotionMaxAccel(ArmConstants.TELESCOPE_MAX_ACCEL, 0);
+        telescopePID.setSmartMotionMaxVelocity(ArmConstants.TELESCOPE_CRUISE_SPEED, 0);
 
         pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
 
@@ -91,7 +90,6 @@ public class Arm extends SubsystemBase {
     }
 
     private double getExtension() {
-        // TODO: figure this out
         return telescopeEncoder.getPosition() * ArmConstants.EXT_ROTS_TO_INCHES / ArmConstants.EXT_GEAR_RATIO + ArmConstants.ARM_BASE_LENGTH;
     }
 
@@ -133,7 +131,7 @@ public class Arm extends SubsystemBase {
 //        telescope.set(ControlMode.Position,extension);
         telescopePID.setReference(
                 (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
-                CANSparkMax.ControlType.kPosition
+                CANSparkMax.ControlType.kPosition, 0
         );
 
     }
@@ -220,8 +218,5 @@ public class Arm extends SubsystemBase {
         if(!isManualControl) limitArmExtension();
         if (getLimitSwitch()) telescopeEncoder.setPosition(0);
         smashDartboard();
-        short[] pigeonAccel = new short[3];
-        pigeon2.getBiasedAccelerometer(pigeonAccel);
-        System.out.println(pigeonAccel[0]);
     }
 }

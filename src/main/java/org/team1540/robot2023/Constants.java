@@ -128,6 +128,8 @@ public final class Constants {
         public static final double PIVOT_KP = 0.2;
         public static final double PIVOT_KI = 0;
         public static final double PIVOT_KD = 1;
+        public static final double PIVOT_MAX_ACCEL = 40_000;
+        public static final double PIVOT_CRUISE_SPEED = 20_000;
 
         // The distance of the pivot from the ground
         public static final double PIVOT_HEIGHT = 21.5;
@@ -150,6 +152,9 @@ public final class Constants {
         public static final double TELESCOPE_KP = 0.3;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
+        public static final double TELESCOPE_MAX_ACCEL = 100;
+        public static final double TELESCOPE_CRUISE_SPEED = 100;
+
         public static final float TELESCOPE_FORWARD_LIMIT = 116;
 
         // The max height from the floor
