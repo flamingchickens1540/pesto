@@ -14,9 +14,11 @@ public final class Constants {
     public static final int PNEUMATIC_HUB = 4;
     public static final int PDH = 1;
     private static final boolean isNewRobot = true;
+    
     // 22 in
     public static final double poleOffsetMeters = Units.inchesToMeters(22);
 //    public static final double poleOffsetMeters = 0.5;
+
     public static final class Swerve {
         public static final String canbus = isNewRobot ? "swerve" : ""; // Set to "" to use RIO's can bus
 
@@ -123,5 +125,64 @@ public final class Constants {
         }
     }
 
+    public static final class ArmConstants {
+        public static final int PIVOT1_ID = 10;
+        public static final int PIVOT2_ID = 11;
+        public static final int TELESCOPE_ID = 12;
+        public static final int PIGEON_ID = 13;
 
+        public static final double PIVOT_FF = 0;
+        public static final double PIVOT_KP = 0.2;
+        public static final double PIVOT_KI = 0;
+        public static final double PIVOT_KD = 1;
+        public static final double PIVOT_MAX_ACCEL = 40_000;
+        public static final double PIVOT_CRUISE_SPEED = 20_000;
+
+        // The distance of the pivot from the ground
+        public static final double PIVOT_HEIGHT = 21.5;
+        // The distance of the pivot from the edge of the frame perimeter
+        public static final double PIVOT_DISTANCE = 12;
+        // Minimum pivot angle before arm collides with robot (radians) (should be negative)
+        public static final double PIVOT_MIN_ANGLE = -2.260;
+        public static final int PIVOT_FORWARD_LIMIT = 135_000;
+        public static final int PIVOT_REVERSE_LIMIT = -130_000;
+        // Pivot motor revolutions to pivot revolutions
+        public static final double PIVOT_GEAR_RATIO = 196.875;
+        // The base arm length
+        public static final double ARM_BASE_LENGTH = 22.325;
+        // The extended arm length
+        public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
+        public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
+        public static final double EXT_GEAR_RATIO = 16;
+
+        public static final double TELESCOPE_FF = 0;
+        public static final double TELESCOPE_KP = 0.3;
+        public static final double TELESCOPE_KI = 0;
+        public static final double TELESCOPE_KD = 0;
+        public static final double TELESCOPE_MAX_ACCEL = 100;
+        public static final double TELESCOPE_CRUISE_SPEED = 100;
+
+        public static final float TELESCOPE_FORWARD_LIMIT = 116;
+
+        // The max height from the floor
+        public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;
+        // The max distance extended from the frame perimeter
+        public static final double MAX_LEGAL_DISTANCE = 48 + PIVOT_DISTANCE;
+        // The maximum distance the arm will point to
+        public static final double MAX_POINT_DISTANCE = MAX_LEGAL_DISTANCE + 100; // TODO: 1/30/2023 this should be the maximum limelight detection distance
+
+        public static final double PIGEON_MNT_YAW = 0; // TODO: 2/15/2023 figure this out (depends on how the pigeon is mounted)
+        public static final double PIGEON_MNT_PITCH = 90;
+        public static final double PIGEON_MNT_ROLL = 0;
+        public static final double PIGEON_OFFSET = 4.04;
+    }
+
+    public static final class GrabberConstants {
+        public static final int CLAW_SOLENOID_CHANNEL = 0;
+
+        public static final int INTAKE_1_ID = 14;
+        public static final int INTAKE_2_ID = 15;
+
+        public static final double INTAKE_CURRENT_THRESH = 40;
+    }
 }

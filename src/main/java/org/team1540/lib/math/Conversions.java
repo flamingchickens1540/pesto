@@ -1,5 +1,7 @@
 package org.team1540.lib.math;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class Conversions {
 
     /**
@@ -102,5 +104,23 @@ public class Conversions {
      */
     public static double MetersToFalcon(double meters, double circumference, double gearRatio){
         return meters / (circumference / (gearRatio * 2048.0));
+    }
+
+    /**
+     * @param cartesianAngle angle in the Cartesian angle system
+     * @return angle in the actual (slightly scuffed) angle system
+     */
+    public static Rotation2d cartesianToActual(Rotation2d cartesianAngle) {
+        double theta = cartesianAngle.getDegrees();
+        return Rotation2d.fromDegrees(theta - 90 < -180 ? theta + 270 : theta - 90);
+    }
+
+    /**
+     * @param actualAngle angle in the actual (slightly scuffed) angle system
+     * @return angle in the Cartesian angle system
+     */
+    public static Rotation2d actualToCartesian(Rotation2d actualAngle) {
+        double theta = actualAngle.getDegrees();
+        return Rotation2d.fromDegrees(theta + 90 > 180 ? theta - 270 : theta + 90);
     }
 }
