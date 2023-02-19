@@ -5,6 +5,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -105,6 +106,7 @@ public class Robot extends TimedRobot {
 
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
+            robotContainer.arm.resetAngle();
         }
     }
 
@@ -120,6 +122,9 @@ public class Robot extends TimedRobot {
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
+        }
+        if (!DriverStation.isFMSAttached()) {
+            robotContainer.arm.resetAngle();
         }
         robotContainer.setTeleopDefaultCommands();
     }
