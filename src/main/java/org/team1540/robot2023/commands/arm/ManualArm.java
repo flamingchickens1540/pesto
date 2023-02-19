@@ -31,7 +31,7 @@ public class ManualArm extends CommandBase {
             arm.setRotation(arm.getArmState().getRotation2d());
         } else if (Math.abs(pivotInput) > deadzone) {
             isHolding = false;
-            arm.setRotatingSpeed(Math.pow(controller.getLeftY(), 3)); // TODO: 2/11/2023 Check angles here
+            arm.setRotatingSpeed(Math.pow(pivotInput, 3)); // TODO: 2/11/2023 Check angles here
         }
         // TODO: 2/7/2023 Make sure nothing bad happens from repetitive reversing
         //if(arm.getMaxExtension() < arm.getArmState().getExtension()) arm.setExtendingSpeed(-0.7);

@@ -64,24 +64,15 @@ public class RobotContainer {
         // Copilot
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT   ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.LEFT));
-        // controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
-        // arm, Rotation2d.fromDegrees(0)));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
-        arm, Rotation2d.fromDegrees(-65)));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
-        arm, Rotation2d.fromDegrees(-55.4165)));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
-        arm, Rotation2d.fromDegrees(-73)));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,
-        arm, Rotation2d.fromDegrees(-55.4165)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
-        arm, Rotation2d.fromDegrees(-115)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
-        arm, Rotation2d.fromDegrees(-115)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,
-        arm, Rotation2d.fromDegrees(-115)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT, arm, Rotation2d.fromDegrees(0)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Rotation2d.fromDegrees(-65)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT, arm, Rotation2d.fromDegrees(-55.4165)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Rotation2d.fromDegrees(-73)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT, arm, Rotation2d.fromDegrees(-55.4165)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT, arm, Rotation2d.fromDegrees(-115)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Rotation2d.fromDegrees(-115)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT, arm, Rotation2d.fromDegrees(-115)));
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
         copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
         //Pneumatic Control
