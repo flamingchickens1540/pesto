@@ -131,7 +131,10 @@ public class Arm extends SubsystemBase {
 //        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
 //        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
 //        telescope.set(ControlMode.Position,extension);
-        pivot1.set(ControlMode.Position, (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES);
+        telescopePID.setReference(
+                (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
+                CANSparkMax.ControlType.kPosition
+        );
 
     }
 

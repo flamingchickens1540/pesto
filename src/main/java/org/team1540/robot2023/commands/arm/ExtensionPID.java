@@ -14,7 +14,7 @@ public class ExtensionPID extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setExtensionSetPoint(targetExtension);
+        arm.setExtension(targetExtension);
     }
 
     @Override
