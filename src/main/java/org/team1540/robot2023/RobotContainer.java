@@ -2,25 +2,23 @@ package org.team1540.robot2023;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
-import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.drivetrain.*;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
-import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
-import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
+import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
+import org.team1540.robot2023.commands.arm.Arm;
+import org.team1540.robot2023.commands.arm.ManualArm;
+import org.team1540.robot2023.commands.arm.PivotToSetpoint;
+import org.team1540.robot2023.commands.drivetrain.*;
+import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.BlinkinPair;
-import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 
@@ -119,7 +117,10 @@ public class RobotContainer {
     }
 
     public CommandBase getAutonomousCommand() {
-        return new PathPlannerDriveCommand(drivetrain);
+        return new SequentialCommandGroup(
+                new PathPlannerDriveCommand(drivetrain),
+                new AutoBalanceCommand(drivetrain, true)
+        );
     }
 
 }

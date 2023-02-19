@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PathPlannerDriveCommand extends SequentialCommandGroup {
     public PathPlannerDriveCommand(Drivetrain drivetrain) {
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath("EpicSwervyThing", new PathConstraints(3, 2));
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath("ChargeStation", new PathConstraints(3, 2));
         PathPlannerServer.sendActivePath(trajectory.getStates());
         drivetrain.setFieldPath(trajectory);
         Command ramseteCommand = drivetrain.getPathCommand(trajectory);

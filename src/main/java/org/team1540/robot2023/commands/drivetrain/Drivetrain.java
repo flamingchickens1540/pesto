@@ -71,11 +71,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putData("field", field2d);
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
         double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
-        if (angle > -25 && angle < 25 ) {
-            Limelight.setLedState(Limelight.LEDMode.ON);
-        } else {
-            Limelight.setLedState(Limelight.LEDMode.OFF);
-        }
 
     }
 
