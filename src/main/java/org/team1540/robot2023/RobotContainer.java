@@ -26,7 +26,7 @@ import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
 public class RobotContainer {
     // Hardware
-    RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_FOREST);
+    RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
     RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
     BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
     public final PneumaticHub ph = new PneumaticHub(Constants.PNEUMATIC_HUB);
