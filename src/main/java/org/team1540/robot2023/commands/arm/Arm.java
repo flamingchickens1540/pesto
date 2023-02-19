@@ -195,11 +195,6 @@ public class Arm extends SubsystemBase {
     }
 
     private void smashDartboardInit() {
-        SmartDashboard.setDefaultNumber("arm/pigeonRoll", 0);
-        SmartDashboard.setDefaultNumber("arm/pivotAngleDegrees", 0);
-        SmartDashboard.setDefaultNumber("arm/extension", 0);
-        SmartDashboard.setDefaultNumber("arm/pivotEncoder", 0);
-        SmartDashboard.setDefaultBoolean("arm/limit", false);
     }
 
     private void smashDartboard() {
@@ -211,6 +206,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
         SmartDashboard.putNumber("arm/extensionRots", telescopeEncoder.getPosition());
+        SmartDashboard.putBoolean("arm/isLegal", getExtension() > getMaxExtension());
     }
 
     @Override
