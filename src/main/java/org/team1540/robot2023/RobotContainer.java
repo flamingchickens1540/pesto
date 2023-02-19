@@ -58,45 +58,45 @@ public class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true);
     }
 
-    private void configureButtonBindings() {
+   private void configureButtonBindings() {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
         // Copilot
-
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
-
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.LEFT));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.CENTER));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new ProxiedGridDriveCommand(drivetrain, 6, PolePosition.RIGHT));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.LEFT));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.CENTER));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
-
-
-        // coop:button(A,Run Intake [PRESS],copilot)
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT   ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.LEFT));
+        // controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
+        // arm, Rotation2d.fromDegrees(0)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
+        arm, Rotation2d.fromDegrees(-65)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
+        arm, Rotation2d.fromDegrees(-55.4165)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
+        arm, Rotation2d.fromDegrees(-73)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,
+        arm, Rotation2d.fromDegrees(-55.4165)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,
+        arm, Rotation2d.fromDegrees(-115)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER,
+        arm, Rotation2d.fromDegrees(-115)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,
+        arm, Rotation2d.fromDegrees(-115)));
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
-        // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
-
-
-
         //Pneumatic Control
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.toggle()));
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.set(true)));
 //        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
-
-
-        copilot.x().whileTrue(new ExtensionCommand(arm, 30));
-        copilot.y().whileTrue(new ExtensionCommand(arm, 40));
-        // coop:button(RBumper, Move to arm straight forward [HOLD],copilot)
-        copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(90)));
-        // coop:button(LBumper, Move to arm straight up [HOLD],copilot)
+        //Ground pickup and hybrid node deposit position
+        copilot.x().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(-115)));
+        //Upright position for driving
         copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
+        //Substation pickup, extension is needed
+        copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(-58)));
+        // copilot.y().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
         copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
-
         // SmartDashboard Commands
-
     }
 
     public void setTeleopDefaultCommands() {
