@@ -25,7 +25,7 @@ public class ManualArm extends CommandBase {
 
     @Override
     public void execute() {
-        double pivotInput = controller.getLeftY();
+        double pivotInput = -controller.getLeftY();
         if (Math.abs(pivotInput) <= deadzone && !isHolding) {
             isHolding = true;
             arm.setRotation(arm.getArmState().getRotation2d());
@@ -37,7 +37,7 @@ public class ManualArm extends CommandBase {
         //if(arm.getMaxExtension() < arm.getArmState().getExtension()) arm.setExtendingSpeed(-0.7);
         //else if(arm.getMaxExtension() - arm.getArmState().getExtension() < 5) arm.setExtendingSpeed(0); // TODO: 2/11/2023 Make this use the limit switches
         //else arm.setExtendingSpeed(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis());
-        arm.setExtendingSpeed(slewRateLimiter.calculate(controller.getRightTriggerAxis() - controller.getLeftTriggerAxis()));
+        arm.setExtendingSpeed(slewRateLimiter.calculate(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis()));
         
     }
 
