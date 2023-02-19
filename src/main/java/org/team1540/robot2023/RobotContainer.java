@@ -3,6 +3,8 @@ package org.team1540.robot2023;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -20,11 +22,15 @@ import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 
+import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
+
 public class RobotContainer {
     // Hardware
     RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_FOREST);
     RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
     BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
+    public final PneumaticHub ph = new PneumaticHub(Constants.PNEUMATIC_HUB);
+    public final PowerDistribution pdh = new PowerDistribution(Constants.PDH, PowerDistribution.ModuleType.kRev);
     // Subsystems
 
     Drivetrain drivetrain = new Drivetrain();
@@ -38,6 +44,15 @@ public class RobotContainer {
     // Commands
 
     public RobotContainer() {
+        pdh.clearStickyFaults();
+        ph.clearStickyFaults();
+        if (ENABLE_PNEUMATICS) {
+            ph.enableCompressorDigital();
+        } else {
+            ph.disableCompressor();
+        }
+
+
         initSmartDashboard();
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -94,4 +109,5 @@ public class RobotContainer {
     public CommandBase getAutonomousCommand() {
         return new PathPlannerDriveCommand(drivetrain);
     }
+
 }
