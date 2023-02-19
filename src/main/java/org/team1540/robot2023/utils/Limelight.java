@@ -1,10 +1,10 @@
 package org.team1540.robot2023.utils;
 
-import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import java.util.Arrays;
 
@@ -16,7 +16,7 @@ public class Limelight {
     public static Pose2d getFilteredBotPose() {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
         double[] data = table.getEntry(key).getDoubleArray(new double[7]);
-
+//        System.out.println(key+":"+ Arrays.toString(data));
         if (data.length == 0 || Arrays.equals(data, new double[6])) {
             return null;
         }
