@@ -15,6 +15,8 @@ import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 
+import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
+
 public class RobotContainer {
     // Hardware
     RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_FOREST);
@@ -32,7 +34,6 @@ public class RobotContainer {
     // Commands
 
     public RobotContainer() {
-        boolean ENABLE_PNEUMATICS = false;
         pdh.clearStickyFaults();
         ph.clearStickyFaults();
         if (ENABLE_PNEUMATICS) {

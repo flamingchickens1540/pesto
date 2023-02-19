@@ -10,6 +10,7 @@ import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 
 public final class Constants {
+    public static final boolean ENABLE_PNEUMATICS = false;
     public static final int PNEUMATIC_HUB = 4;
     public static final int PDH = 1;
     private static final boolean isNewRobot = true;
