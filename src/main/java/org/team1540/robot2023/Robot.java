@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
         // TODO: BAD THINGS HAPPEN IF IT GETS LEFT FOR A COMP
         // TODO: DO NOT APPROVE PRS WITH THE BELOW LINE LEFT IN
 
-//        PathPlannerServer.startServer(5811);
+        PathPlannerServer.startServer(5811);
         // ---------------
 
         // Zero swerve modules 4 seconds after init

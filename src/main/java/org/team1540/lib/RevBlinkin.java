@@ -37,10 +37,12 @@ public class RevBlinkin {
      * @param pattern The pattern to use
      */
     public void setPattern(ColorPattern pattern) {
+        System.out.println("SETTING PATTERN");
         try {
             pwm.set(pattern.setpoint);
             this.pattern = pattern;
         } catch (NullPointerException e) {
+            System.err.println("COULD NOT SET LEDS");
             DriverStation.reportError("Could not set LEDs to ColorPattern "+pattern, true);
         }
     }

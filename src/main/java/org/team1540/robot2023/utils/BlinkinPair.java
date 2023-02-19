@@ -1,5 +1,7 @@
 package org.team1540.robot2023.utils;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.lib.RevBlinkin.ColorPattern;
 public class BlinkinPair {
@@ -10,13 +12,24 @@ public class BlinkinPair {
         this.rearBlinkin = rear;
     }
 
+    public Command commandSet(ColorPair pattern) {
+        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true);
+    }
     public void set(ColorPair pair) {
         frontBlinkin.setPattern(pair.front);
         rearBlinkin.setPattern(pair.rear);
     }
+
+    public Command commandSet(ColorPattern pattern) {
+        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true);
+    }
     public void set(ColorPattern pattern) {
         frontBlinkin.setPattern(pattern);
         rearBlinkin.setPattern(pattern);
+    }
+
+    public Command commandSet(ColorPattern front, ColorPattern rear) {
+        return new InstantCommand(() -> this.set(front, rear)).ignoringDisable(true);
     }
     public void set(ColorPattern front,ColorPattern rear) {
         frontBlinkin.setPattern(front);
@@ -25,8 +38,8 @@ public class BlinkinPair {
 
     public enum ColorPair {
         TELEOP(ColorPattern.GREEN, ColorPattern.HOT_PINK),
-        CONE(ColorPattern.YELLOW, ColorPattern.ORANGE),
-        CUBE(ColorPattern.VIOLET, ColorPattern.BLUE);
+        CONE(ColorPattern.ORANGE),
+        CUBE(ColorPattern.VIOLET);
 
         public final ColorPattern front;
         public final ColorPattern rear;
