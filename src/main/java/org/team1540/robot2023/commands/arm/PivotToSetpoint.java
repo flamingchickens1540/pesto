@@ -7,7 +7,7 @@ public class PivotToSetpoint extends SequentialCommandGroup {
     public PivotToSetpoint(Arm arm, Rotation2d setpoint) {
         addCommands(
                 new RetractExtension(arm),
-                new PivotPID(arm, setpoint)
+                new PivotCommand(arm, setpoint)
         );
         addRequirements(arm);
     }

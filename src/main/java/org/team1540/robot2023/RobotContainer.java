@@ -13,10 +13,10 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
-import org.team1540.robot2023.commands.grabber.GrabberOuttake;
+import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.commands.grabber.GrabberIntake;
 import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 
@@ -60,8 +60,8 @@ public class RobotContainer {
 
 
 
-        copilot.a().toggleOnTrue(new GrabberIntake(wheeledGrabber));
-        copilot.b().whileTrue(new GrabberOuttake(wheeledGrabber));
+        copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
+        copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
 
         //Pneumatic Control
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.toggle()));
@@ -69,8 +69,8 @@ public class RobotContainer {
 //        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
 
 
-        copilot.x().whileTrue(new ExtensionPID(arm, 30));
-        copilot.y().whileTrue(new ExtensionPID(arm, 40));
+        copilot.x().whileTrue(new ExtensionCommand(arm, 30));
+        copilot.y().whileTrue(new ExtensionCommand(arm, 40));
         copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(90)));
         copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
         copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
