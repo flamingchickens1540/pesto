@@ -1,6 +1,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -126,6 +127,9 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
+        public static final class Setpoints {
+            public static final Rotation2d midCube = Rotation2d.fromDegrees(-65);
+        }
         public static final int PIVOT1_ID = 10;
         public static final int PIVOT2_ID = 11;
         public static final int TELESCOPE_ID = 12;

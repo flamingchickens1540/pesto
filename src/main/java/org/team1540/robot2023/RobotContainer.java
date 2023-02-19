@@ -14,7 +14,9 @@ import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.PivotToSetpoint;
-import org.team1540.robot2023.commands.drivetrain.*;
+import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
+import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
@@ -65,7 +67,7 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT, arm, Rotation2d.fromDegrees(0)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Rotation2d.fromDegrees(-65)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.ArmConstants.Setpoints.midCube));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT, arm, Rotation2d.fromDegrees(-55.4165)));
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Rotation2d.fromDegrees(-73)));
@@ -109,8 +111,14 @@ public class RobotContainer {
 
     public CommandBase getAutonomousCommand() {
         return new SequentialCommandGroup(
-                new PathPlannerDriveCommand(drivetrain),
-                new AutoBalanceCommand(drivetrain, true)
+                new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.ArmConstants.Setpoints.midCube),
+                new GrabberOuttakeCommand(wheeledGrabber).withTimeout(2),
+                new PivotToSetpoint(arm, Rotation2d.fromDegrees(0))
+
+//                new PrintCommand("DRIVING"),
+//                new PathPlannerDriveCommand(drivetrain),
+//                new PrintCommand("BALANCING"),
+//                new AutoBalanceCommand(drivetrain, true)
         );
     }
 
