@@ -12,7 +12,7 @@ public class GrabberOuttakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        wheeledGrabber.setSpeed(-0.7);
+        wheeledGrabber.setSpeed(-0.1);
     }
 
     @Override
