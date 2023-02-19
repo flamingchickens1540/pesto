@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands.arm;
+package org.team1540.robot2023.utils;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.team1540.lib.math.Conversions;

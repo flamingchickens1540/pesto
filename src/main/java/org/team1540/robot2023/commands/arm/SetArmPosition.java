@@ -2,6 +2,7 @@ package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
 import org.team1540.robot2023.Constants.ArmConstants;
 

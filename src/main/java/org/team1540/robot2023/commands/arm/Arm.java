@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
+import org.team1540.robot2023.utils.ArmState;
 
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
