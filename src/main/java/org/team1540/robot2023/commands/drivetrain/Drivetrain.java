@@ -41,6 +41,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Whether to allow the wheels to park
     private boolean isParkMode = false;
+    private boolean shouldUpdateWithTags = true;
 
     // Odometry
     private final Field2d field2d = new Field2d();
@@ -59,15 +60,17 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        Pose2d rawBotPose = Limelight.getBotPose();
-        Pose2d filteredBotPose = Limelight.getFilteredBotPose();
-        if (filteredBotPose != null) {
-            poseEstimator.addVisionMeasurement(filteredBotPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
-            field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
-        } else {
-            field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
+        if (shouldUpdateWithTags) {
+            Pose2d rawBotPose = Limelight.getBotPose();
+            Pose2d filteredBotPose = Limelight.getFilteredBotPose();
+            if (filteredBotPose != null) {
+                poseEstimator.addVisionMeasurement(filteredBotPose, edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - (Limelight.getDeltaTime() / 1000));
+                field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
+            } else {
+                field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
+            }
+            field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
         }
-        field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
         SmartDashboard.putData("field", field2d);
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
         double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
@@ -136,7 +139,9 @@ public class Drivetrain extends SubsystemBase {
 
 
     protected Command getPathCommand(PathPlannerTrajectory trajectory) {
-        return new PPSwerveControllerCommand(
+        return new SequentialCommandGroup(
+                new InstantCommand(() -> shouldUpdateWithTags = false),
+                new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
@@ -145,7 +150,8 @@ public class Drivetrain extends SubsystemBase {
                 new PIDController(0.5, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
-        );
+        ),
+                new InstantCommand(() -> shouldUpdateWithTags = true));
     }
 
     protected Command getResettingPathCommand(PathPlannerTrajectory trajectory) {
