@@ -6,16 +6,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.drivetrain.*;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
-import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
-import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
+import org.team1540.robot2023.commands.arm.Arm;
+import org.team1540.robot2023.commands.arm.ExtensionPID;
+import org.team1540.robot2023.commands.arm.ManualArm;
+import org.team1540.robot2023.commands.arm.PivotToSetpoint;
+import org.team1540.robot2023.commands.drivetrain.*;
+import org.team1540.robot2023.commands.grabber.GrabberIntake;
 import org.team1540.robot2023.commands.grabber.GrabberOuttake;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.commands.grabber.GrabberIntake;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
@@ -45,7 +44,14 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Driver
+
+        // coop:button(A, Zero field oriented [PRESS],pilot)
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
+
+        // coop:button(RBumper, Autobalance [HOLD],pilot)
+        driver.rightBumper().whileTrue(new AutoBalanceCommand(drivetrain, false));
+        // coop:button(LBumper, Autobalance Sideways [HOLD],pilot)
+        driver.leftBumper().whileTrue(new AutoBalanceCommand(drivetrain, true));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
@@ -59,8 +65,9 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new ProxiedGridDriveCommand(drivetrain, PolePosition.RIGHT));
 
 
-
+        // coop:button(A,Run Intake [PRESS],copilot)
         copilot.a().toggleOnTrue(new GrabberIntake(wheeledGrabber));
+        // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttake(wheeledGrabber));
 
         //Pneumatic Control
@@ -71,7 +78,9 @@ public class RobotContainer {
 
         copilot.x().whileTrue(new ExtensionPID(arm, 30));
         copilot.y().whileTrue(new ExtensionPID(arm, 40));
+        // coop:button(RBumper, Move to arm straight forward [HOLD],copilot)
         copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(90)));
+        // coop:button(LBumper, Move to arm straight up [HOLD],copilot)
         copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
         copilot.leftStick().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
 
@@ -80,7 +89,12 @@ public class RobotContainer {
     }
 
     public void setTeleopDefaultCommands() {
+        // coop:button(LJoystick, Translate swerve,pilot)
+        // coop:button(RJoystick, Rotate swerve [LEFTRIGHT],pilot)
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
+        // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
+        // coop:button(LTrigger, Retract telescope [HOLD],copilot)
+        // coop:button(RTrigger, Extend telescope [HOLD],copilot)
         arm.setDefaultCommand(new ManualArm(arm, copilot));
     }
 
