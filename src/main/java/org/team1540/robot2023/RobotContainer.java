@@ -111,9 +111,9 @@ public class RobotContainer {
 
     public CommandBase getAutonomousCommand() {
         return new SequentialCommandGroup(
-                new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.ArmConstants.Setpoints.midCube),
+                new PivotToSetpoint(arm, Constants.ArmConstants.Setpoints.midCube).withTimeout(3),
                 new GrabberOuttakeCommand(wheeledGrabber).withTimeout(2),
-                new PivotToSetpoint(arm, Rotation2d.fromDegrees(0))
+                new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)).withTimeout(2)
 
 //                new PrintCommand("DRIVING"),
 //                new PathPlannerDriveCommand(drivetrain),
