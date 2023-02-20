@@ -1,7 +1,7 @@
 package org.team1540.robot2023.commands;
 
 import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.PivotToSetpoint;
+import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.utils.PolePosition;
@@ -14,7 +14,7 @@ public class GridDriveAndPivotCommand extends SequentialCommandGroup{
     public GridDriveAndPivotCommand(Drivetrain drivetrain, int tagID, PolePosition position, Arm arm, Rotation2d setpoint){
         addCommands(
             new ProxiedGridDriveCommand(drivetrain, tagID, position),
-            new PivotToSetpoint(arm, setpoint)
+            new RetractAndPivotCommand(arm, setpoint)
         );
 
     }
@@ -22,7 +22,7 @@ public class GridDriveAndPivotCommand extends SequentialCommandGroup{
     public GridDriveAndPivotCommand(Drivetrain drivetrain, PolePosition position, Arm arm, Rotation2d setpoint){
         addCommands(
             new ProxiedGridDriveCommand(drivetrain, position),
-            new PivotToSetpoint(arm, setpoint)
+            new RetractAndPivotCommand(arm, setpoint)
         );
 
     }

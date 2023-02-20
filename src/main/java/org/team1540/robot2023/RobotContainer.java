@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -13,7 +14,7 @@ import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
-import org.team1540.robot2023.commands.arm.PivotToSetpoint;
+import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
@@ -82,11 +83,11 @@ public class RobotContainer {
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.set(true)));
 //        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
         //Ground pickup and hybrid node deposit position
-        copilot.x().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(-115)));
+        copilot.x().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)));
         //Upright position for driving
-        copilot.leftBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)));
+        copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
         //Substation pickup, extension is needed
-        copilot.rightBumper().whileTrue(new PivotToSetpoint(arm, Rotation2d.fromDegrees(-58)));
+        copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-58)));
 
         copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
         // SmartDashboard Commands
@@ -111,9 +112,9 @@ public class RobotContainer {
 
     public CommandBase getAutonomousCommand() {
         return new SequentialCommandGroup(
-                new PivotToSetpoint(arm, Constants.ArmConstants.Setpoints.midCube).withTimeout(3),
+                new RetractAndPivotCommand(arm, Constants.ArmConstants.Setpoints.midCube).withTimeout(3),
                 new GrabberOuttakeCommand(wheeledGrabber).withTimeout(2),
-                new PivotToSetpoint(arm, Rotation2d.fromDegrees(0)).withTimeout(2)
+                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0))
 
 //                new PrintCommand("DRIVING"),
 //                new PathPlannerDriveCommand(drivetrain),
