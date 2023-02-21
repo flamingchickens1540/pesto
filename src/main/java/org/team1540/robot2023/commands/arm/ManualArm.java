@@ -1,13 +1,12 @@
 package org.team1540.robot2023.commands.arm;
 
-import org.team1540.robot2023.Constants.ArmConstants;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.robot2023.Constants.ArmConstants;
 
 public class ManualArm extends CommandBase {
-    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(0.5,-0.7,0);
+    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1,-1.5,0);
     private final Arm arm;
     private final CommandXboxController controller;
     private final double deadzone = 0.1;
