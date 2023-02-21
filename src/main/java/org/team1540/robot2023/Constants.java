@@ -12,14 +12,33 @@ import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 public final class Constants {
     public static final boolean ENABLE_PNEUMATICS = false;
-    public static final int PNEUMATIC_HUB = 4;
+    public static final int PNEUMATIC_HUB = 2;
     public static final int PDH = 1;
     private static final boolean isNewRobot = true;
     
     // 22 in
-    public static final double poleOffsetMeters = Units.inchesToMeters(22);
+
 //    public static final double poleOffsetMeters = 0.5;
 
+    public static final class Auto {
+        public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
+        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(33.5);
+
+        public static final Rotation2d angleMidCube = Rotation2d.fromDegrees(-65);
+        public static final Rotation2d angleHighCube = Rotation2d.fromDegrees(-65);
+        public static final Rotation2d angleMidCone = Rotation2d.fromDegrees(-55.4165);
+        public static final Rotation2d angleHighCone = Rotation2d.fromDegrees(-65);
+        public static final Rotation2d angleUp = Rotation2d.fromDegrees(0);
+        public static final Rotation2d angleDown = Rotation2d.fromDegrees(-115);
+        public static final class PID {
+            public static final double translationP = 3;
+            public static final double translationI = 0;
+            public static final double translationD = 0;
+            public static final double rotationP = 3.2;
+            public static final double rotationI = 0;
+            public static final double rotationD = 0;
+        }
+    }
     public static final class Swerve {
         public static final String canbus = isNewRobot ? "swerve" : ""; // Set to "" to use RIO's can bus
 

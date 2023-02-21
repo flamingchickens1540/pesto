@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.PolePosition;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
@@ -31,12 +32,13 @@ class GridDriveCommand extends SequentialCommandGroup {
         this(drivetrain, getClosestTag(drivetrain), postiion);
     }
     public GridDriveCommand(Drivetrain drivetrain, int tag, PolePosition position) {
-
+        Translation2d endPoint = aprilTagLayout.getTagPose(tag).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(Constants.Auto.gridBackoffOffsetMeters, position.offset));
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                new PathConstraints(1, 0.5),
+                new PathConstraints(5, 3),
                 new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
 //                new PathPoint(layout.getTagPose(tag).orElse(new Pose3d(drivetrain.getPose())).toPose2d().getTranslation(), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                new PathPoint(aprilTagLayout.getTagPose(tag).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(0.9238, position.offset)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
+                new PathPoint(endPoint.plus(new Translation2d(0.127, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)), // position, heading(direction of travel), holonomic rotation
+                new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
         );
         PathPlannerServer.sendActivePath(trajectory.getStates());
 
