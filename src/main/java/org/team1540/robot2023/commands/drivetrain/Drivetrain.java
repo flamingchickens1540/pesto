@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
 
@@ -47,6 +48,13 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
 
     public Drivetrain() {
+        SmartDashboard.setDefaultNumber("drivetrain/translate/kp", Constants.Auto.PID.translationP);
+        SmartDashboard.setDefaultNumber("drivetrain/translate/ki", Constants.Auto.PID.translationI);
+        SmartDashboard.setDefaultNumber("drivetrain/translate/kd", Constants.Auto.PID.translationD);
+        SmartDashboard.setDefaultNumber("drivetrain/rotate/kp", Constants.Auto.PID.rotationP);
+        SmartDashboard.setDefaultNumber("drivetrain/rotate/ki", Constants.Auto.PID.rotationI);
+        SmartDashboard.setDefaultNumber("drivetrain/rotate/kd", Constants.Auto.PID.rotationD);
+
         gyro.reset();
     }
 
@@ -71,11 +79,6 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putData("field", field2d);
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
         double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
-        if (angle > -25 && angle < 25 ) {
-            Limelight.setLedState(Limelight.LEDMode.ON);
-        } else {
-            Limelight.setLedState(Limelight.LEDMode.OFF);
-        }
 
     }
 
@@ -140,9 +143,9 @@ public class Drivetrain extends SubsystemBase {
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(3.2,0,0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(3.2,0,0), // Y controller (usually the same values as X controller)
-                new PIDController(0.5, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(SmartDashboard.getNumber("drivetrain/translate/kp",Constants.Auto.PID.translationP),SmartDashboard.getNumber("drivetrain/translate/ki",Constants.Auto.PID.translationI),SmartDashboard.getNumber("drivetrain/translate/kd",Constants.Auto.PID.translationD)), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+                new PIDController(SmartDashboard.getNumber("drivetrain/translate/kp",Constants.Auto.PID.translationP),SmartDashboard.getNumber("drivetrain/translate/ki",Constants.Auto.PID.translationI),SmartDashboard.getNumber("drivetrain/translate/kd",Constants.Auto.PID.translationD)), // Y controller. Should be same as values for X controller
+                new PIDController(SmartDashboard.getNumber("drivetrain/rotate/kp",Constants.Auto.PID.rotationP),SmartDashboard.getNumber("drivetrain/rotate/ki",Constants.Auto.PID.rotationI),SmartDashboard.getNumber("drivetrain/rotate/kd",Constants.Auto.PID.rotationD)), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
         );
@@ -162,7 +165,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroGyroscope() {
         gyro.zeroYaw();
-    }
+    } //todo: make sure this doesn't break odometry
 
     public Rotation2d getYaw() {
         if (gyro.isMagnetometerCalibrated()) {

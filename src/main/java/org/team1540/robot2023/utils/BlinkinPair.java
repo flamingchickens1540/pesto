@@ -37,9 +37,8 @@ public class BlinkinPair {
     }
 
     public enum ColorPair {
-        TELEOP(ColorPattern.GREEN, ColorPattern.HOT_PINK),
-        CONE(ColorPattern.ORANGE),
-        CUBE(ColorPattern.VIOLET);
+        CONE(ColorPattern.ORANGE, ColorPattern.WAVES_FOREST),
+        CUBE(ColorPattern.VIOLET, ColorPattern.WAVES_FOREST);
 
         public final ColorPattern front;
         public final ColorPattern rear;
