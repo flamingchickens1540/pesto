@@ -1,20 +1,24 @@
 package org.team1540.robot2023;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
@@ -22,6 +26,8 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -62,6 +68,7 @@ public class RobotContainer {
    private void configureButtonBindings() {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
+        driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, Constants.Auto.hpOffsetY));
         // Copilot
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
@@ -88,6 +95,18 @@ public class RobotContainer {
         copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-58)));
 
         copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
+
+
+        AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
+        new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(()->{
+            if (currentMode.get() == NeutralMode.Brake) {
+                currentMode.set(NeutralMode.Coast);
+            } else {
+                currentMode.set(NeutralMode.Brake);
+            }
+            System.out.println(currentMode);
+            arm.setRotationNeutralMode(currentMode.get());
+        }).ignoringDisable(true));
         // SmartDashboard Commands
     }
 

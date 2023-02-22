@@ -1,6 +1,8 @@
 package org.team1540.robot2023.commands.arm;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.*;
@@ -189,6 +191,10 @@ public class Arm extends SubsystemBase {
 
     public void setRotatingSpeed(double speed){
         pivot1.set(ControlMode.PercentOutput, speed);
+    }
+    public void setRotationNeutralMode(NeutralMode mode){
+        pivot1.setNeutralMode(mode);
+        pivot2.setNeutralMode(mode);
     }
 
     public void setManualControl(boolean manualControl) {
