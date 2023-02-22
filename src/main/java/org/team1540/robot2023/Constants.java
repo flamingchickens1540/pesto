@@ -176,14 +176,16 @@ public final class Constants {
         // The extended arm length
         public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
         public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
-        public static final double EXT_GEAR_RATIO = 48;
+        public static final double EXT_GEAR_RATIO = 32;
 
-        public static final double TELESCOPE_FF = 0;
-        public static final double TELESCOPE_KP = 0.3;
+        public static final double TELESCOPE_KF = 0.0002;
+        public static final double TELESCOPE_KP = 0.0001;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
-        public static final double TELESCOPE_MAX_ACCEL = 100;
-        public static final double TELESCOPE_CRUISE_SPEED = 100;
+        public static final double TELESCOPE_CRUISE_SPEED = 5000;
+
+        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.25);
+
 
         public static final float TELESCOPE_FORWARD_LIMIT = 116;
 

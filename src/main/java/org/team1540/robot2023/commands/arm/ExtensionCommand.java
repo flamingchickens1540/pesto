@@ -8,7 +8,7 @@ public class ExtensionCommand extends CommandBase {
     private final Arm arm;
     private final double targetExtension;
     private final AverageFilter average = new AverageFilter(10);
-    private final int threshold = 1;
+    private final double threshold = 0.25;
 
     public ExtensionCommand(Arm arm, double targetExtension) {
         this.arm = arm;
@@ -24,6 +24,7 @@ public class ExtensionCommand extends CommandBase {
     @Override
     public void execute() {
         average.add(Math.abs(targetExtension - arm.getArmState().getExtension()));
+        arm.setRotation(arm.getArmState().getRotation2d());
     }
 
     @Override
