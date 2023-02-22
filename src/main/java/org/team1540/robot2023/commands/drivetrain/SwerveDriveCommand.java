@@ -10,6 +10,8 @@ public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final CommandXboxController controller;
     private final double deadzone = 0.1;
+    private double xyscale = 1;
+    private double rotscale = 1;
 
     // The rate limit should be relative to the input percent. A value of 1 will take 1 second to get from 0% to 100%, a value of 2 will do that in half a second
     private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
@@ -33,10 +35,18 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
+        if (controller.getHID().getXButton()) {
+            xyscale = 0.25;
+            rotscale = 0.25;
+        }
+        if (controller.getHID().getBButton()) {
+            xyscale = 1;
+            rotscale = 1;
+        }
         drivetrain.drive(
-                xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone))/2,
-                yLimiter.calculate(deadzone(-controller.getLeftX(), deadzone))/2,
-                rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)),
+                xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone)*xyscale),
+                yLimiter.calculate(deadzone(-controller.getLeftX(), deadzone)*xyscale),
+                rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale),
                 true
         );
     }
