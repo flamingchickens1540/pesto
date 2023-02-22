@@ -13,6 +13,7 @@ import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
+import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
@@ -83,7 +84,7 @@ public class RobotContainer {
         //Ground pickup and hybrid node deposit position
         copilot.x().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)));
         //Upright position for driving
-        copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
+        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
         //Substation pickup, extension is needed
         copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-58)));
 
