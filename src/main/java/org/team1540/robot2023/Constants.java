@@ -23,6 +23,8 @@ public final class Constants {
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(33.5);
+        public static final double hpOffsetX = Units.inchesToMeters(10);
+        public static final double hpOffsetY = -Units.inchesToMeters(30);
 
         public static final Rotation2d angleMidCube = Rotation2d.fromDegrees(-65);
         public static final Rotation2d angleHighCube = Rotation2d.fromDegrees(-65);
@@ -30,6 +32,7 @@ public final class Constants {
         public static final Rotation2d angleHighCone = Rotation2d.fromDegrees(-65);
         public static final Rotation2d angleUp = Rotation2d.fromDegrees(0);
         public static final Rotation2d angleDown = Rotation2d.fromDegrees(-115);
+        public static final Rotation2d angleHumanPlayer = Rotation2d.fromDegrees(-55.36);
         public static final class PID {
             public static final double translationP = 3;
             public static final double translationI = 0;

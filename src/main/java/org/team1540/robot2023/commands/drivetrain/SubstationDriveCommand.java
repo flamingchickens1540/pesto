@@ -5,34 +5,17 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.server.PathPlannerServer;
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.team1540.robot2023.Constants;
-import org.team1540.robot2023.utils.PolePosition;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
-class GridDriveCommand extends SequentialCommandGroup {
-    private static int getClosestTag(Drivetrain drivetrain) {
-        Translation2d currentPose = drivetrain.getPose().getTranslation();
-        double mindist = Double.MAX_VALUE;
-        int closestTag = -1;
-        for (AprilTag tag : aprilTagLayout.getTags()) {
-            double distance = tag.pose.toPose2d().getTranslation().getDistance(currentPose);
-            if (distance < mindist || closestTag == -1) {
-                mindist = distance;
-                closestTag = tag.ID;
-            }
-        }
-        return closestTag;
-    }
-    public GridDriveCommand(Drivetrain drivetrain, PolePosition postiion) {
-        this(drivetrain, getClosestTag(drivetrain), postiion);
-    }
-    public GridDriveCommand(Drivetrain drivetrain, int tag, PolePosition position) {
-        Translation2d endPoint = aprilTagLayout.getTagPose(tag).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(Constants.Auto.gridBackoffOffsetMeters, position.offset));
+class SubstationDriveCommand extends SequentialCommandGroup {
+    public SubstationDriveCommand(Drivetrain drivetrain, double yOffset) {
+        Translation2d endPoint = aprilTagLayout.getTagPose(4).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(Constants.Auto.hpOffsetX, yOffset));
+
         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                 new PathConstraints(5, 3),
                 new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
@@ -40,7 +23,6 @@ class GridDriveCommand extends SequentialCommandGroup {
                 new PathPoint(endPoint.plus(new Translation2d(0.127, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)), // position, heading(direction of travel), holonomic rotation
                 new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
         );
-        drivetrain.setFieldPath(trajectory);
         PathPlannerServer.sendActivePath(trajectory.getStates());
 
         addCommands(drivetrain.getPathCommand(trajectory));
