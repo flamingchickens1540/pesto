@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class PivotCommand extends CommandBase {
     private final Arm arm;
     private final Rotation2d targetAngle;
-    private final AverageFilter average = new AverageFilter(10);
+    private final AverageFilter average = new AverageFilter(20);
     private final double threshold = 0.5;
 
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
@@ -31,7 +31,7 @@ public class PivotCommand extends CommandBase {
     @Override
     public boolean isFinished() {
 //        return false;
-        return average.getAverage() < threshold;
+        return average.getAverage() < threshold && Math.abs(arm.getArmState().getRotation2d().getDegrees() - targetAngle.getDegrees()) < threshold;
     }
 
     @Override
