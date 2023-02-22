@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
@@ -18,6 +17,7 @@ import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -70,6 +70,7 @@ public class RobotContainer {
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
         driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, Constants.Auto.hpOffsetY));
         // Copilot
+
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.angleHighCone));
@@ -82,7 +83,11 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.angleDown));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.angleDown));
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
+        // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
+
+
+
         //Pneumatic Control
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.toggle()));
 //        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.set(true)));
@@ -97,6 +102,7 @@ public class RobotContainer {
         copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
 
 
+
         AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
         new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(()->{
             if (currentMode.get() == NeutralMode.Brake) {
@@ -107,7 +113,9 @@ public class RobotContainer {
             System.out.println(currentMode);
             arm.setRotationNeutralMode(currentMode.get());
         }).ignoringDisable(true));
+
         // SmartDashboard Commands
+
     }
 
     public void setTeleopDefaultCommands() {
@@ -128,16 +136,7 @@ public class RobotContainer {
     }
 
     public CommandBase getAutonomousCommand() {
-        return new SequentialCommandGroup(
-                new RetractAndPivotCommand(arm, Constants.ArmConstants.Setpoints.midCube).withTimeout(3),
-                new GrabberOuttakeCommand(wheeledGrabber).withTimeout(2),
-                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0))
-
-//                new PrintCommand("DRIVING"),
-//                new PathPlannerDriveCommand(drivetrain),
-//                new PrintCommand("BALANCING"),
-//                new AutoBalanceCommand(drivetrain, true)
-        );
+        return new PathPlannerDriveCommand(drivetrain);
     }
 
 }

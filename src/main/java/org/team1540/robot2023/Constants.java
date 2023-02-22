@@ -149,9 +149,6 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final class Setpoints {
-            public static final Rotation2d midCube = Rotation2d.fromDegrees(-65);
-        }
         public static final int PIVOT1_ID = 10;
         public static final int PIVOT2_ID = 11;
         public static final int TELESCOPE_ID = 12;
@@ -179,7 +176,7 @@ public final class Constants {
         // The extended arm length
         public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
         public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
-        public static final double EXT_GEAR_RATIO = 16;
+        public static final double EXT_GEAR_RATIO = 48;
 
         public static final double TELESCOPE_FF = 0;
         public static final double TELESCOPE_KP = 0.3;
