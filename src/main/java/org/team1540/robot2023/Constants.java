@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
+import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 
@@ -26,13 +27,15 @@ public final class Constants {
         public static final double hpOffsetX = Units.inchesToMeters(10);
         public static final double hpOffsetY = -Units.inchesToMeters(30);
 
-        public static final Rotation2d angleMidCube = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleHighCube = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleMidCone = Rotation2d.fromDegrees(-55.4165);
-        public static final Rotation2d angleHighCone = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleUp = Rotation2d.fromDegrees(0);
-        public static final Rotation2d angleDown = Rotation2d.fromDegrees(-115);
-        public static final Rotation2d angleHumanPlayer = Rotation2d.fromDegrees(-55.36);
+
+        public static final ArmState midCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
+        public static final ArmState highCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
+        public static final ArmState midCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.4165), 0);
+        public static final ArmState highCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
+        public static final ArmState down = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), 0);
+        public static final ArmState up = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115), 0);
+        public static final ArmState humanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36), 0);
+
         public static final class PID {
             public static final double translationP = 3;
             public static final double translationI = 0;
