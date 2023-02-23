@@ -58,11 +58,11 @@ public class RobotContainer {
         } else {
             ph.disableCompressor();
         }
-
-
         initSmartDashboard();
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
+
+
     }
 
    private void configureButtonBindings() {
@@ -73,6 +73,7 @@ public class RobotContainer {
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
+
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armHighCone));
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube));
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armHighCone));
@@ -82,24 +83,20 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armDown));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armDown));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armDown));
+
+        // coop:button(A, Run Intake [HOLD],copilot)
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
         // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
 
 
 
-        //Pneumatic Control
-//        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.toggle()));
-//        copilot.a().onTrue(new InstantCommand(() -> pneumaticClaw.set(true)));
-//        copilot.b().onTrue(new InstantCommand(() -> pneumaticClaw.set(false)));
-        //Ground pickup and hybrid node deposit position
-        copilot.x().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)));
-        //Upright position for driving
+        //coop:button(RBumper, Floor pickup [HOLD], copilot)
+        copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)));
+        //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
-        //Substation pickup, extension is needed
-        copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-58)));
-
-        copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle())); // TODO: 2/18/2023 change binding
+        //coop:button(Y, reset arm angle, copilot)
+        copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle()));
 
 
 
@@ -121,7 +118,9 @@ public class RobotContainer {
     public void setTeleopDefaultCommands() {
         // coop:button(LJoystick, Translate swerve,pilot)
         // coop:button(RJoystick, Rotate swerve [LEFTRIGHT],pilot)
-        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver));
+        // coop:button(X, Slow drive [PRESS])
+        // coop:button(B, Fast Drive [PRESS])
+        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID()));
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
         // coop:button(LTrigger, Retract telescope [HOLD],copilot)
         // coop:button(RTrigger, Extend telescope [HOLD],copilot)

@@ -1,14 +1,14 @@
 package org.team1540.robot2023.commands.drivetrain;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import static org.team1540.robot2023.utils.MathUtils.deadzone;
 
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
-    private final CommandXboxController controller;
+    private final XboxController controller;
     private final double deadzone = 0.1;
     private double xyscale = 1;
     private double rotscale = 1;
@@ -19,7 +19,7 @@ public class SwerveDriveCommand extends CommandBase {
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
     
-    public SwerveDriveCommand(Drivetrain drivetrain, CommandXboxController controller) {
+    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         addRequirements(drivetrain);
@@ -35,11 +35,11 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (controller.getHID().getXButton()) {
+        if (controller.getXButton()) {
             xyscale = 0.25;
             rotscale = 0.25;
         }
-        if (controller.getHID().getBButton()) {
+        if (controller.getBButton()) {
             xyscale = 1;
             rotscale = 1;
         }
