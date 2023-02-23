@@ -20,7 +20,6 @@ public class ManualArm extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setManualControl(true);
         isHolding = false;
     }
 
@@ -45,6 +44,5 @@ public class ManualArm extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         arm.stopAll();
-        arm.setManualControl(false);
     }
 }
