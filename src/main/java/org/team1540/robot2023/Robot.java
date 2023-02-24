@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
 
         CommandScheduler.getInstance().run();
         SmartDashboard.putData(robotContainer.pdh);
+        AutoManager.getInstance().updateSelected();
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands;
+package org.team1540.robot2023.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.team1540.robot2023.commands.arm.Arm;

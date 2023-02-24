@@ -12,9 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,6 +24,7 @@ import org.team1540.robot2023.utils.swerve.SwerveModule;
 import java.util.Objects;
 
 import static org.team1540.robot2023.Constants.Swerve;
+import static org.team1540.robot2023.Globals.field2d;
 import static org.team1540.robot2023.Globals.frontLimelight;
 
 public class Drivetrain extends SubsystemBase {
@@ -44,7 +43,6 @@ public class Drivetrain extends SubsystemBase {
     private boolean isParkMode = false;
 
     // Odometry
-    private final Field2d field2d = new Field2d();
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
 
     public Drivetrain() {
@@ -76,9 +74,8 @@ public class Drivetrain extends SubsystemBase {
             field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
         }
         field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
-        SmartDashboard.putData("field", field2d);
+
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
-        double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
 
     }
 
@@ -197,9 +194,7 @@ public class Drivetrain extends SubsystemBase {
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
-    public void setFieldPath(Trajectory path) {
-        field2d.getObject("trajectory").setTrajectory(path);
-    }
+
 
     public SwerveModulePosition[] getModulePositions(){
         return new SwerveModulePosition[]{

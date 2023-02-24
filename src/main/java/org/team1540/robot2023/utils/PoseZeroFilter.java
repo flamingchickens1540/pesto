@@ -1,7 +1,5 @@
 package org.team1540.robot2023.utils;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -31,7 +29,7 @@ public class PoseZeroFilter {
         } else {
             items.addLast(false);
         }
-        SmartDashboard.putBooleanArray("field/Test",  items.toArray(new Boolean[]{}));
+//        SmartDashboard.putBooleanArray("field/Test",  items.toArray(new Boolean[]{}));
         if (items.size() > count) {
             nonZero -= items.removeFirst() ? 1 : 0;
         }

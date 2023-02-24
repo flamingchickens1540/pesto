@@ -13,6 +13,7 @@ import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.PolePosition;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
+import static org.team1540.robot2023.Globals.field2d;
 
 class GridDriveCommand extends SequentialCommandGroup {
     private static int getClosestTag(Drivetrain drivetrain) {
@@ -40,7 +41,7 @@ class GridDriveCommand extends SequentialCommandGroup {
                 new PathPoint(endPoint.plus(new Translation2d(0.127, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)), // position, heading(direction of travel), holonomic rotation
                 new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
         );
-        drivetrain.setFieldPath(trajectory);
+        field2d.getObject("gridDrivePath").setTrajectory(trajectory);
         PathPlannerServer.sendActivePath(trajectory.getStates());
 
         addCommands(drivetrain.getPathCommand(trajectory));

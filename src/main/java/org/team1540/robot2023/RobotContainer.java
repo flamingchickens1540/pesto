@@ -7,17 +7,18 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.auto.BottomGrid1PieceBalance;
+import org.team1540.robot2023.commands.auto.BottomGrid1PieceTaxi;
+import org.team1540.robot2023.commands.auto.GridDriveAndPivotCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.commands.drivetrain.PathPlannerDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -33,6 +34,8 @@ import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
 public class RobotContainer {
     // Hardware
+
+
     RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
     RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
     BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
@@ -43,7 +46,6 @@ public class RobotContainer {
     Drivetrain drivetrain = new Drivetrain();
     Arm arm = new Arm();
     WheeledGrabber wheeledGrabber = new WheeledGrabber();
-//    PneumaticClaw pneumaticClaw = new PneumaticClaw();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
     CommandXboxController copilot = new CommandXboxController(1);
@@ -59,6 +61,7 @@ public class RobotContainer {
             ph.disableCompressor();
         }
         initSmartDashboard();
+        initAutos();
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -134,8 +137,14 @@ public class RobotContainer {
         SmartDashboard.putNumber("arm/targetExtension", 22);
     }
 
-    public CommandBase getAutonomousCommand() {
-        return new PathPlannerDriveCommand(drivetrain);
+    private void initAutos() {
+        AutoManager manager = AutoManager.getInstance();
+        manager.addAuto(new BottomGrid1PieceTaxi(drivetrain, arm));
+        manager.addAuto(new BottomGrid1PieceBalance(drivetrain, arm));
+    }
+
+    public Command getAutonomousCommand() {
+        return AutoManager.getInstance().getSelected();
     }
 
 }
