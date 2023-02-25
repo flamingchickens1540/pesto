@@ -107,7 +107,7 @@ public class Arm extends SubsystemBase {
     protected void setExtension(double extension) {
         telescopePID.setReference(
                 (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
-                CANSparkMax.ControlType.kPosition, 0
+                CANSparkMax.ControlType.kSmartMotion, 0
         );
 
     }

@@ -19,6 +19,7 @@ public class ExtensionCommand extends CommandBase {
     @Override
     public void initialize() {
         arm.setExtension(targetExtension);
+        average.clear();
     }
 
     @Override
