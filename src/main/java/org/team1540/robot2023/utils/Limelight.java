@@ -2,6 +2,7 @@ package org.team1540.robot2023.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -10,7 +11,8 @@ import java.util.Arrays;
 
 public class Limelight {
     private final NetworkTable table;
-    private final PoseZeroFilter poseFilter = new PoseZeroFilter(50, 48);
+    public final String name;
+    private final PoseZeroFilter zeroFilter = new PoseZeroFilter(50, 48);
     private final PoseMedianFilter medianFilter = new PoseMedianFilter(10);
 
     public Limelight() {
@@ -18,7 +20,16 @@ public class Limelight {
     }
 
     public Limelight(String tablename) {
+        name = tablename;
         table = NetworkTableInstance.getDefault().getTable(tablename);
+    }
+
+    public void periodic() {
+        String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
+        double[] data = table.getEntry(key).getDoubleArray(new double[0]);
+        zeroFilter.add(data);
+        Translation2d pose = new Translation2d(data[0], data[1]);
+        medianFilter.add(pose);
     }
 
     public Pose2d getFilteredBotPose() {
@@ -28,8 +39,8 @@ public class Limelight {
         if (data.length == 0 || Arrays.equals(data, new double[data.length])) {
             return null;
         }
-        poseFilter.add(data);
-        if (!poseFilter.isNonZero()) {
+        zeroFilter.add(data);
+        if (!zeroFilter.isNonZero()) {
             return null;
         }
         Pose2d pose = new Pose2d(data[0], data[1], new Rotation2d(Math.toRadians(data[5])));
@@ -82,6 +93,6 @@ public class Limelight {
      * capture latency.
      */
     public double getDeltaTime() {
-        return table.getEntry("tl").getDouble(0);
+        return table.getEntry("tl").getDouble(0)+11;
     }
 }

@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
             robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
         }, robotContainer.drivetrain).ignoringDisable(true).schedule();
 
-        // OK so this one is really stupid and really shouldn't have to be here but it does, just deal with it.
+        // OK so this one is really stupid and really shouldn't have to be here, but it does, just deal with it.
         aprilTagLayout.getTagPose(-1);
     }
 
@@ -82,10 +82,11 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods. This must be called from the
         // robot's periodic
         // block in order for anything in the Command-based framework to work.
-
+        LimelightManager.getInstance().periodic();
         CommandScheduler.getInstance().run();
-        SmartDashboard.putData(robotContainer.pdh);
+
         AutoManager.getInstance().updateSelected();
+
     }
 
     /**

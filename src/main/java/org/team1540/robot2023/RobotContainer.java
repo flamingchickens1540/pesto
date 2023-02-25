@@ -61,7 +61,8 @@ public class RobotContainer {
         initAutos();
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
-
+        LimelightManager.getInstance().addLimelight("limelight-front");
+        LimelightManager.getInstance().addLimelight("limelight-rear");
 
     }
 
@@ -128,6 +129,7 @@ public class RobotContainer {
     }
 
     private void initSmartDashboard() {
+        SmartDashboard.putData("pdh", pdh);
         SmartDashboard.putNumber("arm/targetX", 22);
         SmartDashboard.putNumber("arm/targetY", 0);
         SmartDashboard.putNumber("arm/targetAngle", 0);

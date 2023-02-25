@@ -20,13 +20,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants;
+import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
-
-import java.util.Objects;
 
 import static org.team1540.robot2023.Constants.Swerve;
 import static org.team1540.robot2023.Globals.field2d;
-import static org.team1540.robot2023.Globals.frontLimelight;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -84,15 +82,7 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        Pose2d rawBotPose = frontLimelight.getBotPose();
-        Pose2d filteredBotPose = frontLimelight.getFilteredBotPose();
-        if (filteredBotPose != null) {
-            poseEstimator.addVisionMeasurement(filteredBotPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(frontLimelight.getDeltaTime()/1000));
-            field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
-        } else {
-            field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
-        }
-        field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
+        LimelightManager.getInstance().applyEstimates(poseEstimator);
 
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
     }
