@@ -23,6 +23,8 @@ public class LimelightManager {
     public void addLimelight(Limelight limelight) {
         limelights.add(limelight);
         limelight.setLedState(Limelight.LEDMode.OFF);
+        limelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
+        limelight.setDriverMode(false);
     }
     public void addLimelight(String name) {
         addLimelight(new Limelight(name));

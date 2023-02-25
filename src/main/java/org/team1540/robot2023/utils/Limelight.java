@@ -71,8 +71,32 @@ public class Limelight {
         }
     }
 
+    public enum Pipeline {
+        APRIL_TAGS(0),
+        GAME_PIECE(1);
+
+        private final int value;
+        Pipeline(int value) {this.value = value;}
+    }
+
     public void setLedState(LEDMode mode) {
         table.getEntry("ledMode").setNumber(mode.value);
+    }
+    public void setDriverMode(boolean isDriverMode) {
+        table.getEntry("camMode").setNumber(isDriverMode ? 1 : 0);
+    }
+    public void setPipeline(Pipeline pipeline) {
+        table.getEntry("pipeline").setNumber(pipeline.value);
+    }
+
+    public Pipeline getPipeline() {
+        int currentPipeline = (int) table.getEntry("pipeline").getInteger(0);
+        for (Pipeline pipeline : Pipeline.values()) {
+            if (pipeline.value == currentPipeline) {
+                return pipeline;
+            }
+        }
+        return Pipeline.APRIL_TAGS;
     }
 
     /**
