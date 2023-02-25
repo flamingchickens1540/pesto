@@ -2,10 +2,7 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -110,7 +107,7 @@ public class RobotContainer {
             } else {
                 currentMode.set(NeutralMode.Brake);
             }
-            System.out.println(currentMode);
+            DataLogManager.log("FPGA User Button: Setting pivot falcons to NeutralMode."+currentMode);
             arm.setRotationNeutralMode(currentMode.get());
         }).ignoringDisable(true));
 

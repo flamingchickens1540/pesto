@@ -1,6 +1,7 @@
 package org.team1540.lib.util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
 import org.team1540.robot2023.utils.swerve.SwerveCANDevice;
 
@@ -18,6 +19,6 @@ public class SwerveModuleConstants {
         this.angleMotorID = SwerveCANDevice.getTurningMotorID(moduleID);
         this.cancoderID = SwerveCANDevice.getCancoderID(moduleID);
 
-        System.out.println(moduleID+" --- "+angleOffset.getDegrees());
+        DataLogManager.log("Initializing Module "+moduleID+" [Offset: "+angleOffset.getDegrees()+"]");
     }
 }

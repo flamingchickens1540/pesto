@@ -1,0 +1,140 @@
+{
+  "version": "2.2.2",
+  "layout": [
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "/SmartDashboard/PowerDistribution[1]/Voltage",
+              "color": "#e48b32",
+              "show": true
+            }
+          ]
+        },
+        "discrete": {
+          "fields": [
+            {
+              "key": "/SmartDashboard/PowerDistribution[1]/SwitchableChannel",
+              "color": "#e5b31b",
+              "show": true
+            }
+          ]
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "/SmartDashboard/PowerDistribution[1]/TotalCurrent",
+              "color": "#2b66a2",
+              "show": true
+            }
+          ]
+        }
+      },
+      "title": "Power"
+    },
+    {
+      "type": 9,
+      "fields": [
+        "/SmartDashboard/drivetrain/swerveModuleStates/actual",
+        "/SmartDashboard/drivetrain/swerveModuleStates/desired",
+        "/SmartDashboard/drivetrain/gyro"
+      ],
+      "listFields": [],
+      "options": {
+        "maxSpeed": 4.5,
+        "rotationUnits": "degrees",
+        "arrangement": "0,1,2,3",
+        "sizeLeftRight": 0.6604,
+        "sizeFrontBack": 0.5842,
+        "forwardDirection": "up"
+      },
+      "title": "Swerve"
+    },
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [],
+        [
+          {
+            "type": "Robot",
+            "key": "NT:/SmartDashboard/field/Robot",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/field/Robot",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "field": "2023",
+        "alliance": "auto",
+        "robot": "Pesto",
+        "unitDistance": "meters",
+        "unitRotation": "degrees"
+      },
+      "title": "3D Field"
+    },
+    {
+      "type": 5,
+      "fields": [],
+      "listFields": [
+        [
+          {
+            "type": "Robot",
+            "key": "/SmartDashboard/field/Robot",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Trajectory",
+            "key": "/SmartDashboard/field/trajectory",
+            "fieldTypeIndex": 0
+          }
+        ]
+      ],
+      "options": {
+        "game": "2023",
+        "unitDistance": "meters",
+        "unitRotation": "degrees",
+        "origin": "right",
+        "size": 0.6223,
+        "allianceBumpers": "auto",
+        "allianceOrigin": "auto",
+        "orientation": "blue left, red right"
+      },
+      "title": "Odometry"
+    },
+    {
+      "type": 8,
+      "fields": [],
+      "listFields": [],
+      "options": {
+        "ids": [
+          0,
+          1,
+          2
+        ],
+        "layouts": [
+          "Xbox Controller (Blue)",
+          "Xbox Controller (Blue)",
+          "Copilot Box"
+        ]
+      },
+      "title": "Joysticks"
+    }
+  ]
+}

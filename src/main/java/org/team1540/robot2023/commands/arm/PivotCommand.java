@@ -24,7 +24,6 @@ public class PivotCommand extends CommandBase {
     @Override
     public void execute() {
         average.add(Math.abs(targetAngle.getDegrees() - arm.getArmState().getRotation2d().getDegrees()));
-//        System.out.println(arm.getArmState().getRotation2d().getDegrees() + " " + average.getAverage());
     }
 
     @Override

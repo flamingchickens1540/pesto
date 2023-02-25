@@ -1,5 +1,7 @@
 package org.team1540.robot2023.utils;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -22,17 +24,19 @@ public class PoseZeroFilter {
     }
 
     public void add(double[] item) {
-//        System.out.println(Arrays.toString(item));
+
         if (!Arrays.equals(item, new double[item.length])) {
             nonZero++;
             items.addLast(true);
         } else {
             items.addLast(false);
         }
-//        SmartDashboard.putBooleanArray("field/Test",  items.toArray(new Boolean[]{}));
         if (items.size() > count) {
             nonZero -= items.removeFirst() ? 1 : 0;
         }
+        SmartDashboard.putNumberArray("vision/PoseZeroFilter/lastItem", item);
+        SmartDashboard.putNumber("vision/PoseZeroFilter/nonZero", nonZero);
+        SmartDashboard.putBooleanArray("vision/PoseZeroFilter/items", items.toArray(new Boolean[]{}));
     }
 
     public boolean isNonZero() {
