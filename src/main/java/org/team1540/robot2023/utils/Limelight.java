@@ -25,7 +25,7 @@ public class Limelight {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
         double[] data = table.getEntry(key).getDoubleArray(new double[7]);
 //        System.out.println(key+":"+ Arrays.toString(data));
-        if (data.length == 0 || Arrays.equals(data, new double[6])) {
+        if (data.length == 0 || Arrays.equals(data, new double[data.length])) {
             return null;
         }
         poseFilter.add(data);
