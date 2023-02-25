@@ -29,7 +29,7 @@ public final class Constants {
 
 
         public static final ArmState midCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
-        public static final ArmState highCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
+        public static final ArmState highCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-59), 42);
         public static final ArmState midCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.4165), 0);
         public static final ArmState highCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
         public static final ArmState down = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), 0);
