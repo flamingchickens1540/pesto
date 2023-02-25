@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class Limelight {
     private final NetworkTable table;
     public final String name;
+    private double[] data;
     private final PoseZeroFilter zeroFilter = new PoseZeroFilter(50, 48);
     private final PoseMedianFilter medianFilter = new PoseMedianFilter(10);
 
@@ -26,44 +27,31 @@ public class Limelight {
 
     public void periodic() {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-        double[] data = table.getEntry(key).getDoubleArray(new double[0]);
+        data = table.getEntry(key).getDoubleArray(new double[0]);
+
         zeroFilter.add(data);
-        Translation2d pose = new Translation2d(data[0], data[1]);
+
+        Translation2d pose;
+        if (data.length < 2) {
+            pose = new Translation2d();
+        } else {
+            pose = new Translation2d(data[0], data[1]);
+        }
         medianFilter.add(pose);
     }
 
     public Pose2d getFilteredBotPose() {
-        String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-        double[] data = table.getEntry(key).getDoubleArray(new double[7]);
-//        System.out.println(key+":"+ Arrays.toString(data));
-        if (data.length == 0 || Arrays.equals(data, new double[data.length])) {
-            return null;
-        }
-        zeroFilter.add(data);
-        if (!zeroFilter.isNonZero()) {
-            return null;
-        }
+        // check if data is zero or empty
+        if (data.length == 0) return null;
+        if (Arrays.equals(data, new double[data.length])) return null;
+        if (!zeroFilter.isNonZero()) return null;
+
         Pose2d pose = new Pose2d(data[0], data[1], new Rotation2d(Math.toRadians(data[5])));
-
-        medianFilter.add(pose.getTranslation());
-
         return medianFilter.checkOutlier(pose).orElse(null);
-//        String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-//        double[] data = table.getEntry(key).getDoubleArray(new double[0]);
-//        poseFilter.add(data);
-//
-//        if (data.length == 0 || Arrays.equals(data, new double[6]) || !poseFilter.isNonZero()) {
-//            return null;
-//        }
-//
-//        return new Pose2d(data[0], data[1], new Rotation2d(Math.toRadians(data[5])));
     }
 
 
     public Pose2d getBotPose() {
-        String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-        double[] data = table.getEntry(key).getDoubleArray(new double[7]);
-
         if (data.length == 0 || Arrays.equals(data, new double[6])) {
             return null;
         }
@@ -71,6 +59,7 @@ public class Limelight {
     }
 
     public enum LEDMode {
+        PIPELINE(0),
         OFF(1),
         BLINK(2),
         ON(3);
