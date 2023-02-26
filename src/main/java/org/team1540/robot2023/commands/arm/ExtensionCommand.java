@@ -1,5 +1,6 @@
 package org.team1540.robot2023.commands.arm;
 
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.AverageFilter;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -19,6 +20,7 @@ public class ExtensionCommand extends CommandBase {
     @Override
     public void initialize() {
         arm.setExtension(targetExtension);
+        average.clear();
     }
 
     @Override
@@ -29,6 +31,9 @@ public class ExtensionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        if(targetExtension < Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()){
+            return true;
+        }
         return average.getAverage() < threshold;
     }
 

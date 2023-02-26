@@ -25,12 +25,6 @@ public class Arm extends SubsystemBase {
 
     private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
 
-    private double extensionSetPoint = 0;
-    private boolean notSet = false;
-
-    private boolean isManualControl = false;
-
-
     public Arm() {
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
@@ -106,36 +100,14 @@ public class Arm extends SubsystemBase {
     }
 
     public void setRotation(Rotation2d rotation) {
-        // TODO: something
-        //Feedforward needs to incorporate how extended the arm is
-        //We should also try calculating kF instead of arbitrary
         double angle = rotation.getDegrees();
-//        double feedforward = Math.cos(getRotation2d().getRadians())*ArmConstants.PIVOT_FF;
-//        pivot1.set(
-//                ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO),
-//                DemandType.ArbitraryFeedForward,
-//                feedforward
-//        );
          pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
-    public void setExtensionSetPoint(double extensionSetPoint) {
-        this.extensionSetPoint = extensionSetPoint;
-        setExtension(extensionSetPoint);
-    }
-
     protected void setExtension(double extension) {
-        // TODO: magic
-        //Talk to Kevin about a feedforward for this
-        //Might need to be something similar to an arm but with max at straight up not straight out
-        //Or in other words, sin
-//        double feedforward = Math.sin(Conversions.cartesianToActual(getRotation2d()).getRadians()*ArmConstants.TELESCOPE_FF);
-//        telescopePID.setReference(extension, CANSparkMax.ControlType.kPosition, 0, feedforward);
-//        telescope.set(ControlMode.Position,extension, DemandType.ArbitraryFeedForward, feedforward);
-//        telescope.set(ControlMode.Position,extension);
         telescopePID.setReference(
                 (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
-                CANSparkMax.ControlType.kPosition, 0
+                CANSparkMax.ControlType.kSmartMotion, 0
         );
 
     }
@@ -160,31 +132,6 @@ public class Arm extends SubsystemBase {
         );
     }
 
-    private void limitArmExtension(){
-        // TODO: 1/28/2023 Keep an eye on this if problems arise
-        if(getMaxExtension() < getExtension()){
-            setExtension(getMaxExtension());
-            notSet = true;
-        }
-        else if(isExtending()){
-            if(getMaxExtension() < extensionSetPoint){
-                setExtension(getMaxExtension());
-                notSet = true;
-            }
-            else if(notSet){
-                setExtension(extensionSetPoint);
-                notSet = false;
-            }
-        }
-    }
-
-    public boolean isRotating(){
-        return pivot1.getSelectedSensorVelocity() > 0.1;
-    }
-
-    public boolean isExtending(){
-        return telescopeEncoder.getVelocity() > 0.1;
-    }
 
     public void setExtendingSpeed(double speed){
         telescope.set(speed);
@@ -196,10 +143,6 @@ public class Arm extends SubsystemBase {
     public void setRotationNeutralMode(NeutralMode mode){
         pivot1.setNeutralMode(mode);
         pivot2.setNeutralMode(mode);
-    }
-
-    public void setManualControl(boolean manualControl) {
-        isManualControl = manualControl;
     }
 
     private void smashDartboardInit() {
@@ -219,7 +162,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(!isManualControl) limitArmExtension();
+//        if(!isManualControl) limitArmExtension();
         if (getLimitSwitch()) telescopeEncoder.setPosition(0);
         smashDartboard();
     }
