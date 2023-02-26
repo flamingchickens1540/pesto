@@ -2,12 +2,15 @@ package org.team1540.robot2023.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.util.Arrays;
+
+import static org.team1540.robot2023.Globals.field2d;
 
 public class Limelight {
     private final NetworkTable table;
@@ -40,6 +43,9 @@ public class Limelight {
             pose = new Translation2d(data[0], data[1]);
         }
         medianFilter.add(pose);
+
+        double[] targetPose = table.getEntry("targetpose_robotspace").getDoubleArray(new double[7]);
+        field2d.getObject("targetpose/"+this.name).setPose(field2d.getRobotObject().getPose().transformBy(new Transform2d(new Translation2d(data[0], data[1]), new Rotation2d())));
     }
 
     public Pose2d getFilteredBotPose() {
