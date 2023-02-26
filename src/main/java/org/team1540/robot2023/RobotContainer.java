@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -132,6 +133,7 @@ public class RobotContainer {
 
     private void initSmartDashboard() {
         SmartDashboard.putData("pdh", pdh);
+        SmartDashboard.putData("scheduler", CommandScheduler.getInstance());
         SmartDashboard.putNumber("arm/targetX", 22);
         SmartDashboard.putNumber("arm/targetY", 0);
         SmartDashboard.putNumber("arm/targetAngle", 0);

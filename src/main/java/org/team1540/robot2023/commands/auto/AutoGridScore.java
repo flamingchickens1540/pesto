@@ -25,7 +25,7 @@ public class AutoGridScore extends SequentialCommandGroup {
         addCommands(
             Commands.race(
                     new GrabberIntakeCommand(intake),
-                    Commands.sequence(
+                    Commands.parallel(
                             alignmentCommand,
                             new SetArmPosition(arm, setpoint)
                     )
