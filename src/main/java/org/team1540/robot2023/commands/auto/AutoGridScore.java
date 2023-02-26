@@ -3,6 +3,7 @@ package org.team1540.robot2023.commands.auto;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
@@ -37,16 +38,21 @@ public class AutoGridScore extends SequentialCommandGroup {
                     Commands.parallel(
                             alignmentCommand,
                             Commands.sequence(
+                                new PrintCommand("Starting retract"),
                                 new RetractExtension(arm),
+                                new PrintCommand("Starting adjust position"),
                                 new SetArmPosition(arm, approachSetpoint)
                             )
                             
                     )
             ),
+            new PrintCommand("Starting adjust position v2"),
             new SetArmPosition(arm, setpoint),
+            new PrintCommand("Starting retreat"),
             Commands.parallel(
                 new GrabberOuttakeCommand(intake),
                 Commands.sequence(
+                    new PrintCommand("Starting retreat"),
                     new WaitCommand(0.25),
                     Commands.parallel(
                         new PivotCommand(arm, approachSetpoint.getRotation2d()),

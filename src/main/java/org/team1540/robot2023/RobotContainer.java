@@ -99,6 +99,7 @@ public class RobotContainer {
         copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
         //coop:button(Y, reset arm angle, copilot)
         copilot.y().whileTrue(new ResetArmPositionCommand(arm));
+        copilot.x().whileTrue(new ExtensionCommand(arm, 50));
 
 
 

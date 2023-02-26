@@ -18,12 +18,14 @@ public class ExtensionCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        System.out.println("EXTAENDING START");
         arm.telescope.setExtension(targetExtension);
         average.clear();
     }
 
     @Override
     public void execute() {
+        System.out.println("EXTAENDING");
         average.add(Math.abs(targetExtension - arm.getArmState().getExtension()));
     }
 
@@ -37,6 +39,7 @@ public class ExtensionCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("EXTAENDING DONE");
         arm.stopAll();
     }
 }

@@ -44,8 +44,17 @@ public class Limelight {
         }
         medianFilter.add(pose);
 
+
         double[] targetPose = table.getEntry("targetpose_robotspace").getDoubleArray(new double[7]);
-        field2d.getObject("targetpose/"+this.name).setPose(field2d.getRobotObject().getPose().transformBy(new Transform2d(new Translation2d(data[0], data[1]), new Rotation2d())));
+        if (Arrays.equals(data, new double[data.length])) {
+            field2d.getObject("targetpose/"+this.name).setPoses();
+        } else {
+            
+            Transform2d targetPoseTranslation = new Transform2d(new Translation2d(targetPose[0], targetPose[1]), new Rotation2d(Math.toRadians(targetPose[2])));
+            // System.out.println(targetPoseTranslation);
+            field2d.getObject("targetpose/"+this.name).setPose(field2d.getRobotObject().getPose().plus(targetPoseTranslation));
+        }
+        
     }
 
     public Pose2d getFilteredBotPose() {
