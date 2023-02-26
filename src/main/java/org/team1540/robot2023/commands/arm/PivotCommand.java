@@ -8,17 +8,17 @@ public class PivotCommand extends CommandBase {
     private final Arm arm;
     private final Rotation2d targetAngle;
     private final AverageFilter average = new AverageFilter(20);
-    private final double threshold = 0.5;
+    private static final double threshold = 0.5;
 
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
         this.arm = arm;
         this.targetAngle = targetAngle;
-        addRequirements(arm);
+        addRequirements(arm.pivot);
     }
 
     @Override
     public void initialize() {
-        arm.setRotation(targetAngle);
+        arm.pivot.setRotation(targetAngle);
         average.clear();
     }
 
@@ -35,6 +35,6 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.setRotatingSpeed(0);
+        arm.pivot.stop();
     }
 }

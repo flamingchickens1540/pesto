@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants;
@@ -43,7 +44,14 @@ public class Pivot extends SubsystemBase {
 
     }
 
-    private Rotation2d getRotation2d() {
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
+        SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
+        SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
+    }
+
+    Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(
                 Conversions.falconToDegrees(pivot1.getSelectedSensorPosition(), Constants.ArmConstants.PIVOT_GEAR_RATIO)
         );
@@ -77,10 +85,8 @@ public class Pivot extends SubsystemBase {
         pivot1.set(ControlMode.PercentOutput, speed);
     }
 
-    public void setRotationNeutralMode(NeutralMode mode){
+    public void setNeutralMode(NeutralMode mode){
         pivot1.setNeutralMode(mode);
         pivot2.setNeutralMode(mode);
     }
-
-
 }

@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.ManualArm;
-import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
 import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
 import org.team1540.robot2023.commands.auto.Auto2PieceTaxi;
@@ -23,7 +21,6 @@ import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
@@ -37,20 +34,20 @@ public class RobotContainer {
     // Hardware
 
 
-    RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
-    RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
-    BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
+    final RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
+    final RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
+    final BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
     public final PneumaticHub ph = new PneumaticHub(Constants.PNEUMATIC_HUB);
     public final PowerDistribution pdh = new PowerDistribution(Constants.PDH, PowerDistribution.ModuleType.kRev);
     // Subsystems
 
-    Drivetrain drivetrain = new Drivetrain();
-    Arm arm = new Arm();
-    WheeledGrabber intake = new WheeledGrabber();
+    final Drivetrain drivetrain = new Drivetrain();
+    final Arm arm = new Arm();
+    final WheeledGrabber intake = new WheeledGrabber();
     // Controllers
-    CommandXboxController driver = new CommandXboxController(0);
-    CommandXboxController copilot = new CommandXboxController(1);
-    ButtonPanel controlPanel = new ButtonPanel(2);
+    final CommandXboxController driver = new CommandXboxController(0);
+    final CommandXboxController copilot = new CommandXboxController(1);
+    final ButtonPanel controlPanel = new ButtonPanel(2);
     // Commands
 
     public RobotContainer() {
@@ -101,7 +98,7 @@ public class RobotContainer {
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
         //coop:button(Y, reset arm angle, copilot)
-        copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle()));
+        copilot.y().whileTrue(new ResetArmPositionCommand(arm));
 
 
 
@@ -113,7 +110,7 @@ public class RobotContainer {
                 currentMode.set(NeutralMode.Brake);
             }
             DataLogManager.log("FPGA User Button: Setting pivot falcons to NeutralMode."+currentMode);
-            arm.setRotationNeutralMode(currentMode.get());
+            arm.pivot.setNeutralMode(currentMode.get());
         }).ignoringDisable(true));
 
         // SmartDashboard Commands
@@ -129,7 +126,8 @@ public class RobotContainer {
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
         // coop:button(LTrigger, Retract telescope [HOLD],copilot)
         // coop:button(RTrigger, Extend telescope [HOLD],copilot)
-        arm.setDefaultCommand(new ManualArm(arm, copilot));
+        arm.pivot.setDefaultCommand(new ManualRotation(arm, copilot));
+        arm.telescope.setDefaultCommand(new ManualExtension(arm, copilot));
     }
 
     private void initSmartDashboard() {

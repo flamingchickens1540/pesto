@@ -9,7 +9,8 @@ public class ResetArmPositionCommand extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(arm::stopAll),
                 new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)),
-                new InstantCommand(arm::resetAngle)
+                new InstantCommand(arm.pivot::resetAngle)
         );
+        addRequirements(arm.pivot, arm.telescope);
     }
 }

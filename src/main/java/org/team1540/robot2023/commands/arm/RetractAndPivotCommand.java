@@ -9,6 +9,6 @@ public class RetractAndPivotCommand extends SequentialCommandGroup {
                 new RetractExtension(arm),
                 new PivotCommand(arm, setpoint)
         );
-        addRequirements(arm);
+        addRequirements(arm.pivot, arm.telescope);
     }
 }
