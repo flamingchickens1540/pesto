@@ -1,10 +1,7 @@
 package org.team1540.robot2023.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.ExtensionCommand;
-import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
-import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
@@ -30,7 +27,19 @@ public class GridDriveAndPivotCommand extends SequentialCommandGroup{
                 new ProxiedGridDriveCommand(drivetrain, position),
                 new RetractAndPivotCommand(arm, setpoint.getRotation2d()),
                 new ExtensionCommand(arm, setpoint.getExtension()),
-                new GrabberOuttakeCommand(grabber).withTimeout(1),
+                new GrabberOuttakeCommand(grabber).withTimeout(0.5),
+                new ResetArmPositionCommand(arm)
+        );
+
+    }
+
+    public GridDriveAndPivotCommand(Drivetrain drivetrain, PolePosition position, Arm arm, WheeledGrabber grabber, ArmState setpoint, ArmState endpoint){
+        addCommands(
+                new ProxiedGridDriveCommand(drivetrain, position),
+                new RetractAndPivotCommand(arm, setpoint.getRotation2d()),
+                new ExtensionCommand(arm, setpoint.getExtension()),
+                new PivotCommand(arm, endpoint.getRotation2d()),
+                new GrabberOuttakeCommand(grabber).withTimeout(0.5),
                 new ResetArmPositionCommand(arm)
         );
 

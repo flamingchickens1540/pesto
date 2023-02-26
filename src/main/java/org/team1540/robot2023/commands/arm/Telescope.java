@@ -27,7 +27,7 @@ public class Telescope extends SubsystemBase {
         telescopePID.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
     }
 
-    private double getExtension() {
+    public double getExtension() {
         return telescopeEncoder.getPosition() * Constants.ArmConstants.EXT_ROTS_TO_INCHES / Constants.ArmConstants.EXT_GEAR_RATIO + Constants.ArmConstants.ARM_BASE_LENGTH;
     }
 
@@ -38,7 +38,7 @@ public class Telescope extends SubsystemBase {
     protected void setExtension(double extension) {
         telescopePID.setReference(
                 (extension - Constants.ArmConstants.ARM_BASE_LENGTH) * Constants.ArmConstants.EXT_GEAR_RATIO / Constants.ArmConstants.EXT_ROTS_TO_INCHES,
-                CANSparkMax.ControlType.kPosition, 0
+                CANSparkMax.ControlType.kSmartMotion, 0
         );
 
     }

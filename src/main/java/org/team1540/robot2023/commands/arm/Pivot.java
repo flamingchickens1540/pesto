@@ -43,7 +43,7 @@ public class Pivot extends SubsystemBase {
 
     }
 
-    private Rotation2d getRotation2d() {
+    public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(
                 Conversions.falconToDegrees(pivot1.getSelectedSensorPosition(), Constants.ArmConstants.PIVOT_GEAR_RATIO)
         );

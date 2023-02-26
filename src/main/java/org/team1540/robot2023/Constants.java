@@ -30,11 +30,14 @@ public final class Constants {
 
         public static final ArmState midCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
         public static final ArmState highCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-59), 42);
-        public static final ArmState midCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.4165), 0);
-        public static final ArmState highCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 0);
+        public static final ArmState midConeStart = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53.47), 35.45);
+        public static final ArmState midConeEnd = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-67), 35.45);
+        public static final ArmState highConeStart = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-43.5), 56.4);
+        public static final ArmState highConeEnd = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53.6), 56.4);
+
         public static final ArmState down = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), 0);
         public static final ArmState up = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115), 0);
-        public static final ArmState humanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36), 0);
+        public static final ArmState humanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50), 28);
 
         public static final class PID {
             public static final double translationP = 3;
