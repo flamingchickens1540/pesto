@@ -10,7 +10,6 @@ import org.team1540.lib.util.SwerveModuleConstants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
-
 public final class Constants {
     public static final boolean ENABLE_PNEUMATICS = false;
     public static final int PNEUMATIC_HUB = 2;
@@ -28,8 +27,8 @@ public final class Constants {
         public static final double hpOffsetY = -Units.inchesToMeters(30);
 
         // TODO: TUNE EXTENSIONS
-        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 10);
-        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),10);
+        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-71), 0);
+        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),39.07);
         public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.4165),10);
         public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),10);
 

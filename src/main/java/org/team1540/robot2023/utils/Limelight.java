@@ -15,6 +15,7 @@ public class Limelight {
     private double[] data;
     private final PoseZeroFilter zeroFilter = new PoseZeroFilter(50, 48);
     private final PoseMedianFilter medianFilter = new PoseMedianFilter(10);
+    private double latency;
 
     public Limelight() {
         this("limelight");
@@ -27,8 +28,9 @@ public class Limelight {
 
     public void periodic() {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-        data = table.getEntry(key).getDoubleArray(new double[0]);
-
+        double[] rawData = table.getEntry(key).getDoubleArray(new double[0]);
+        latency = rawData[6];
+        data = Arrays.copyOf(rawData, 6); 
         zeroFilter.add(data);
 
         Translation2d pose;
@@ -106,6 +108,6 @@ public class Limelight {
      * capture latency.
      */
     public double getDeltaTime() {
-        return table.getEntry("tl").getDouble(0)+11;
+        return latency;
     }
 }
