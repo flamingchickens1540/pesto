@@ -11,7 +11,7 @@ import static org.team1540.robot2023.utils.MathUtils.deadzone;
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final XboxController controller;
-    private final double deadzone = 0.1;
+    private static final double deadzone = 0.1;
     private double xyscale = 1;
     private double rotscale = 1;
 

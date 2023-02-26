@@ -51,7 +51,7 @@ public class BlinkinPair {
 
             this.front = front;
             this.rear = rear;
-        };
+        }
 
     }
 }

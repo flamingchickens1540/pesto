@@ -34,8 +34,8 @@ public class COTSFalconSwerveConstants {
     public static COTSFalconSwerveConstants SDSMK3(double driveGearRatio){
         double wheelDiameter = Units.inchesToMeters(4.0);
  
-        /** 12.8 : 1 */
-        double angleGearRatio = (12.8 / 1.0);
+        // 12.8 : 1
+        double angleGearRatio = (12.8);
  
         double angleKP = 0.2;
         double angleKI = 0.0;
@@ -52,8 +52,8 @@ public class COTSFalconSwerveConstants {
     public static COTSFalconSwerveConstants SDSMK4(double driveGearRatio){
         double wheelDiameter = Units.inchesToMeters(4.0);
  
-        /** 12.8 : 1 */
-        double angleGearRatio = (12.8 / 1.0);
+        // 12.8 : 1
+        double angleGearRatio = (12.8);
  
         double angleKP = 0.2;
         double angleKI = 0.0;
@@ -70,8 +70,8 @@ public class COTSFalconSwerveConstants {
     public static COTSFalconSwerveConstants SDSMK4i(double driveGearRatio){
         double wheelDiameter = Units.inchesToMeters(3.84);
 
-        /** (150 / 7) : 1 */
-        double angleGearRatio = ((150.0 / 7.0) / 1.0);
+        // (150 / 7) : 1
+        double angleGearRatio = ((150.0 / 7.0));
 
         double angleKP = 0.3;
         double angleKI = 0.0;
@@ -85,30 +85,30 @@ public class COTSFalconSwerveConstants {
     }
 
     /* Drive Gear Ratios for all supported modules */
-    public class driveGearRatios{
+    public static class driveGearRatios{
         /* SDS MK3 */
         /** SDS MK3 - 8.16 : 1 */
-        public static final double SDSMK3_Standard = (8.16 / 1.0);
+        public static final double SDSMK3_Standard = (8.16);
         /** SDS MK3 - 6.86 : 1 */
-        public static final double SDSMK3_Fast = (6.86 / 1.0);
+        public static final double SDSMK3_Fast = (6.86);
 
         /* SDS MK4 */
         /** SDS MK4 - 8.14 : 1 */
-        public static final double SDSMK4_L1 = (8.14 / 1.0);
+        public static final double SDSMK4_L1 = (8.14);
         /** SDS MK4 - 6.75 : 1 */
-        public static final double SDSMK4_L2 = (6.75 / 1.0);
+        public static final double SDSMK4_L2 = (6.75);
         /** SDS MK4 - 6.12 : 1 */
-        public static final double SDSMK4_L3 = (6.12 / 1.0);
+        public static final double SDSMK4_L3 = (6.12);
         /** SDS MK4 - 5.14 : 1 */
-        public static final double SDSMK4_L4 = (5.14 / 1.0);
+        public static final double SDSMK4_L4 = (5.14);
         
         /* SDS MK4i */
         /** SDS MK4i - 8.14 : 1 */
-        public static final double SDSMK4i_L1 = (8.14 / 1.0);
+        public static final double SDSMK4i_L1 = (8.14);
         /** SDS MK4i - 6.75 : 1 */
-        public static final double SDSMK4i_L2 = (6.75 / 1.0);
+        public static final double SDSMK4i_L2 = (6.75);
         /** SDS MK4i - 6.12 : 1 */
-        public static final double SDSMK4i_L3 = (6.12 / 1.0);
+        public static final double SDSMK4i_L3 = (6.12);
     }
 }
 

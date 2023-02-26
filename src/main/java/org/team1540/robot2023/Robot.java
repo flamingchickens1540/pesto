@@ -107,13 +107,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
+        robotContainer.arm.pivot.setNeutralMode(NeutralMode.Brake);
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
-            robotContainer.arm.resetAngle();
+            robotContainer.arm.pivot.resetAngle();
         }
     }
 
@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
+        robotContainer.arm.pivot.setNeutralMode(NeutralMode.Brake);
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
