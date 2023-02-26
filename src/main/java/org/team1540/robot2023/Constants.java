@@ -27,10 +27,12 @@ public final class Constants {
         public static final double hpOffsetY = -Units.inchesToMeters(30);
 
         // TODO: TUNE EXTENSIONS
-        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-71), 0);
-        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),39.07);
-        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.4165),10);
-        public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),10);
+        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-71), 25.18);
+        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),47);
+        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),38.81);
+        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),38.81);
+        public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55);
+        public static final ArmState armHighConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);

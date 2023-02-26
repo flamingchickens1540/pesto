@@ -79,12 +79,12 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
 
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armHighCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armHighCone, Constants.Auto.armHighConeApproach, intake));
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armHighCone, intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armMidCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armHighCone, Constants.Auto.armHighConeApproach, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armMidCone, Constants.Auto.armMidConeApproach, intake));
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube, intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armMidCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armMidCone, Constants.Auto.armMidConeApproach, intake));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armDown, intake));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armDown, intake));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armDown, intake));
