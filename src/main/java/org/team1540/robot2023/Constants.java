@@ -35,6 +35,7 @@ public final class Constants {
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
+        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(115),0);
 
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36),10);
         public static final class PID {

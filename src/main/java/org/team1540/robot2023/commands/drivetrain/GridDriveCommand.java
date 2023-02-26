@@ -42,6 +42,7 @@ class GridDriveCommand extends SequentialCommandGroup {
                 new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
         );
         field2d.getObject("gridDrivePath").setTrajectory(trajectory);
+        field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
         PathPlannerServer.sendActivePath(trajectory.getStates());
 
         addCommands(drivetrain.getPathCommand(trajectory));

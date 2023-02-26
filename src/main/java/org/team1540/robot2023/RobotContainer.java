@@ -12,9 +12,10 @@ import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
-import org.team1540.robot2023.commands.auto.BottomGrid1PieceBalance;
-import org.team1540.robot2023.commands.auto.BottomGrid1PieceTaxi;
-import org.team1540.robot2023.commands.auto.GridDriveAndPivotCommand;
+import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
+import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
+import org.team1540.robot2023.commands.auto.Auto2PieceTaxi;
+import org.team1540.robot2023.commands.auto.AutoGridScore;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
@@ -24,6 +25,7 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
+import org.team1540.robot2023.utils.ScoringGridLocation;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,7 +44,7 @@ public class RobotContainer {
 
     Drivetrain drivetrain = new Drivetrain();
     Arm arm = new Arm();
-    WheeledGrabber wheeledGrabber = new WheeledGrabber();
+    WheeledGrabber intake = new WheeledGrabber();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
     CommandXboxController copilot = new CommandXboxController(1);
@@ -75,20 +77,20 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
 
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armHighCone));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armHighCone));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armMidCone));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armMidCone));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armDown));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armDown));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new GridDriveAndPivotCommand(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armDown));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armHighCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armHighCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armMidCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armMidCone, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoGridScore(drivetrain, PolePosition.LEFT,   arm, Constants.Auto.armDown, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armDown, intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoGridScore(drivetrain, PolePosition.RIGHT,  arm, Constants.Auto.armDown, intake));
 
         // coop:button(A, Run Intake [HOLD],copilot)
-        copilot.a().toggleOnTrue(new GrabberIntakeCommand(wheeledGrabber));
+        copilot.a().toggleOnTrue(new GrabberIntakeCommand(intake));
         // coop:button(B,Run Outtake [HOLD],copilot)
-        copilot.b().whileTrue(new GrabberOuttakeCommand(wheeledGrabber));
+        copilot.b().whileTrue(new GrabberOuttakeCommand(intake));
 
 
 
@@ -138,8 +140,18 @@ public class RobotContainer {
 
     private void initAutos() {
         AutoManager manager = AutoManager.getInstance();
-        manager.addAuto(new BottomGrid1PieceTaxi(drivetrain, arm));
-        manager.addAuto(new BottomGrid1PieceBalance(drivetrain, arm));
+        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake,ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
+        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto("ScoreHighCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake));
+        manager.addAuto("ScoreMidCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube, intake));
+        manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake, false));
+        manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake, false));
+        manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
 
     public Command getAutonomousCommand() {

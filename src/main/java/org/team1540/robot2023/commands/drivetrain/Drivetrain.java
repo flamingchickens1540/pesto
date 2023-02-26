@@ -37,6 +37,8 @@ public class Drivetrain extends SubsystemBase {
     };
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+    // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
     private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
     private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
     // Whether to allow the wheels to park
