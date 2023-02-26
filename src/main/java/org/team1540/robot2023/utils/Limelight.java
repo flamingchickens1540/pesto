@@ -28,7 +28,7 @@ public class Limelight {
 
     public void periodic() {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
-        double[] rawData = table.getEntry(key).getDoubleArray(new double[0]);
+        double[] rawData = table.getEntry(key).getDoubleArray(new double[7]);
         latency = rawData[6];
         data = Arrays.copyOf(rawData, 6); 
         zeroFilter.add(data);
