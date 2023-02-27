@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.ManualArm;
-import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
-import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
 import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
 import org.team1540.robot2023.commands.auto.Auto2PieceTaxi;
@@ -103,7 +100,7 @@ public class RobotContainer {
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
         copilot.rightBumper().whileTrue(Commands.sequence(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)), new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
-        copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
+        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
         //coop:button(Y, reset arm angle, copilot)
         copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle()));
 
