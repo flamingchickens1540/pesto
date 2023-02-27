@@ -22,28 +22,28 @@ public final class Constants {
 
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
-        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(33.5);
-        public static final double hpOffsetX = Units.inchesToMeters(10);
-        public static final double hpOffsetY = -Units.inchesToMeters(30);
+        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(31);
+        public static final double hpOffsetX = Units.inchesToMeters(27.25);
+        public static final double hpOffsetY = -Units.inchesToMeters(20);
 
         // TODO: TUNE EXTENSIONS
-        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-71), 25.18);
-        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65),47);
-        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),38.81);
-        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),38.81);
+        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18);
+        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47);
+        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0);
+        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0);
         public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55);
         public static final ArmState armHighConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
-        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(115),0);
+        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
 
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36),10);
         public static final class PID {
-            public static final double translationP = 3;
+            public static final double translationP = 5;
             public static final double translationI = 0;
             public static final double translationD = 0;
-            public static final double rotationP = 3.2;
+            public static final double rotationP = 5;
             public static final double rotationI = 0;
             public static final double rotationD = 0;
         }

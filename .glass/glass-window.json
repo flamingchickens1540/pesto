@@ -12,11 +12,26 @@
       "style": "0",
       "userScale": "2",
       "width": "1024",
-      "xpos": "-1",
-      "ypos": "-1"
+      "xpos": "448",
+      "ypos": "266"
     }
   },
   "Window": {
+    "###/SmartDashboard/autoChooser": {
+      "Collapsed": "0",
+      "Pos": "70,563",
+      "Size": "254,54"
+    },
+    "###/SmartDashboard/drivetrain/rotationPID": {
+      "Collapsed": "0",
+      "Pos": "538,72",
+      "Size": "154,69"
+    },
+    "###/SmartDashboard/drivetrain/translationPID": {
+      "Collapsed": "0",
+      "Pos": "695,73",
+      "Size": "173,69"
+    },
     "###NetworkTables": {
       "Collapsed": "0",
       "Pos": "250,277",

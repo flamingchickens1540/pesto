@@ -17,13 +17,23 @@ import java.util.List;
 public class Auto2PieceTaxi extends AutoCommand {
     public Auto2PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxi"));
+        System.out.println(pathCommands);
         addCommands(
                 new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake),
-                new SetArmPosition(arm, Constants.Auto.armDownBackwards),
+
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
-                        pathCommands.get(0),
-                        pathCommands.get(1)
+
+                        Commands.sequence(
+                                Commands.parallel(
+                            pathCommands.get(0),
+                                    new SetArmPosition(arm, Constants.Auto.armUp)
+                                ),
+                                new SetArmPosition(arm, Constants.Auto.armDownBackwards),
+                                pathCommands.get(1),
+                                new SetArmPosition(arm, Constants.Auto.armUp),
+                                pathCommands.get(2)
+                        )
                 ),
                 new AutoGridScore(drivetrain, grid.getOuterPole(), arm, Constants.Auto.armHighCone, intake)
         );

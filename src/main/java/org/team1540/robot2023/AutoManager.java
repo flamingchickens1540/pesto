@@ -35,7 +35,9 @@ public class AutoManager {
         chooser.addOption(name, new AutoCommandData(command, name, null));
     }
     public void addAuto(String name, Command command, Trajectory trajectory) {
-        field2d.getObject("trajectory/"+name).setTrajectory(trajectory);
+        if (trajectory != null) {
+            field2d.getObject("trajectory/" + name).setTrajectory(trajectory);
+        }
         chooser.addOption(name, new AutoCommandData(command, name, trajectory));
     }
     public void addDefaultAuto(String name, Command command, Trajectory trajectory) {

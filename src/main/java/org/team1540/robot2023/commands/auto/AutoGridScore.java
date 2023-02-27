@@ -1,11 +1,6 @@
 package org.team1540.robot2023.commands.auto;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
+import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
 import org.team1540.robot2023.commands.arm.RetractExtension;
@@ -35,25 +30,30 @@ public class AutoGridScore extends SequentialCommandGroup {
             Commands.race(
                     new GrabberIntakeCommand(intake),
                     Commands.parallel(
+                            new PrintCommand("START MOVING"),
                             alignmentCommand,
                             Commands.sequence(
-                                new RetractExtension(arm),
-                                new SetArmPosition(arm, approachSetpoint)
+                                    new PrintCommand("START ANGLING"),
+//                                new RetractExtension(arm),
+                                new PrintCommand("DONE RETRACTING"),
+                                new SetArmPosition(arm, approachSetpoint),
+                                new PrintCommand("DONE ANGLING")
                             )
                             
                     )
             ),
-            new SetArmPosition(arm, setpoint),
-            Commands.parallel(
+            new PivotCommand(arm,setpoint.getRotation2d()),
+            Commands.race(
                 new GrabberOuttakeCommand(intake),
                 Commands.sequence(
-                    new WaitCommand(0.25),
+                    new WaitCommand(1),
                     Commands.parallel(
                         new PivotCommand(arm, approachSetpoint.getRotation2d()),
                         new RetractExtension(arm)
                     )
                 )
             )
+                // TODO auto reset arm to upright
             
         );
     }

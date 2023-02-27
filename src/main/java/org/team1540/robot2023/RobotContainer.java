@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -13,17 +13,16 @@ import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ManualArm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.arm.SetArmPosition;
 import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
 import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
 import org.team1540.robot2023.commands.auto.Auto2PieceTaxi;
 import org.team1540.robot2023.commands.auto.AutoGridScore;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
@@ -51,6 +50,10 @@ public class RobotContainer {
     CommandXboxController driver = new CommandXboxController(0);
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
+
+    public final LogManager logManager = new LogManager(pdh);
+
+
     // Commands
 
     public RobotContainer() {
@@ -73,7 +76,8 @@ public class RobotContainer {
    private void configureButtonBindings() {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
-        driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, Constants.Auto.hpOffsetY));
+        driver.leftBumper().whileTrue(new SetArmPosition(arm, Constants.Auto.armHumanPlayer));
+//       driver.rightBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
@@ -97,7 +101,7 @@ public class RobotContainer {
 
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
-        copilot.rightBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)));
+        copilot.rightBumper().whileTrue(Commands.sequence(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)), new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)));
         //coop:button(Y, reset arm angle, copilot)
@@ -133,8 +137,6 @@ public class RobotContainer {
     }
 
     private void initSmartDashboard() {
-        SmartDashboard.putData("pdh", pdh);
-        SmartDashboard.putData("scheduler", CommandScheduler.getInstance());
         SmartDashboard.putNumber("arm/targetX", 22);
         SmartDashboard.putNumber("arm/targetY", 0);
         SmartDashboard.putNumber("arm/targetAngle", 0);
@@ -149,7 +151,7 @@ public class RobotContainer {
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
         manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
-        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+//        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto("ScoreHighCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake));
         manager.addAuto("ScoreMidCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake, false));

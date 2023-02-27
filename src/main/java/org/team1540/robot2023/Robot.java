@@ -5,7 +5,6 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -53,6 +52,7 @@ public class Robot extends TimedRobot {
 //        PathPlannerServer.startServer(5811);
         // ---------------
 
+        addPeriodic(robotContainer.logManager::execute, 2, 0.005);
         // Zero swerve modules 4 seconds after init
         new WaitCommand(5).andThen(() -> {
             robotContainer.drivetrain.resetAllToAbsolute();
@@ -87,9 +87,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         AutoManager.getInstance().updateSelected();
-        aprilTagLayout.setOrigin(DriverStation.getAlliance() == DriverStation.Alliance.Red ? AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide : AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
-    }
 
+    }
     /**
      * This function is called once each time the robot enters Disabled mode.
      */
