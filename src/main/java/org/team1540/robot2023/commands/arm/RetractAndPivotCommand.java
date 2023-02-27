@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RetractAndPivotCommand extends SequentialCommandGroup {
     public RetractAndPivotCommand(Arm arm, Rotation2d setpoint) {
         addCommands(
-                new RetractExtension(arm),
+                new ExtensionCommand(arm, 0),
                 new PivotCommand(arm, setpoint)
         );
         addRequirements(arm);

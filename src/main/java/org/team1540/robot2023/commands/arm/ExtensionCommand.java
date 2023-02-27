@@ -13,8 +13,8 @@ public class ExtensionCommand extends CommandBase {
 
     public ExtensionCommand(Arm arm, double targetExtension) {
         this.arm = arm;
-        this.targetExtension = targetExtension;
         addRequirements(arm);
+        this.targetExtension = Math.max(targetExtension, Constants.ArmConstants.ARM_BASE_LENGTH);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class ExtensionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if(targetExtension < Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()){
+        if(targetExtension == Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()){
             return true;
         }
         return average.getAverage() < threshold;

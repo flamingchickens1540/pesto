@@ -5,6 +5,14 @@ import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
 import org.team1540.robot2023.commands.arm.RetractExtension;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -49,7 +57,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                     new WaitCommand(1),
                     Commands.parallel(
                         new PivotCommand(arm, approachSetpoint.getRotation2d()),
-                        new RetractExtension(arm)
+                        new ResetArmPositionCommand(arm)
                     )
                 )
             )
