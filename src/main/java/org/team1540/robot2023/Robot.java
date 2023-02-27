@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 //        PathPlannerServer.startServer(5811);
         // ---------------
 
-        addPeriodic(robotContainer.logManager::execute, 2, 0.005);
+        addPeriodic(robotContainer.logManager::execute, 0.25, 0.005);
         // Zero swerve modules 4 seconds after init
         new WaitCommand(5).andThen(() -> {
             robotContainer.drivetrain.resetAllToAbsolute();
