@@ -18,6 +18,7 @@ import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
+import org.team1540.robot2023.commands.grabber.DefaulGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
@@ -133,6 +134,7 @@ public class RobotContainer {
         // coop:button(LTrigger, Retract telescope [HOLD],copilot)
         // coop:button(RTrigger, Extend telescope [HOLD],copilot)
         arm.setDefaultCommand(new ManualArm(arm, copilot));
+        intake.setDefaultCommand(new DefaulGrabberCommand(intake));
     }
 
     private void initSmartDashboard() {

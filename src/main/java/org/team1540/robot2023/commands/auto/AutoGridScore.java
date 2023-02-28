@@ -24,7 +24,7 @@ public class AutoGridScore extends SequentialCommandGroup {
     public AutoGridScore(Drivetrain drivetrain, PolePosition position, Arm arm, ArmState setpoint, ArmState approachSetpoint, WheeledGrabber intake, boolean shouldAlign){
         Command alignmentCommand = shouldAlign ? new ProxiedGridDriveCommand(drivetrain, position) : new InstantCommand();
         addCommands(
-            Commands.race(
+            Commands.parallel(
                     new GrabberIntakeCommand(intake),
                     Commands.sequence(
                             Commands.parallel(
@@ -36,12 +36,12 @@ public class AutoGridScore extends SequentialCommandGroup {
                     )
 
             ),
-            new PivotCommand(arm,setpoint.getRotation2d()),
+            new ConditionalCommand(new InstantCommand(), new PivotCommand(arm,setpoint.getRotation2d()), () -> setpoint.getRotation2d().equals(approachSetpoint.getRotation2d())),
             Commands.race(
                 new GrabberOuttakeCommand(intake),
                 Commands.sequence(
                     new WaitCommand(1),
-                        new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
+                    new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
                 )
             ),
             new ResetArmPositionCommand(arm)
