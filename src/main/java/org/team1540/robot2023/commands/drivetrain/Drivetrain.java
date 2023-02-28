@@ -71,13 +71,15 @@ public class Drivetrain extends SubsystemBase {
                 modules[2].getState().angle.getDegrees(), modules[2].getState().speedMetersPerSecond,
                 modules[3].getState().angle.getDegrees(), modules[3].getState().speedMetersPerSecond
         });
-        SmartDashboard.putNumber("drivetrain/gyro", getYaw().getDegrees());
+
         gyro.reset();
     }
 
     @Override
     public void periodic() {
-
+        SmartDashboard.putNumber("gyro/yaw", gyro.getYaw());
+        SmartDashboard.putNumber("gyro/pitch", gyro.getPitch());
+        SmartDashboard.putNumber("gyro/roll", gyro.getRoll());
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxVelocity);
         modules[0].setDesiredState(states[0], true, isParkMode);
         modules[1].setDesiredState(states[1], true, isParkMode);
@@ -145,7 +147,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
 
-    protected Command getPathCommand(PathPlannerTrajectory trajectory) {
+    public Command getPathCommand(PathPlannerTrajectory trajectory) {
         return new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier

@@ -16,8 +16,8 @@ public class SwerveDriveCommand extends CommandBase {
     private double rotscale = 1;
 
     // The rate limit should be relative to the input percent. A value of 1 will take 1 second to get from 0% to 100%, a value of 2 will do that in half a second
-    private final SlewRateLimiter xLimiter = new SlewRateLimiter(3);
-    private final SlewRateLimiter yLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter xLimiter = new SlewRateLimiter(2);
+    private final SlewRateLimiter yLimiter = new SlewRateLimiter(2);
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
     private final DoubleLogEntry xyscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:xyscale" );
     private final DoubleLogEntry rotscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:rotscale");

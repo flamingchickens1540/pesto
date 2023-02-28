@@ -10,12 +10,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
-import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
-import org.team1540.robot2023.commands.auto.Auto2PieceTaxi;
-import org.team1540.robot2023.commands.auto.AutoGridScore;
+import org.team1540.robot2023.commands.arm.Arm;
+import org.team1540.robot2023.commands.arm.ManualArm;
+import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
+import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
@@ -48,7 +49,7 @@ public class RobotContainer {
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
-    public final LogManager logManager = new LogManager(pdh);
+//    public final LogManager logManager = new LogManager(pdh);
 
 
     // Commands
@@ -73,9 +74,9 @@ public class RobotContainer {
    private void configureButtonBindings() {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
-       driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
-        driver.leftBumper().whileTrue(new SetArmPosition(arm, Constants.Auto.armHumanPlayer));
-//       driver.rightBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
+        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
+        driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
+        driver.leftBumper().whileTrue(new AutoSubstationAlign(drivetrain, arm, intake, -Constants.Auto.hpOffsetY));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));

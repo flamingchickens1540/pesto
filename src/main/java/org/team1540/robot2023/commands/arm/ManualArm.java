@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.Constants.ArmConstants;
 
 public class ManualArm extends CommandBase {
-    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1,-1.5,0);
+    private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1,-1,0);
     private final Arm arm;
     private final CommandXboxController controller;
     private final double deadzone = 0.1;
@@ -37,7 +37,7 @@ public class ManualArm extends CommandBase {
         }
 
         double limitedExtensionInput = slewRateLimiter.calculate(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis());
-        if(limitedExtensionInput <= deadzone && !isHoldingExtension){
+        if(Math.abs(limitedExtensionInput) <= deadzone && !isHoldingExtension){
             isHoldingExtension = true;
             arm.setExtension(arm.getArmState().getExtension());
         }

@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.Constants.GrabberConstants;
 
 public class WheeledGrabber extends SubsystemBase {
@@ -25,7 +26,9 @@ public class WheeledGrabber extends SubsystemBase {
 
 
     }
-
+    public boolean hasGamePiece() {
+        return this.getCurrent() > Constants.GrabberConstants.INTAKE_CURRENT_THRESH;
+    }
     public void stop() {
         motor1.set(0);
     }
