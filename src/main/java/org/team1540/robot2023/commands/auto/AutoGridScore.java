@@ -3,16 +3,8 @@ package org.team1540.robot2023.commands.auto;
 import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
-import org.team1540.robot2023.commands.arm.RetractExtension;
+import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
-import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -55,10 +47,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                 new GrabberOuttakeCommand(intake),
                 Commands.sequence(
                     new WaitCommand(1),
-                    Commands.parallel(
-                        new PivotCommand(arm, approachSetpoint.getRotation2d()),
-                        new ResetArmPositionCommand(arm)
-                    )
+                        new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
                 )
             )
                 // TODO auto reset arm to upright
