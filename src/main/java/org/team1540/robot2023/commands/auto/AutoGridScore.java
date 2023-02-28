@@ -1,10 +1,7 @@
 package org.team1540.robot2023.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.*;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.PivotCommand;
-import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
-import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.ProxiedGridDriveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -12,6 +9,8 @@ import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.PolePosition;
+
+import java.util.Set;
 
 public class AutoGridScore extends SequentialCommandGroup {
 
@@ -29,18 +28,16 @@ public class AutoGridScore extends SequentialCommandGroup {
         addCommands(
             Commands.race(
                     new GrabberIntakeCommand(intake),
-                    Commands.parallel(
-                            new PrintCommand("START MOVING"),
-                            alignmentCommand,
-                            Commands.sequence(
-                                    new PrintCommand("START ANGLING"),
-//                                new RetractExtension(arm),
-                                new PrintCommand("DONE RETRACTING"),
-                                new SetArmPosition(arm, approachSetpoint),
-                                new PrintCommand("DONE ANGLING")
-                            )
-                            
+                    Commands.sequence(
+                            Commands.parallel(
+                                    new PrintCommand("START MOVING"),
+                                    alignmentCommand,
+                                    new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
+
+                            ),
+                            new SetArmPosition(arm, approachSetpoint)
                     )
+
             ),
             new PivotCommand(arm,setpoint.getRotation2d()),
             Commands.race(
@@ -49,9 +46,8 @@ public class AutoGridScore extends SequentialCommandGroup {
                     new WaitCommand(1),
                         new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
                 )
-            )
-                // TODO auto reset arm to upright
-            
+            ),
+            new ResetArmPositionCommand(arm)
         );
     }
 }
