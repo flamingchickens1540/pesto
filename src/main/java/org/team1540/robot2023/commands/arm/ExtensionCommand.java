@@ -21,6 +21,7 @@ public class ExtensionCommand extends CommandBase {
     public void initialize() {
         arm.setExtension(targetExtension);
         average.clear();
+        arm.setRotation(arm.getArmState().getRotation2d());
     }
 
     @Override

@@ -20,6 +20,7 @@ public class PivotCommand extends CommandBase {
     public void initialize() {
         arm.setRotation(targetAngle);
         average.clear();
+        arm.setExtension(arm.getArmState().getExtension());
     }
 
     @Override
