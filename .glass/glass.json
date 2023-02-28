@@ -1,0 +1,32 @@
+{
+  "NetworkTables": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/autoChooser": "String Chooser",
+      "/SmartDashboard/drivetrain/rotationPID": "PIDController",
+      "/SmartDashboard/drivetrain/translationPID": "PIDController",
+      "/SmartDashboard/field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/autoChooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/drivetrain/rotationPID": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/drivetrain/translationPID": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "1540"
+  }
+}

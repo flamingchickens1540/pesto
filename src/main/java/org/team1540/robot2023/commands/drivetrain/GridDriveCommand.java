@@ -6,26 +6,42 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.PolePosition;
 
+import java.util.NoSuchElementException;
+
 import static org.team1540.robot2023.Globals.aprilTagLayout;
+import static org.team1540.robot2023.Globals.field2d;
 
 class GridDriveCommand extends SequentialCommandGroup {
     private static int getClosestTag(Drivetrain drivetrain) {
+        aprilTagLayout.setOrigin(DriverStation.getAlliance() == DriverStation.Alliance.Red ? AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide : AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
         Translation2d currentPose = drivetrain.getPose().getTranslation();
         double mindist = Double.MAX_VALUE;
         int closestTag = -1;
-        for (AprilTag tag : aprilTagLayout.getTags()) {
-            double distance = tag.pose.toPose2d().getTranslation().getDistance(currentPose);
-            if (distance < mindist || closestTag == -1) {
-                mindist = distance;
-                closestTag = tag.ID;
+        try {
+            for (AprilTag tag : aprilTagLayout.getTags()) {
+                Pose2d pose = aprilTagLayout.getTagPose(tag.ID).orElseThrow().toPose2d();
+                double distance = pose.getTranslation().getDistance(currentPose);
+                field2d.getObject("apriltag/" + tag.ID).setPose(pose);
+                if (distance < mindist || closestTag == -1) {
+                    mindist = distance;
+
+                    closestTag = tag.ID;
+                }
             }
+        }  catch (NoSuchElementException e) {
+            DriverStation.reportError("COULDN'T FIND APRIL TAG FOR SOME REASON THIS IS NOT SUPPOSED TO HAPPEN", false);
         }
+        SmartDashboard.putNumber("drivetrain/tag", closestTag);
         return closestTag;
     }
     public GridDriveCommand(Drivetrain drivetrain, PolePosition postiion) {
@@ -40,8 +56,10 @@ class GridDriveCommand extends SequentialCommandGroup {
                 new PathPoint(endPoint.plus(new Translation2d(0.127, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)), // position, heading(direction of travel), holonomic rotation
                 new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)) // position, heading(direction of travel), holonomic rotation
         );
+        field2d.getObject("gridDrivePath").setTrajectory(trajectory);
+        field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
         PathPlannerServer.sendActivePath(trajectory.getStates());
-
+//        PathPlannerTrajectory flippedTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
         addCommands(drivetrain.getPathCommand(trajectory));
         addRequirements(drivetrain);
     }

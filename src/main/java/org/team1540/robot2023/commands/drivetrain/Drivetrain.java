@@ -12,21 +12,19 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.robot2023.Constants;
-import org.team1540.robot2023.utils.Limelight;
+import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
 
-import java.util.Objects;
-
 import static org.team1540.robot2023.Constants.Swerve;
+import static org.team1540.robot2023.Globals.field2d;
 
 public class Drivetrain extends SubsystemBase {
 
@@ -40,21 +38,40 @@ public class Drivetrain extends SubsystemBase {
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+    // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
+    private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
+    private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
     // Whether to allow the wheels to park
     private boolean isParkMode = false;
 
     // Odometry
-    private final Field2d field2d = new Field2d();
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
 
     public Drivetrain() {
-        SmartDashboard.setDefaultNumber("drivetrain/translate/kp", Constants.Auto.PID.translationP);
-        SmartDashboard.setDefaultNumber("drivetrain/translate/ki", Constants.Auto.PID.translationI);
-        SmartDashboard.setDefaultNumber("drivetrain/translate/kd", Constants.Auto.PID.translationD);
-        SmartDashboard.setDefaultNumber("drivetrain/rotate/kp", Constants.Auto.PID.rotationP);
-        SmartDashboard.setDefaultNumber("drivetrain/rotate/ki", Constants.Auto.PID.rotationI);
-        SmartDashboard.setDefaultNumber("drivetrain/rotate/kd", Constants.Auto.PID.rotationD);
-
+        PPSwerveControllerCommand.setLoggingCallbacks(
+                (trajectory) -> field2d.getObject("activetrajectory").setTrajectory(trajectory),
+                (pose) -> field2d.getObject("targetpose").setPose(pose),
+                null,
+                (translation, rotation) -> {
+                    SmartDashboard.putNumber("drivetrain/pathplanner/xErr", translation.getX());
+                    SmartDashboard.putNumber("drivetrain/pathplanner/yErr", translation.getY());
+                    SmartDashboard.putNumber("drivetrain/pathplanner/rotErr", rotation.getDegrees());
+                });
+        SmartDashboard.putData("drivetrain/translationPID", dummyTranslationPID);
+        SmartDashboard.putData("drivetrain/rotationPID", dummyRotationPID);
+        SmartDashboard.putNumberArray("drivetrain/swerveModuleStates/desired", new double[]{
+                states[0].angle.getDegrees(), states[0].speedMetersPerSecond,
+                states[1].angle.getDegrees(), states[1].speedMetersPerSecond,
+                states[2].angle.getDegrees(), states[2].speedMetersPerSecond,
+                states[3].angle.getDegrees(), states[3].speedMetersPerSecond
+        });
+        SmartDashboard.putNumberArray("drivetrain/swerveModuleStates/actual", new double[]{
+                modules[0].getState().angle.getDegrees(), modules[0].getState().speedMetersPerSecond,
+                modules[1].getState().angle.getDegrees(), modules[1].getState().speedMetersPerSecond,
+                modules[2].getState().angle.getDegrees(), modules[2].getState().speedMetersPerSecond,
+                modules[3].getState().angle.getDegrees(), modules[3].getState().speedMetersPerSecond
+        });
+        SmartDashboard.putNumber("drivetrain/gyro", getYaw().getDegrees());
         gyro.reset();
     }
 
@@ -67,24 +84,14 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        Pose2d rawBotPose = Limelight.getBotPose();
-        Pose2d filteredBotPose = Limelight.getFilteredBotPose();
-        if (filteredBotPose != null) {
-            poseEstimator.addVisionMeasurement(filteredBotPose,  edu.wpi.first.wpilibj.Timer.getFPGATimestamp()-(Limelight.getDeltaTime()/1000));
-            field2d.getObject("VisionPoseFiltered").setPose(filteredBotPose);
-        } else {
-            field2d.getObject("VisionPoseFiltered").setPose(new Pose2d());
-        }
-        field2d.getObject("VisionPoseReal").setPose(Objects.requireNonNullElseGet(rawBotPose, Pose2d::new));
-        SmartDashboard.putData("field", field2d);
-        field2d.setRobotPose(poseEstimator.getEstimatedPosition());
-        double angle = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+        LimelightManager.getInstance().applyEstimates(poseEstimator);
 
+        field2d.setRobotPose(poseEstimator.getEstimatedPosition());
     }
 
 
     public void resetAllToAbsolute() {
-        System.out.println("RESETTING ALL");
+        DataLogManager.log("Zeroing swerve module relative encoders");
         for (SwerveModule module: modules) {
             module.resetToAbsolute();
         }
@@ -143,9 +150,9 @@ public class Drivetrain extends SubsystemBase {
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(SmartDashboard.getNumber("drivetrain/translate/kp",Constants.Auto.PID.translationP),SmartDashboard.getNumber("drivetrain/translate/ki",Constants.Auto.PID.translationI),SmartDashboard.getNumber("drivetrain/translate/kd",Constants.Auto.PID.translationD)), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
-                new PIDController(SmartDashboard.getNumber("drivetrain/translate/kp",Constants.Auto.PID.translationP),SmartDashboard.getNumber("drivetrain/translate/ki",Constants.Auto.PID.translationI),SmartDashboard.getNumber("drivetrain/translate/kd",Constants.Auto.PID.translationD)), // Y controller. Should be same as values for X controller
-                new PIDController(SmartDashboard.getNumber("drivetrain/rotate/kp",Constants.Auto.PID.rotationP),SmartDashboard.getNumber("drivetrain/rotate/ki",Constants.Auto.PID.rotationI),SmartDashboard.getNumber("drivetrain/rotate/kd",Constants.Auto.PID.rotationD)), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards
+                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
+                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
+                new PIDController(dummyRotationPID.getP(), dummyRotationPID.getI(), dummyRotationPID.getD()),
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
         );
@@ -197,9 +204,7 @@ public class Drivetrain extends SubsystemBase {
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
-    public void setFieldPath(Trajectory path) {
-        field2d.getObject("trajectory").setTrajectory(path);
-    }
+
 
     public SwerveModulePosition[] getModulePositions(){
         return new SwerveModulePosition[]{

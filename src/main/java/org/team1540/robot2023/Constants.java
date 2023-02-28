@@ -7,8 +7,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
+import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
-
 
 public final class Constants {
     public static final boolean ENABLE_PNEUMATICS = false;
@@ -22,19 +22,28 @@ public final class Constants {
 
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
-        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(33.5);
+        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(31);
+        public static final double hpOffsetX = Units.inchesToMeters(27.25);
+        public static final double hpOffsetY = -Units.inchesToMeters(20);
 
-        public static final Rotation2d angleMidCube = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleHighCube = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleMidCone = Rotation2d.fromDegrees(-55.4165);
-        public static final Rotation2d angleHighCone = Rotation2d.fromDegrees(-65);
-        public static final Rotation2d angleUp = Rotation2d.fromDegrees(0);
-        public static final Rotation2d angleDown = Rotation2d.fromDegrees(-115);
+        // TODO: TUNE EXTENSIONS
+        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18);
+        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47);
+        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0);
+        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0);
+        public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55);
+        public static final ArmState armHighConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55);
+
+        public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
+        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
+        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
+
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36),10);
         public static final class PID {
-            public static final double translationP = 3;
+            public static final double translationP = 5;
             public static final double translationI = 0;
             public static final double translationD = 0;
-            public static final double rotationP = 3.2;
+            public static final double rotationP = 5;
             public static final double rotationI = 0;
             public static final double rotationD = 0;
         }
@@ -146,9 +155,6 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final class Setpoints {
-            public static final Rotation2d midCube = Rotation2d.fromDegrees(-65);
-        }
         public static final int PIVOT1_ID = 10;
         public static final int PIVOT2_ID = 11;
         public static final int TELESCOPE_ID = 12;
@@ -178,12 +184,14 @@ public final class Constants {
         public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
         public static final double EXT_GEAR_RATIO = 16;
 
-        public static final double TELESCOPE_FF = 0;
-        public static final double TELESCOPE_KP = 0.3;
+        public static final double TELESCOPE_KF = 0.0002;
+        public static final double TELESCOPE_KP = 0.0001;
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
-        public static final double TELESCOPE_MAX_ACCEL = 100;
-        public static final double TELESCOPE_CRUISE_SPEED = 100;
+        public static final double TELESCOPE_CRUISE_SPEED = 5000;
+
+        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.5);
+
 
         public static final float TELESCOPE_FORWARD_LIMIT = 116;
 
