@@ -23,7 +23,7 @@ public final class Constants {
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(31);
-        public static final double hpOffsetX = Units.inchesToMeters(33);
+        public static final double hpOffsetX = Units.inchesToMeters(30);
         public static final double hpOffsetY = -Units.inchesToMeters(20);
 
         // TODO: TUNE EXTENSIONS
@@ -38,7 +38,7 @@ public final class Constants {
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
 
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),10);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-51),37);
         public static final class PID {
             public static final double translationP = 5;
             public static final double translationI = 0;

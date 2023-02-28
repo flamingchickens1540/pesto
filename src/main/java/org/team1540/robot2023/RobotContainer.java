@@ -77,7 +77,7 @@ public class RobotContainer {
         driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
         driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
         driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
-        driver.leftBumper().whileTrue(new AutoSubstationAlign(drivetrain, arm, intake, -Constants.Auto.hpOffsetY));
+        driver.leftBumper().whileTrue(new AutoSubstationAlign(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
