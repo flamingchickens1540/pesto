@@ -51,7 +51,8 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                         );
                         return drivetrain.getPathCommand(trajectory);
                     }),
-                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
+                    new WaitUntilCommand(() -> intake.hasGamePiece()),
+//                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
                     new ProxyCommand(() ->{
                         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                                 new PathConstraints(5, 3),

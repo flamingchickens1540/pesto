@@ -7,6 +7,7 @@ public class RetractAndPivotCommand extends SequentialCommandGroup {
     public RetractAndPivotCommand(Arm arm, Rotation2d setpoint) {
         addCommands(
                 new ExtensionCommand(arm, 0),
+                new RetractExtension(arm),
                 new PivotCommand(arm, setpoint)
         );
         addRequirements(arm);
