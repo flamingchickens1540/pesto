@@ -37,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
     };
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
+    private double fieldOrientationOffset = 0;
     // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
     private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
     private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
@@ -111,7 +111,7 @@ public class Drivetrain extends SubsystemBase {
         double ySpeed = yPercent * Swerve.maxVelocity;
         double rot = Math.toRadians(rotPercent*360);
         ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().minus(Rotation2d.fromDegrees(fieldOrientationOffset)))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
         double deadzone = 0.02;
         double rotDeadzone = 0.1;
@@ -172,7 +172,18 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroGyroscope() {
         gyro.zeroYaw();
-    } //todo: make sure this doesn't break odometry
+    }
+
+//    public void zeroFieldOrientation() {
+//        fieldOrientationOffset = getYaw().getDegrees();
+//    }
+    public void zeroFieldOrientation() {
+        fieldOrientationOffset = getYaw().getDegrees()-poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+    }
+
+    public void zeroFieldOrientationManual() {
+        fieldOrientationOffset = getYaw().getDegrees();
+    }
 
     public Rotation2d getYaw() {
         if (gyro.isMagnetometerCalibrated()) {

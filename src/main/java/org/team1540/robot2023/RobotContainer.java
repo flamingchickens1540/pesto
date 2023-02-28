@@ -72,7 +72,8 @@ public class RobotContainer {
 
    private void configureButtonBindings() {
         // Driver
-        driver.a().onTrue(new InstantCommand(drivetrain::zeroGyroscope).andThen(drivetrain::resetAllToAbsolute));
+        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
+       driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
         driver.leftBumper().whileTrue(new SetArmPosition(arm, Constants.Auto.armHumanPlayer));
 //       driver.rightBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
         // Copilot

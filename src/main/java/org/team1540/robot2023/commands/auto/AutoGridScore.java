@@ -10,8 +10,6 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.PolePosition;
 
-import java.util.Set;
-
 public class AutoGridScore extends SequentialCommandGroup {
 
     public AutoGridScore(Drivetrain drivetrain, PolePosition position, Arm arm, ArmState setpoint, ArmState approachSetpoint, WheeledGrabber intake){
@@ -33,7 +31,6 @@ public class AutoGridScore extends SequentialCommandGroup {
                                     new PrintCommand("START MOVING"),
                                     alignmentCommand,
                                     new RetractAndPivotCommand(arm, approachSetpoint.getRotation2d())
-
                             ),
                             new SetArmPosition(arm, approachSetpoint)
                     )
