@@ -31,18 +31,19 @@ public class ManualArm extends CommandBase {
         if (Math.abs(pivotInput) <= deadzone && !isHoldingRotation) {
             isHoldingRotation = true;
             arm.setRotation(arm.getArmState().getRotation2d());
-        } else {
+        } else if (Math.abs(pivotInput) >= deadzone) {
             isHoldingRotation = false;
             arm.setRotatingSpeed(Math.pow(pivotInput, 3) * (1 + ((-1/ArmConstants.TELESCOPE_FORWARD_LIMIT)*pivotInput))); // TODO: 2/11/2023 Check angles here
         }
 
-        if(controller.getLeftTriggerAxis() == 0 && controller.getRightTriggerAxis() == 0 && !isHoldingExtension){
+        double limitedExtensionInput = slewRateLimiter.calculate(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis());
+        if(limitedExtensionInput <= deadzone && !isHoldingExtension){
             isHoldingExtension = true;
             arm.setExtension(arm.getArmState().getExtension());
         }
-        else{
+        else if (Math.abs(limitedExtensionInput) >= deadzone){
             isHoldingExtension = false;
-            arm.setExtendingSpeed(slewRateLimiter.calculate(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis()));
+            arm.setExtendingSpeed(limitedExtensionInput);
         }
     }
 
