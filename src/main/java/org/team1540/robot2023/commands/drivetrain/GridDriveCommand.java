@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.PolePosition;
 
+import java.util.NoSuchElementException;
+
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 import static org.team1540.robot2023.Globals.field2d;
 
@@ -36,7 +38,7 @@ class GridDriveCommand extends SequentialCommandGroup {
                     closestTag = tag.ID;
                 }
             }
-        }  catch (Exception e) {
+        }  catch (NoSuchElementException e) {
             DriverStation.reportError("COULDN'T FIND APRIL TAG FOR SOME REASON THIS IS NOT SUPPOSED TO HAPPEN", false);
         }
         SmartDashboard.putNumber("drivetrain/tag", closestTag);
