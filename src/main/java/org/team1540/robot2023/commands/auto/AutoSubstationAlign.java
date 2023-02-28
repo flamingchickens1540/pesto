@@ -30,7 +30,7 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
         Translation2d endPoint = aprilTagLayout.getTagPose(5).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(-Constants.Auto.hpOffsetX, offset));
 
         addCommands(
-            Commands.race(
+            Commands.parallel(
                 new GrabberIntakeCommand(intake),
                 Commands.sequence(
                     new ProxyCommand(() ->{

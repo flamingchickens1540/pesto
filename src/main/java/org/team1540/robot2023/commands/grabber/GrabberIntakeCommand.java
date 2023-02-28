@@ -22,6 +22,6 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        wheeledGrabber.stop();
+        System.out.println("NO LONGER GRABBY");
     }
 }
