@@ -190,7 +190,7 @@ public final class Constants {
         public static final double TELESCOPE_KD = 0;
         public static final double TELESCOPE_CRUISE_SPEED = 5000;
 
-        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.5);
+        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.25);
 
 
         public static final float TELESCOPE_FORWARD_LIMIT = (float) ((57 - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);

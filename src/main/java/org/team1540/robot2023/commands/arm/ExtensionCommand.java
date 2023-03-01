@@ -1,5 +1,6 @@
 package org.team1540.robot2023.commands.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.AverageFilter;
 
@@ -22,6 +23,7 @@ public class ExtensionCommand extends CommandBase {
         arm.setExtension(targetExtension);
         average.clear();
         arm.setRotation(arm.getArmState().getRotation2d());
+        SmartDashboard.putNumber("arm/targetExtensionNew", targetExtension);
     }
 
     @Override
@@ -41,5 +43,6 @@ public class ExtensionCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         arm.stopAll();
+        System.out.println("Done Extending");
     }
 }

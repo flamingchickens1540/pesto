@@ -7,7 +7,7 @@ import org.team1540.robot2023.utils.AverageFilter;
 public class PivotCommand extends CommandBase {
     private final Arm arm;
     private final Rotation2d targetAngle;
-    private final AverageFilter average = new AverageFilter(20);
+    private final AverageFilter average = new AverageFilter(5);
     private final double threshold = 0.5;
 
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
