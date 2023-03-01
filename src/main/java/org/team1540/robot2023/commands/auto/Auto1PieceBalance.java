@@ -11,7 +11,7 @@ import org.team1540.robot2023.utils.ScoringGrid;
 public class Auto1PieceBalance extends AutoCommand {
     public Auto1PieceBalance(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGrid grid) {
         addCommands(
-                new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake),
+                new AutoGridScore(drivetrain, arm,PolePosition.CENTER,Constants.Auto.highCube, intake),
                 getPathPlannerDriveCommand(drivetrain, grid.getPathName("1PieceBalance"))
 //                new AutoBalanceCommand(drivetrain, true)
         );

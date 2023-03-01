@@ -1,10 +1,9 @@
 package org.team1540.robot2023.commands.arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.team1540.robot2023.Constants;
-import org.team1540.robot2023.utils.AverageFilter;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.Constants;
+import org.team1540.robot2023.utils.ArmState;
+import org.team1540.robot2023.utils.AverageFilter;
 
 public class ExtensionCommand extends CommandBase {
     private final Arm arm;
@@ -12,10 +11,13 @@ public class ExtensionCommand extends CommandBase {
     private final AverageFilter average = new AverageFilter(10);
     private final double threshold = 0.25;
 
+    public ExtensionCommand(Arm arm, ArmState target) {
+        this(arm, target.getExtension());
+    }
     public ExtensionCommand(Arm arm, double targetExtension) {
         this.arm = arm;
-        addRequirements(arm);
         this.targetExtension = Math.max(targetExtension, Constants.ArmConstants.ARM_BASE_LENGTH);
+        addRequirements(arm);
     }
 
     @Override
@@ -23,7 +25,6 @@ public class ExtensionCommand extends CommandBase {
         arm.setExtension(targetExtension);
         average.clear();
         arm.setRotation(arm.getArmState().getRotation2d());
-        SmartDashboard.putNumber("arm/targetExtensionNew", targetExtension);
     }
 
     @Override
@@ -43,6 +44,5 @@ public class ExtensionCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         arm.stopAll();
-        System.out.println("Done Extending");
     }
 }

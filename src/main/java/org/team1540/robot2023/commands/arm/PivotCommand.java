@@ -2,6 +2,7 @@ package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
 
 public class PivotCommand extends CommandBase {
@@ -10,6 +11,9 @@ public class PivotCommand extends CommandBase {
     private final AverageFilter average = new AverageFilter(5);
     private final double threshold = 0.5;
 
+    public PivotCommand(Arm arm, ArmState target) {
+        this(arm, target.getRotation2d());
+    }
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
         this.arm = arm;
         this.targetAngle = targetAngle;
