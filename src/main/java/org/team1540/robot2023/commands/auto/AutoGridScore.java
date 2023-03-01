@@ -35,11 +35,11 @@ public class AutoGridScore extends SequentialCommandGroup {
             Commands.race(
                 new GrabberOuttakeCommand(intake),
                 Commands.sequence(
-                    new WaitCommand(1),
-                    new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null)
+                        new WaitCommand(0.25),
+                    new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
+                    new ResetArmPositionCommand(arm)
                 )
-            ),
-            new ResetArmPositionCommand(arm)
+            )
         );
     }
 

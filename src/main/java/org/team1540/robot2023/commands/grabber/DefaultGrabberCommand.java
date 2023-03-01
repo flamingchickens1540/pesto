@@ -18,8 +18,4 @@ public class DefaultGrabberCommand extends CommandBase {
 //        wheeledGrabber.setCurrentLimit(10);
     }
 
-    @Override
-    public void end(boolean interrupted) {
-        wheeledGrabber.stop();
-    }
 }
