@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +25,10 @@ public class Arm extends SubsystemBase {
     private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
     private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
+    private final AHRS navx;
 
-    public Arm() {
+    public Arm(AHRS navx) {
+        this.navx = navx;
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
@@ -124,6 +127,7 @@ public class Arm extends SubsystemBase {
         if (pigeonAccel[0] > 0) {
             pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
         } else pigeonRoll = pigeon2.getRoll();
+        pigeonRoll += navx.getRoll();
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(
                         pigeonRoll + ArmConstants.PIGEON_OFFSET,

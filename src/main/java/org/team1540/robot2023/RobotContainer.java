@@ -1,6 +1,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +35,7 @@ import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 public class RobotContainer {
     // Hardware
 
-
+    AHRS gyro = new AHRS(SPI.Port.kMXP);
     RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
     RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
     BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
@@ -42,8 +43,8 @@ public class RobotContainer {
     public final PowerDistribution pdh = new PowerDistribution(Constants.PDH, PowerDistribution.ModuleType.kRev);
     // Subsystems
 
-    Drivetrain drivetrain = new Drivetrain();
-    Arm arm = new Arm();
+    Drivetrain drivetrain = new Drivetrain(gyro);
+    Arm arm = new Arm(gyro);
     WheeledGrabber intake = new WheeledGrabber();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);

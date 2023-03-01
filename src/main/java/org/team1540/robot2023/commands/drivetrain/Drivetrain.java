@@ -36,7 +36,7 @@ public class Drivetrain extends SubsystemBase {
             new SwerveModule(3, Swerve.Mod3.constants)
     };
 
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    private final AHRS gyro;
     private double fieldOrientationOffset = 0;
     // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
     private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
@@ -47,7 +47,8 @@ public class Drivetrain extends SubsystemBase {
     // Odometry
     private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
 
-    public Drivetrain() {
+    public Drivetrain(AHRS gyro) {
+        this.gyro = gyro;
         PPSwerveControllerCommand.setLoggingCallbacks(
                 (trajectory) -> field2d.getObject("activetrajectory").setTrajectory(trajectory),
                 (pose) -> field2d.getObject("targetpose").setPose(pose),
