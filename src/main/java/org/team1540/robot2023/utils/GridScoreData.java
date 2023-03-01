@@ -12,4 +12,8 @@ public class GridScoreData {
     public GridScoreData(ArmState position) {
         this.approach = position;
     }
+    public GridScoreData(ArmState approach, ArmState score) {
+        this.approach = approach;
+        this.score = score;
+    }
 }

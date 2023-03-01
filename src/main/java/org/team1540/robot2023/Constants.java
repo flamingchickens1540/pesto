@@ -36,13 +36,12 @@ public final class Constants {
         public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47));
         public static final GridScoreData midCone = new GridScoreData(
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0), // Mid Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0), // Mid Cone Score
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0)  // Mid Cone Retreat
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0) // Mid Cone Score
         );
         public static final GridScoreData highCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55), // High Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55), // High Cone Score
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55) // High Cone Retreat
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),58), // High Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),58), // High Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-42),58) // High Cone Retreat
         );
 
         public static final GridScoreData hybridNode = new GridScoreData(armDown);
