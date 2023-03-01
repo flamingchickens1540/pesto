@@ -33,6 +33,7 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
             Commands.parallel(
                 new GrabberIntakeCommand(intake),
                 Commands.sequence(
+                        Commands.parallel(
                     new ProxyCommand(() ->{
                         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                             new PathConstraints(5, 3),
@@ -41,7 +42,8 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                         );
                         return drivetrain.getPathCommand(trajectory);
                     }),
-                    new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d()),
+                    new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
+                        ),
                     new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
                     new ProxyCommand(() ->{
                         PathPlannerTrajectory trajectory = PathPlanner.generatePath(
@@ -51,7 +53,7 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                         );
                         return drivetrain.getPathCommand(trajectory);
                     }),
-                    new WaitUntilCommand(() -> intake.hasGamePiece()),
+                    new WaitUntilCommand(intake::hasGamePiece),
 //                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
                     new ProxyCommand(() ->{
                         PathPlannerTrajectory trajectory = PathPlanner.generatePath(

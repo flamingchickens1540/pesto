@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
 import org.team1540.robot2023.utils.ArmState;
+import org.team1540.robot2023.utils.GridScoreData;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 public final class Constants {
@@ -26,19 +27,28 @@ public final class Constants {
         public static final double hpOffsetX = Units.inchesToMeters(30);
         public static final double hpOffsetY = -Units.inchesToMeters(20);
 
-        // TODO: TUNE EXTENSIONS
-        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18);
-        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47);
-        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0);
-        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0);
-        public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55);
-        public static final ArmState armHighConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55);
-
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
-
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-51),37);
+
+        public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18));
+        public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47));
+        public static final GridScoreData midCone = new GridScoreData(
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0), // Mid Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0), // Mid Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0)  // Mid Cone Retreat
+        );
+        public static final GridScoreData highCone = new GridScoreData(
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55), // High Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55), // High Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55) // High Cone Retreat
+        );
+
+        public static final GridScoreData hybridNode = new GridScoreData(armDown);
+
+
+
         public static final class PID {
             public static final double translationP = 5;
             public static final double translationI = 0;
