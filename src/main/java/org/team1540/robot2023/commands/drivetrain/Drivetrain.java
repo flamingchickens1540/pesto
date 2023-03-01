@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -45,10 +44,11 @@ public class Drivetrain extends SubsystemBase {
     private boolean isParkMode = false;
 
     // Odometry
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
+    private final SwerveDrivePoseEstimator poseEstimator;
 
     public Drivetrain(AHRS gyro) {
         this.gyro = gyro;
+        poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
         PPSwerveControllerCommand.setLoggingCallbacks(
                 (trajectory) -> field2d.getObject("activetrajectory").setTrajectory(trajectory),
                 (pose) -> field2d.getObject("targetpose").setPose(pose),
