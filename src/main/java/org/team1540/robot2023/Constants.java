@@ -28,7 +28,7 @@ public final class Constants {
         public static final double hpOffsetY = -Units.inchesToMeters(20);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
-        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),ArmConstants.ARM_BASE_LENGTH+3);
+        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),25.5);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),37);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37);

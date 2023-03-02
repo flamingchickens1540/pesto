@@ -102,11 +102,14 @@ public class RobotContainer {
 
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
-        copilot.rightBumper().whileTrue(Commands.sequence(new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-115)), new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+        copilot.rightBumper().whileTrue(Commands.sequence(
+                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
+                new SetArmPosition(arm, Constants.Auto.armDown),
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
         //coop:button(Y, reset arm angle, copilot)
-        copilot.x().onTrue(
+        copilot.x().whileTrue(
                 Commands.sequence(
                         new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards),
                     new SetArmPosition(arm, Constants.Auto.armDownBackwards),
