@@ -25,49 +25,55 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
 public class AutoSubstationAlign extends SequentialCommandGroup {
-    public AutoSubstationAlign(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
+    private AutoSubstationAlign(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
         aprilTagLayout.setOrigin(DriverStation.getAlliance() == DriverStation.Alliance.Red ? AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide : AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
-        Translation2d endPoint = aprilTagLayout.getTagPose(5).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(-Constants.Auto.hpOffsetX, offset));
+        int substationTagID = DriverStation.getAlliance() == DriverStation.Alliance.Red ? 5 : 4;
+        Translation2d endPoint = aprilTagLayout.getTagPose(substationTagID).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(-Constants.Auto.hpOffsetX, offset));
 
         addCommands(
-            Commands.parallel(
-                new GrabberIntakeCommand(intake),
-                Commands.sequence(
-                        Commands.parallel(
-                    new ProxyCommand(() ->{
-                        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                            new PathConstraints(5, 3),
-                            new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                            new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                        );
-                        return drivetrain.getPathCommand(trajectory);
-                    }),
-                    new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
-                        ),
-                    new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
-                    new ProxyCommand(() ->{
-                        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                                new PathConstraints(5, 3),
-                                new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                                new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                        );
-                        return drivetrain.getPathCommand(trajectory);
-                    }),
-                    new WaitUntilCommand(intake::hasGamePiece),
+                Commands.parallel(
+                        new GrabberIntakeCommand(intake),
+                        Commands.sequence(
+                                Commands.parallel(
+                                        new ProxyCommand(() -> {
+                                            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                                                    new PathConstraints(5, 3),
+                                                    new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
+                                                    new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
+                                            );
+                                            return drivetrain.getPathCommand(trajectory);
+                                        }),
+                                        new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
+                                ),
+                                new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
+                                new ProxyCommand(() -> {
+                                    PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                                            new PathConstraints(5, 3),
+                                            new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
+                                            new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
+                                    );
+                                    return drivetrain.getPathCommand(trajectory);
+                                }),
+                                new WaitUntilCommand(intake::hasGamePiece),
 //                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
-                    new ProxyCommand(() ->{
-                        PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                                new PathConstraints(5, 3),
-                                new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                                new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                        );
-                        return drivetrain.getPathCommand(trajectory);
-                    }),
-                    new ResetArmPositionCommand(arm)
+                                new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat),
+                                new ProxyCommand(() -> {
+                                    PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                                            new PathConstraints(5, 3),
+                                            new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
+                                            new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
+                                    );
+                                    return drivetrain.getPathCommand(trajectory);
+                                }),
+                                new ResetArmPositionCommand(arm)
+                        )
                 )
-            )
         );
+    }
+
+    public static AutoSubstationAlign get(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
+            return new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset);
+        }
 //                new PrintCommand("Done")
 //        addRequirements(drivetrain,arm);
-    }
 }

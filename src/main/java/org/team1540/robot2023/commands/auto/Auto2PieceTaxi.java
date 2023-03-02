@@ -18,7 +18,7 @@ public class Auto2PieceTaxi extends AutoCommand {
     public Auto2PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxi"));
         addCommands(
-                new AutoGridScore(drivetrain, arm, PolePosition.CENTER, Constants.Auto.highCube, intake),
+                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
 
@@ -33,7 +33,7 @@ public class Auto2PieceTaxi extends AutoCommand {
                                 pathCommands.get(2)
                         )
                 ),
-                new AutoGridScore(drivetrain, arm, grid.getOuterPole(), Constants.Auto.highCone, intake)
+                new AutoGridScore(drivetrain, arm, Constants.Auto.highCone.withPolePosition(grid.getOuterPole()), intake)
         );
     }
 

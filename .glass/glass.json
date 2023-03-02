@@ -10,6 +10,9 @@
         "open": true
       },
       "SmartDashboard": {
+        "arm": {
+          "open": true
+        },
         "intake": {
           "open": true
         },
@@ -35,11 +38,6 @@
         }
       },
       "/SmartDashboard/drivetrain/translationPID": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/field": {
         "window": {
           "visible": true
         }

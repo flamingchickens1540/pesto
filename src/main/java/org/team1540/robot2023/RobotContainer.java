@@ -11,13 +11,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
-import org.team1540.robot2023.commands.arm.Arm;
-import org.team1540.robot2023.commands.arm.ManualArm;
-import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
-import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.commands.drivetrain.ProxiedSubstationDriveCommand;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
@@ -77,22 +73,24 @@ public class RobotContainer {
         // Driver
         driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
         driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
-        driver.leftBumper().whileTrue(new ProxiedSubstationDriveCommand(drivetrain, -Constants.Auto.hpOffsetY));
-        driver.leftBumper().whileTrue(new AutoSubstationAlign(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
+//        driver.y().onTrue(new Rotate(drivetrain));
+
+        driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
+        driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
 
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.LEFT,    Constants.Auto.highCone,    intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.CENTER,  Constants.Auto.highCube,    intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.RIGHT,   Constants.Auto.highCone,    intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.LEFT,    Constants.Auto.midCone,     intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.CENTER,  Constants.Auto.midCube,     intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.RIGHT,   Constants.Auto.midCone,     intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.LEFT,    Constants.Auto.hybridNode,  intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.CENTER,  Constants.Auto.hybridNode,  intake));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoGridScore(drivetrain, arm, PolePosition.RIGHT,   Constants.Auto.hybridNode,  intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake));
 
         // coop:button(A, Run Intake [HOLD],copilot)
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(intake));
@@ -106,9 +104,10 @@ public class RobotContainer {
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
         //coop:button(Y, reset arm angle, copilot)
-        copilot.y().onTrue(new InstantCommand(() -> arm.resetAngle()));
+        copilot.y().onTrue(new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards).andThen(new SetArmPosition(arm, Constants.Auto.armDownBackwards)));
 
 
+        new Trigger(LimelightManager.getInstance()::canSeeTargets).onTrue(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_LAVA)).onFalse(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_FOREST));
 
         AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
         new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(()->{
