@@ -33,7 +33,9 @@ public class ManualArm extends CommandBase {
             arm.setRotation(arm.getArmState().getRotation2d());
         } else if (Math.abs(pivotInput) >= deadzone) {
             isHoldingRotation = false;
-            arm.setRotatingSpeed(Math.pow(pivotInput, 3) * (1 + ((-1/ArmConstants.TELESCOPE_FORWARD_LIMIT)*pivotInput))); // TODO: 2/11/2023 Check angles here
+            double adjustedPivotInput = pivotInput*(1 - 0.9 *(arm.getArmState().getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH));
+            System.out.println(adjustedPivotInput);
+            arm.setRotatingSpeed(Math.pow(adjustedPivotInput, 3) * (1 + ((-1/ArmConstants.TELESCOPE_FORWARD_LIMIT)*pivotInput))); // TODO: 2/11/2023 Check angles here
         }
 
         double limitedExtensionInput = slewRateLimiter.calculate(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis());

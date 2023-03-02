@@ -189,7 +189,7 @@ public final class Constants {
         // The base arm length
         public static final double ARM_BASE_LENGTH = 22.325;
         // The extended arm length
-        public static final double ARM_LENGTH_EXT = 88; // TODO: 1/29/2023 figure this out
+        public static final double ARM_LENGTH_EXT = 57; // TODO: 1/29/2023 figure this out
         public static final double EXT_ROTS_TO_INCHES = 2 * 1.504 * Math.PI; // TODO: 2/11/2023 figure this out so that position things work
         public static final double EXT_GEAR_RATIO = 16;
 
@@ -198,11 +198,9 @@ public final class Constants {
         public static final double TELESCOPE_KI = 0;
         public static final double TELESCOPE_KD = 0;
         public static final double TELESCOPE_CRUISE_SPEED = 5000;
-
         public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.25);
 
-
-        public static final float TELESCOPE_FORWARD_LIMIT = (float) ((57 - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);
+        public static final float TELESCOPE_FORWARD_LIMIT = (float) ((ARM_LENGTH_EXT - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);
 
         // The max height from the floor
         public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;

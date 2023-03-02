@@ -104,6 +104,7 @@ public class Arm extends SubsystemBase {
 
     public void setRotation(Rotation2d rotation) {
         double angle = rotation.getDegrees();
+        double adjustedAccel = ArmConstants.PIVOT_MAX_ACCEL * (1 - 0.5 *(getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH));
          pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
