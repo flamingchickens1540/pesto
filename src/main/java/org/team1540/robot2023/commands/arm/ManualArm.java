@@ -41,7 +41,7 @@ public class ManualArm extends CommandBase {
             double percentExtendedInverted = 1-(arm.getArmState().getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH);
             double adjustedPivotInput = Constants.ArmConstants.PIVOT_EXT_MAX_SPEED + percentExtendedInverted * (Constants.ArmConstants.PIVOT_BASE_MAX_SPEED - Constants.ArmConstants.PIVOT_EXT_MAX_SPEED);
             System.out.println("NON-r-limited pivot speed: " + adjustedPivotInput);
-            double rotatingSpeed = rotationOutputRateLimiter.calculate(Math.pow(adjustedPivotInput, 3) * (1 + ((-1/ArmConstants.TELESCOPE_FORWARD_LIMIT)*pivotInput)));
+            double rotatingSpeed = rotationOutputRateLimiter.calculate(adjustedPivotInput);
             System.out.println("rate-limited pivot speed: " + rotatingSpeed);
             arm.setRotatingSpeed(rotatingSpeed); // TODO: 2/11/2023 Check angles here
         }
