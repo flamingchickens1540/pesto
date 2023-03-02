@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.*;
-import org.team1540.robot2023.commands.drivetrain.AutoBalanceCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
@@ -77,8 +76,8 @@ public class RobotContainer {
 //        driver.y().onTrue(new Rotate(drivetrain));
 
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
-//        driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
-       driver.rightBumper().whileTrue(new AutoBalanceCommand(drivetrain));
+        driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
+//       driver.rightBumper().whileTrue(new AutoBalanceCommand(drivetrain));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
