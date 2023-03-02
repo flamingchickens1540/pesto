@@ -175,6 +175,8 @@ public final class Constants {
         public static final double PIVOT_KD = 1;
         public static final double PIVOT_MAX_ACCEL = 40_000;
         public static final double PIVOT_CRUISE_SPEED = 20_000;
+        public static final double PIVOT_BASE_MAX_SPEED = 5_000;
+        public static final double PIVOT_EXT_MAX_SPEED = 20_000;
 
         // The distance of the pivot from the ground
         public static final double PIVOT_HEIGHT = 21.5;
