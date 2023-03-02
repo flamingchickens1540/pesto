@@ -21,6 +21,7 @@ import org.team1540.robot2023.utils.GridScoreData;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 import static org.team1540.robot2023.Globals.field2d;
@@ -62,6 +63,22 @@ public class AutoDrive {
             List<PathPoint> pointList = new LinkedList<>();
             pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
             pointList.addAll(List.of(points));
+            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                    new PathConstraints(5, 3),
+                    pointList
+            );
+            field2d.getObject("gridDrivePath").setTrajectory(trajectory);
+            field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
+            PathPlannerServer.sendActivePath(trajectory.getStates());
+            return drivetrain.getPathCommand(trajectory);
+        });
+    }
+
+    public static Command driveToPoints(Drivetrain drivetrain, Supplier<List<PathPoint>> points) {
+        return new ProxyCommand(() -> {
+            List<PathPoint> pointList = new LinkedList<>();
+            pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
+            pointList.addAll(points.get());
             PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                     new PathConstraints(5, 3),
                     pointList

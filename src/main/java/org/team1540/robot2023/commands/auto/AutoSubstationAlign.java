@@ -1,15 +1,11 @@
 package org.team1540.robot2023.commands.auto;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,36 +31,15 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(
                                 Commands.parallel(
-                                        new ProxyCommand(() -> {
-                                            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                                                    new PathConstraints(5, 3),
-                                                    new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                                                    new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                                            );
-                                            return drivetrain.getPathCommand(trajectory);
-                                        }),
+                                        AutoDrive.driveToPoints(drivetrain, new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
                                         new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
                                 ),
                                 new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
-                                new ProxyCommand(() -> {
-                                    PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                                            new PathConstraints(5, 3),
-                                            new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                                            new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                                    );
-                                    return drivetrain.getPathCommand(trajectory);
-                                }),
+                                AutoDrive.driveToPoints(drivetrain,  new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
                                 new WaitUntilCommand(intake::hasGamePiece),
-//                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
+            //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
                                 new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat),
-                                new ProxyCommand(() -> {
-                                    PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                                            new PathConstraints(5, 3),
-                                            new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()), // position, heading(direction of travel), holonomic rotation
-                                            new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)) // position, heading(direction of travel), holonomic rotation
-                                    );
-                                    return drivetrain.getPathCommand(trajectory);
-                                }),
+                                AutoDrive.driveToPoints(drivetrain,new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
                                 new ResetArmPositionCommand(arm)
                         )
                 )

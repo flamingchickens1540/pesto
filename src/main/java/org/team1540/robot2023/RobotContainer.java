@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -143,6 +144,13 @@ public class RobotContainer {
         // coop:button(RTrigger, Extend telescope [HOLD],copilot)
         arm.setDefaultCommand(new ManualArm(arm, copilot));
         intake.setDefaultCommand(new DefaultGrabberCommand(intake));
+    }
+
+    public void setAutoDefaultCommands() {
+        CommandScheduler.getInstance().removeDefaultCommand(drivetrain);
+//        CommandScheduler.getInstance().removeDefaultCommand(arm);
+//        CommandScheduler.getInstance().removeDefaultCommand(intake);
+
     }
 
     private void initSmartDashboard() {
