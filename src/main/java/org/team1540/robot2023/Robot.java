@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
@@ -106,6 +107,9 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        InstantCommand fakeDefault = new InstantCommand();
+                fakeDefault.addRequirements(robotContainer.drivetrain);
+        robotContainer.drivetrain.setDefaultCommand(fakeDefault);
         autonomousCommand = robotContainer.getAutonomousCommand();
 
         if (autonomousCommand != null) {
