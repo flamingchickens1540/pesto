@@ -3,10 +3,8 @@ package org.team1540.robot2023.commands.auto;
 import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
@@ -19,7 +17,10 @@ import java.util.Objects;
 
 public class AutoGridScore extends SequentialCommandGroup {
 
-    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake){
+    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake) {
+        this(drivetrain, arm, positions, intake, null);
+    }
+    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller){
 
         addCommands(
             Commands.race(
@@ -37,6 +38,7 @@ public class AutoGridScore extends SequentialCommandGroup {
 //                            new ProxiedGridDriveCommand(drivetrain, positions),
                             new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
                             new ExtensionCommand(arm, positions.approach),
+                            new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null),
                             new PivotCommand(arm,catchNull(positions.score)).unless(() -> positions.score == null)
                     )
             ),
