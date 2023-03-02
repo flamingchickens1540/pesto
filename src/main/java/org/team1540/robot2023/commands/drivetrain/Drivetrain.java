@@ -38,6 +38,8 @@ public class Drivetrain extends SubsystemBase {
 
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
+    private static final boolean isGyroReversed = true;
+
     // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
     private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
     private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
@@ -204,7 +206,9 @@ public class Drivetrain extends SubsystemBase {
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
-
+    public double getHeading() {
+        return Math.IEEEremainder(gyro.getAngle(), 360) * (isGyroReversed ? -1.0 : 1.0);
+      }
 
     public SwerveModulePosition[] getModulePositions(){
         return new SwerveModulePosition[]{
