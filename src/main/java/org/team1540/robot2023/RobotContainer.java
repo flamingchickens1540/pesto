@@ -2,7 +2,6 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +12,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.auto.*;
+import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
+import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
+import org.team1540.robot2023.commands.auto.AutoGridScore;
+import org.team1540.robot2023.commands.auto.AutoSubstationAlign;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
@@ -72,13 +74,16 @@ public class RobotContainer {
 
    private void configureButtonBindings() {
         // Driver
-        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
-        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
-//        driver.y().onTrue(new Rotate(drivetrain));
 
+        // coop:button(A, Zero Field Oriented [Press],pilot)
+        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute));
+       // coop:button(Y, Zero to current Rotation [Press],pilot)
+        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute));
+
+       // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
+       // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
-//       driver.rightBumper().whileTrue(new AutoBalanceCommand(drivetrain));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
@@ -94,7 +99,7 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver));
         controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver));
 
-        // coop:button(A, Run Intake [HOLD],copilot)
+        // coop:button(A, Run Intake [PRESS],copilot)
         copilot.a().toggleOnTrue(new GrabberIntakeCommand(intake));
         // coop:button(B,Run Outtake [HOLD],copilot)
         copilot.b().whileTrue(new GrabberOuttakeCommand(intake));
@@ -108,12 +113,21 @@ public class RobotContainer {
                 new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
         copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
-        //coop:button(Y, reset arm angle, copilot)
-        copilot.x().whileTrue(
-                Commands.sequence(
-                        new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards),
-                    new SetArmPosition(arm, Constants.Auto.armDownBackwards),
-                        new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+
+
+        // INSPECTION CODE
+//        copilot.y().whileTrue(Commands.sequence(
+//                new RetractAndPivotCommand(arm, Constants.Auto.highCone.score.getRotation2d()),
+//                new ExtensionCommand(arm, Constants.Auto.highCone.score)
+//        ));
+
+
+        //coop:button(X, Downed Cone Intake [ HOLD, copilot)
+        copilot.x().whileTrue(Commands.sequence(
+            new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards),
+            new SetArmPosition(arm, Constants.Auto.armDownBackwards),
+            new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
+        ));
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
                 .onTrue(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_LAVA))
@@ -143,8 +157,8 @@ public class RobotContainer {
         // coop:button(B, Fast Drive [PRESS])
         drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID()));
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
-        // coop:button(LTrigger, Retract telescope [HOLD],copilot)
-        // coop:button(RTrigger, Extend telescope [HOLD],copilot)
+        // coop:button(LTrigger, Extend telescope [HOLD],copilot)
+        // coop:button(RTrigger, Retract telescope [HOLD],copilot)
         arm.setDefaultCommand(new ManualArm(arm, copilot));
         intake.setDefaultCommand(new DefaultGrabberCommand(intake));
     }
@@ -170,12 +184,10 @@ public class RobotContainer {
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake,ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
-        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+//        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-//        manager.addAuto("ScoreHighCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake));
-//        manager.addAuto("ScoreMidCubeAlign", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armMidCube, intake));
-//        manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake, false));
-//        manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, PolePosition.CENTER, arm, Constants.Auto.armHighCube, intake, false));
+        manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube, intake));
+        manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.midCube, intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
 
