@@ -1,7 +1,6 @@
 package org.team1540.robot2023.commands.grabber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.team1540.robot2023.Constants;
 
 public class GrabberIntakeCommand extends CommandBase {
     private final WheeledGrabber wheeledGrabber;
@@ -13,18 +12,17 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
+//        wheeledGrabber.setCurrentLimit(40);
         wheeledGrabber.setSpeed(1);
     }
 
     @Override
-    public void execute() {
-        if (wheeledGrabber.getCurrent() > Constants.GrabberConstants.INTAKE_CURRENT_THRESH) {
-            wheeledGrabber.setSpeed(0.1);
-        }
+    public boolean isFinished() {
+        return wheeledGrabber.hasGamePiece();
     }
 
     @Override
     public void end(boolean interrupted) {
-        wheeledGrabber.stop();
+        System.out.println("NO LONGER GRABBY");
     }
 }

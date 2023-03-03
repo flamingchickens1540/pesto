@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
 import org.team1540.robot2023.utils.ArmState;
+import org.team1540.robot2023.utils.GridScoreData;
 import org.team1540.robot2023.utils.swerve.ModuleCorner;
 
 public final class Constants {
@@ -22,23 +23,33 @@ public final class Constants {
 
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
-        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(31);
-        public static final double hpOffsetX = Units.inchesToMeters(27.25);
+        public static final double gridBackoffOffsetMeters = Units.inchesToMeters(32);
+        public static final double hpOffsetX = Units.inchesToMeters(30);
         public static final double hpOffsetY = -Units.inchesToMeters(20);
 
-        // TODO: TUNE EXTENSIONS
-        public static final ArmState armMidCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18);
-        public static final ArmState armHighCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47);
-        public static final ArmState armMidCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),35.0);
-        public static final ArmState armMidConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-52.9),35.0);
-        public static final ArmState armHighCone = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-56.15),56.55);
-        public static final ArmState armHighConeApproach = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),56.55);
-
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
-        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),0);
+        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),25.5);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),37);
+        public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37);
 
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55.36),10);
+        public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18));
+        public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47));
+        public static final GridScoreData midCone = new GridScoreData(
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37.0), // Mid Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),37.0) // Mid Cone Score
+        );
+        public static final GridScoreData highCone = new GridScoreData(
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),57), // High Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-58.15),57), // High Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),57) // High Cone Retreat
+        );
+
+        public static final GridScoreData hybridNode = new GridScoreData(armDown).withAdditionalBackoff(Units.inchesToMeters(5));
+        public static final GridScoreData middleHybridNode = new GridScoreData(armDown).withAdditionalBackoff(Units.inchesToMeters(8));
+
+
+
         public static final class PID {
             public static final double translationP = 5;
             public static final double translationI = 0;
@@ -190,10 +201,10 @@ public final class Constants {
         public static final double TELESCOPE_KD = 0;
         public static final double TELESCOPE_CRUISE_SPEED = 5000;
 
-        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.5);
+        public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.25);
 
 
-        public static final float TELESCOPE_FORWARD_LIMIT = 116;
+        public static final float TELESCOPE_FORWARD_LIMIT = (float) ((57 - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);
 
         // The max height from the floor
         public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;

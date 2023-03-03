@@ -33,12 +33,12 @@ public class LimelightManager {
     public void periodic() {
         for (Limelight limelight: limelights) {
             limelight.periodic();
-            Pose2d rawPose = limelight.getBotPose();
-            if (rawPose != null) {
-                field2d.getObject("pose/" + limelight.name + "/unfiltered").setPose(rawPose);
-            } else {
-                field2d.getObject("pose/" + limelight.name + "/unfiltered").setPoses();
-            }
+//            Pose2d rawPose = limelight.getBotPose();
+//            if (rawPose != null) {
+//                field2d.getObject("pose/" + limelight.name + "/unfiltered").setPose(rawPose);
+//            } else {
+//                field2d.getObject("pose/" + limelight.name + "/unfiltered").setPoses();
+//            }
         }
     }
 
@@ -53,5 +53,15 @@ public class LimelightManager {
                 field2d.getObject("pose/"+limelight.name).setPoses();
             }
         }
+    }
+
+    public boolean canSeeTargets() {
+        for (Limelight limelight: limelights) {
+            Pose2d pose = limelight.getFilteredBotPose();
+            if (pose != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,8 +35,8 @@ public class Drivetrain extends SubsystemBase {
             new SwerveModule(3, Swerve.Mod3.constants)
     };
 
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
+    private final AHRS gyro;
+    private double fieldOrientationOffset = 0;
     // These PID controllers don't actually do anything, but their PID values are copied for PathPlanner commands
     private final PIDController dummyTranslationPID = new PIDController(Constants.Auto.PID.translationP,Constants.Auto.PID.translationI,Constants.Auto.PID.translationD);
     private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
@@ -45,9 +44,11 @@ public class Drivetrain extends SubsystemBase {
     private boolean isParkMode = false;
 
     // Odometry
-    private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
+    private final SwerveDrivePoseEstimator poseEstimator;
 
-    public Drivetrain() {
+    public Drivetrain(AHRS gyro) {
+        this.gyro = gyro;
+        poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
         PPSwerveControllerCommand.setLoggingCallbacks(
                 (trajectory) -> field2d.getObject("activetrajectory").setTrajectory(trajectory),
                 (pose) -> field2d.getObject("targetpose").setPose(pose),
@@ -71,13 +72,15 @@ public class Drivetrain extends SubsystemBase {
                 modules[2].getState().angle.getDegrees(), modules[2].getState().speedMetersPerSecond,
                 modules[3].getState().angle.getDegrees(), modules[3].getState().speedMetersPerSecond
         });
-        SmartDashboard.putNumber("drivetrain/gyro", getYaw().getDegrees());
+
         gyro.reset();
     }
 
     @Override
     public void periodic() {
-
+        SmartDashboard.putNumber("gyro/yaw", gyro.getYaw());
+        SmartDashboard.putNumber("gyro/pitch", gyro.getPitch());
+        SmartDashboard.putNumber("gyro/roll", gyro.getRoll());
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.maxVelocity);
         modules[0].setDesiredState(states[0], true, isParkMode);
         modules[1].setDesiredState(states[1], true, isParkMode);
@@ -111,7 +114,7 @@ public class Drivetrain extends SubsystemBase {
         double ySpeed = yPercent * Swerve.maxVelocity;
         double rot = Math.toRadians(rotPercent*360);
         ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().minus(Rotation2d.fromDegrees(fieldOrientationOffset)))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
         double deadzone = 0.02;
         double rotDeadzone = 0.1;
@@ -145,7 +148,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
 
-    protected Command getPathCommand(PathPlannerTrajectory trajectory) {
+    public Command getPathCommand(PathPlannerTrajectory trajectory) {
         return new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
@@ -172,7 +175,18 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroGyroscope() {
         gyro.zeroYaw();
-    } //todo: make sure this doesn't break odometry
+    }
+
+//    public void zeroFieldOrientation() {
+//        fieldOrientationOffset = getYaw().getDegrees();
+//    }
+    public void zeroFieldOrientation() {
+        fieldOrientationOffset = getYaw().getDegrees()-poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+    }
+
+    public void zeroFieldOrientationManual() {
+        fieldOrientationOffset = getYaw().getDegrees();
+    }
 
     public Rotation2d getYaw() {
         if (gyro.isMagnetometerCalibrated()) {

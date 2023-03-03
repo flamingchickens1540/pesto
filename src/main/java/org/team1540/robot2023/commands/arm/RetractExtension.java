@@ -11,7 +11,7 @@ public class RetractExtension extends CommandBase {
 
     @Override
     public void initialize() {
-        arm.setExtendingSpeed(-0.7);
+        arm.setExtendingSpeed(-0.1);
     }
 
     @Override

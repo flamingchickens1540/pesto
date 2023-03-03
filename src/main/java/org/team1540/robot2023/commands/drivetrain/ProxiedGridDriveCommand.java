@@ -1,10 +1,7 @@
 package org.team1540.robot2023.commands.drivetrain;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import org.team1540.robot2023.utils.PolePosition;
-
-import java.util.function.Supplier;
+import org.team1540.robot2023.utils.GridScoreData;
 
 // This was the best way I found to force GridDriveCommand to be constructed at schedule time rather than command construction time
 public class ProxiedGridDriveCommand extends ProxyCommand {
@@ -15,7 +12,7 @@ public class ProxiedGridDriveCommand extends ProxyCommand {
      * @param tagID the ID of the tag to drive to
      * @param position Which side of the grid to move to
      */
-    public ProxiedGridDriveCommand(Drivetrain drivetrain, int tagID, PolePosition position) {
+    public ProxiedGridDriveCommand(Drivetrain drivetrain, int tagID, GridScoreData position) {
         super(() -> new GridDriveCommand(drivetrain, tagID, position));
     }
     /**
@@ -23,7 +20,7 @@ public class ProxiedGridDriveCommand extends ProxyCommand {
      * @param drivetrain the drivetrain subsystem
      * @param position Which side of the grid to move to
      */
-    public ProxiedGridDriveCommand(Drivetrain drivetrain, PolePosition position) {
+    public ProxiedGridDriveCommand(Drivetrain drivetrain, GridScoreData position) {
         super(() -> new GridDriveCommand(drivetrain, position));
     }
 }

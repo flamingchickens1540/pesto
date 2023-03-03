@@ -2,13 +2,19 @@ package org.team1540.robot2023.commands.grabber;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.Constants.GrabberConstants;
+import org.team1540.robot2023.utils.AverageFilter;
 
 public class WheeledGrabber extends SubsystemBase {
     private final CANSparkMax motor1 = new CANSparkMax(GrabberConstants.INTAKE_1_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final CANSparkMax motor2 = new CANSparkMax(GrabberConstants.INTAKE_2_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final RelativeEncoder encoder1 = motor1.getEncoder();
+    private final RelativeEncoder encoder2 = motor2.getEncoder();
+    private final AverageFilter averageFilter = new AverageFilter(5);
 
     public WheeledGrabber() {
         setCurrentLimit(10);
@@ -25,7 +31,10 @@ public class WheeledGrabber extends SubsystemBase {
 
 
     }
+    public boolean hasGamePiece() {
+        return Math.abs(averageFilter.getAverage()) <200;
 
+    }
     public void stop() {
         motor1.set(0);
     }
@@ -47,6 +56,8 @@ public class WheeledGrabber extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("intake/current", motor1.getOutputCurrent());
+        SmartDashboard.putNumber("intake/velocity", averageFilter.getAverage());
+        averageFilter.add((encoder1.getVelocity() + encoder2.getVelocity())/2);
     }
 
 

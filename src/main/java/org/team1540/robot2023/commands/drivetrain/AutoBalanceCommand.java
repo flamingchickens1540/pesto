@@ -10,42 +10,31 @@ import java.util.function.Supplier;
 
 public class AutoBalanceCommand extends CommandBase {
     private final Drivetrain drivetrain;
-    private final PIDController pidController = new PIDController(1, 0, 0);
-    private final boolean isPitch;
+    private final PIDController pidController = new PIDController(0.01, 0, 0.002);
     private final Supplier<Rotation2d> angleSupplier;
     private final AverageFilter filter = new AverageFilter(200);
 
-    public AutoBalanceCommand(Drivetrain drivetrain, boolean isPitch) {
-        this.isPitch = isPitch;
-        angleSupplier = isPitch ? drivetrain::getPitch : drivetrain::getRoll;
-        SmartDashboard.setDefaultNumber("balancy/kp", 0.0075);
-        SmartDashboard.setDefaultNumber("balancy/ki", 0);
-        SmartDashboard.setDefaultNumber("balancy/kd", 0.002);
-        addRequirements(drivetrain);
+    public AutoBalanceCommand(Drivetrain drivetrain) {
+        angleSupplier = drivetrain::getRoll;
+        SmartDashboard.putData("balancy", pidController);
+
+
         this.drivetrain = drivetrain;
     }
 
     @Override
     public void execute() {
-        pidController.setPID(
-                SmartDashboard.getNumber("balancy/kp", 0),
-                SmartDashboard.getNumber("balancy/ki", 0),
-                SmartDashboard.getNumber("balancy/kd", 0)
-        );
+        addRequirements(drivetrain);
         SmartDashboard.putNumber("balancy/output", pidController.getPositionError());
         filter.add(pidController.getPositionError());
-        if (isPitch) {
             drivetrain.drive(
-                    pidController.calculate(angleSupplier.get().getDegrees()), 0, 0, false);
-        } else {
-            drivetrain.drive(
-                    0, -pidController.calculate(angleSupplier.get().getDegrees()), 0, false);
-        }
+                     pidController.calculate(angleSupplier.get().getDegrees()),0, 0, false);
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(filter.getAverage()) < 1;
+        return false;
+//        return Math.abs(filter.getAverage()) < 1;
 
     }
 
