@@ -24,17 +24,17 @@ public final class Constants {
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(32);
-        public static final double hpOffsetX = Units.inchesToMeters(30);
-        public static final double hpOffsetY = -Units.inchesToMeters(20);
+        public static final double hpOffsetX = Units.inchesToMeters(23);
+        public static final double hpOffsetY = -Units.inchesToMeters(32);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
-        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-115),25.5);
-        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.0),25.5);
+        public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
+        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(123.0),25);
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),37);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37);
 
         public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18));
-        public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),47));
+        public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),49));
         public static final GridScoreData midCone = new GridScoreData(
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37.0), // Mid Cone Approach
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),37.0) // Mid Cone Score
@@ -141,26 +141,26 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            private static final int moduleID = isNewRobot ? 8: 4;
+            private static final int moduleID = 4;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_LEFT);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            private static final int moduleID = isNewRobot ? 7 : 1;
+            private static final int moduleID = 6 ;
 
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_RIGHT);
         }
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            private static final int moduleID = isNewRobot ? 5:3;
+            private static final int moduleID = 7;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_LEFT);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            private static final int moduleID = isNewRobot? 6 : 2;
+            private static final int moduleID = 2;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }
@@ -184,8 +184,8 @@ public final class Constants {
         public static final double PIVOT_DISTANCE = 12;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
         public static final double PIVOT_MIN_ANGLE = -2.260;
-        public static final int PIVOT_FORWARD_LIMIT = 135_000;
-        public static final int PIVOT_REVERSE_LIMIT = -130_000;
+        public static final int PIVOT_FORWARD_LIMIT = 137_000;
+        public static final int PIVOT_REVERSE_LIMIT = -134_500;
         // Pivot motor revolutions to pivot revolutions
         public static final double PIVOT_GEAR_RATIO = 196.875;
         // The base arm length

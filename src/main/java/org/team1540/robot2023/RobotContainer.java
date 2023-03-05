@@ -12,10 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.auto.Auto1PieceBalance;
-import org.team1540.robot2023.commands.auto.Auto1PieceTaxi;
-import org.team1540.robot2023.commands.auto.AutoGridScore;
-import org.team1540.robot2023.commands.auto.AutoSubstationAlign;
+import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
@@ -50,7 +47,7 @@ public class RobotContainer {
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
-//    public final LogManager logManager = new LogManager(pdh);
+    public final LogManager logManager = new LogManager(pdh);
 
 
     // Commands
@@ -125,8 +122,8 @@ public class RobotContainer {
 
         //coop:button(X, Downed Cone Intake [ HOLD, copilot)
         copilot.x().whileTrue(Commands.sequence(
-            new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards),
-            new SetArmPosition(arm, Constants.Auto.armDownBackwards),
+            new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards).withTimeout(1),
+            new SetArmPosition(arm, Constants.Auto.armDownBackwards).withTimeout(1),
             new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
         ));
 
@@ -187,6 +184,8 @@ public class RobotContainer {
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
+        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube, intake));
         manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.midCube, intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);

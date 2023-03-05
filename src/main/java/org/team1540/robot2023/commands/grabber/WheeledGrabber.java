@@ -5,7 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.Constants.GrabberConstants;
 import org.team1540.robot2023.utils.AverageFilter;
 
@@ -17,7 +16,7 @@ public class WheeledGrabber extends SubsystemBase {
     private final AverageFilter averageFilter = new AverageFilter(5);
 
     public WheeledGrabber() {
-        setCurrentLimit(10);
+        setCurrentLimit(15);
 
 
         motor1.setIdleMode(CANSparkMax.IdleMode.kBrake);

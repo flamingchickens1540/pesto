@@ -12,6 +12,7 @@ import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.GridScoreData;
+import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.Objects;
 
@@ -38,7 +39,7 @@ public class AutoGridScore extends SequentialCommandGroup {
 //                            new ProxiedGridDriveCommand(drivetrain, positions),
                             new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
                             new ExtensionCommand(arm, positions.approach),
-                            new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null),
+                            new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null || positions.polePosition == PolePosition.CENTER),
                             new PivotCommand(arm,catchNull(positions.score)).unless(() -> positions.score == null)
                     )
             ),
