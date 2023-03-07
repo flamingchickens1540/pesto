@@ -6,13 +6,13 @@ package org.team1540.robot2023.utils.swerve;
  */
 public class ModuleMagnetOffset {
     private static final double[] offsets = new double[]{
-            240.469, // Module 1
+            150.469, // Module 1
             91.318,  // Module 2
             256.729, // Module 3
             9.0,     // Module 4
             239.766, // Module 5
-            302.08,  // Module 6
-            297.861, // Module 7
+            32.08,  // Module 6
+            27.861, // Module 7
             112.061  // Module 8
     };
 

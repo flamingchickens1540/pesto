@@ -57,14 +57,17 @@ public class AutoDrive {
         return getClosestTagPose(drivetrain).getTranslation().plus(new Translation2d(Constants.Auto.gridBackoffOffsetMeters+data.additionalBackoff, data.polePosition.offset));
     }
 
-
     public static Command driveToPoints(Drivetrain drivetrain, PathPoint... points) {
+        return driveToPoints(drivetrain, 5, 3, points);
+    }
+
+    public static Command driveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, PathPoint... points) {
         return new ProxyCommand(() -> {
             List<PathPoint> pointList = new LinkedList<>();
             pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
             pointList.addAll(List.of(points));
             PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                    new PathConstraints(5, 3),
+                    new PathConstraints(maxVelocity, maxAcceleration),
                     pointList
             );
             field2d.getObject("gridDrivePath").setTrajectory(trajectory);

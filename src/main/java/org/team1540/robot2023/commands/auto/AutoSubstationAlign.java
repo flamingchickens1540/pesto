@@ -5,9 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
@@ -35,8 +33,8 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                                         new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
                                 ),
                                 new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
-                                AutoDrive.driveToPoints(drivetrain,  new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
-                                new WaitUntilCommand(intake::hasGamePiece),
+                                AutoDrive.driveToPoints(drivetrain,  0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
+                                new WaitUntilCommand(() -> intake.hasGamePiece() || controller.getLeftTriggerAxis() > 0.95),
             //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
                                 new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat),
                                 AutoDrive.driveToPoints(drivetrain,new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
@@ -46,8 +44,8 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
         );
     }
 
-    public static AutoSubstationAlign get(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
-            return new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset);
+    public static Command get(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
+            return new ProxyCommand(() -> new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset));
         }
 //                new PrintCommand("Done")
 //        addRequirements(drivetrain,arm);

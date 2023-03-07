@@ -5,6 +5,8 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,11 +39,12 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         ctreConfigs = new CTREConfigs();
+        DataLogManager.start("/media/sda1");
+        DriverStation.startDataLog(DataLogManager.getLog());
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         this.robotContainer = new RobotContainer();
-//        DataLogManager.start();
-//        DriverStation.startDataLog(DataLogManager.getLog());
+
         // ---------------
         // TODO: ALWAYS REMOVE BEFORE COMMITTING
         // TODO: BAD THINGS HAPPEN IF IT GETS LEFT FOR A COMP
@@ -133,9 +136,6 @@ public class Robot extends TimedRobot {
         if (!hasRunAuto) {
             robotContainer.drivetrain.zeroFieldOrientation();
         }
-//        if (!DriverStation.isFMSAttached()) {
-//            robotContainer.arm.resetAngle();
-//        }
         robotContainer.setTeleopDefaultCommands();
     }
 

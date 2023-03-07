@@ -63,8 +63,6 @@ public class Arm extends SubsystemBase {
 
         pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
 
-        resetAngle();
-
         smashDartboardInit();
     }
 
@@ -127,7 +125,7 @@ public class Arm extends SubsystemBase {
         if (pigeonAccel[0] > 0) {
             pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
         } else pigeonRoll = pigeon2.getRoll();
-//        pigeonRoll += navx.getRoll();
+        pigeonRoll += navx.getRoll();
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(
                         pigeonRoll + ArmConstants.PIGEON_OFFSET,
