@@ -136,9 +136,6 @@ public class Robot extends TimedRobot {
         if (!hasRunAuto) {
             robotContainer.drivetrain.zeroFieldOrientation();
         }
-//        if (!DriverStation.isFMSAttached()) {
-//            robotContainer.arm.resetAngle();
-//        }
         robotContainer.setTeleopDefaultCommands();
     }
 

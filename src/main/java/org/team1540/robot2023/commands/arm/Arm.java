@@ -63,8 +63,6 @@ public class Arm extends SubsystemBase {
 
         pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
 
-        resetAngle();
-
         smashDartboardInit();
     }
 
