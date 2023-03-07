@@ -158,26 +158,31 @@ public class Drivetrain extends SubsystemBase {
     }
 
 
-    public Command getPathCommand(PathPlannerTrajectory trajectory) {
+    public Command getAutoPathCommand(PathPlannerTrajectory trajectory) {
+        return this.getPathCommand(trajectory, dummyTranslationPID, dummyRotationPID);
+    }
+
+    public Command getPathCommand(PathPlannerTrajectory trajectory, PIDController dummyTranslation, PIDController dummmyRotation) {
         return Commands.sequence(
                 new InstantCommand(() -> isRunningPath = true),
                 new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
-                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
-                new PIDController(dummyRotationPID.getP(), dummyRotationPID.getI(), dummyRotationPID.getD()),
+                new PIDController(dummyTranslation.getP(), dummyTranslation.getI(), dummyTranslation.getD()),
+                new PIDController(dummyTranslation.getP(), dummyTranslation.getI(), dummyTranslation.getD()),
+                new PIDController(dummmyRotation.getP(), dummmyRotation.getI(), dummmyRotation.getD()),
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
-        ),
-        new InstantCommand(() -> isRunningPath = false));
+            ),
+            new InstantCommand(() -> isRunningPath = false)
+        );
     }
 
     protected Command getResettingPathCommand(PathPlannerTrajectory trajectory) {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())),
-                getPathCommand(trajectory)
+                getAutoPathCommand(trajectory)
         );
     }
 

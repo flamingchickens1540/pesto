@@ -7,6 +7,7 @@ import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.server.PathPlannerServer;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,6 +28,13 @@ import static org.team1540.robot2023.Globals.aprilTagLayout;
 import static org.team1540.robot2023.Globals.field2d;
 
 public class AutoDrive {
+    public static PIDController alignmentTranslationPID = new PIDController(3,0,0.5);
+    public static PIDController alignmentRotationPID = new PIDController(1,0,0.2);
+
+    public static void postPIDs() {
+        SmartDashboard.putData("align/rotationPID", alignmentRotationPID);
+        SmartDashboard.putData("align/translationPID", alignmentTranslationPID);
+    }
     public static int getClosestTag(Drivetrain drivetrain) {
         aprilTagLayout.setOrigin(DriverStation.getAlliance() == DriverStation.Alliance.Red ? AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide : AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
         Translation2d currentPose = drivetrain.getPose().getTranslation();
@@ -62,22 +70,10 @@ public class AutoDrive {
     }
 
     public static Command driveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, PathPoint... points) {
-        return new ProxyCommand(() -> {
-            List<PathPoint> pointList = new LinkedList<>();
-            pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
-            pointList.addAll(List.of(points));
-            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
-                    new PathConstraints(maxVelocity, maxAcceleration),
-                    pointList
-            );
-            field2d.getObject("gridDrivePath").setTrajectory(trajectory);
-            field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
-            PathPlannerServer.sendActivePath(trajectory.getStates());
-            return drivetrain.getPathCommand(trajectory);
-        });
+        return driveToPoints(drivetrain, maxVelocity, maxAcceleration, () -> List.of(points));
     }
 
-    public static Command driveToPoints(Drivetrain drivetrain, Supplier<List<PathPoint>> points) {
+    public static Command driveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, Supplier<List<PathPoint>> points) {
         return new ProxyCommand(() -> {
             List<PathPoint> pointList = new LinkedList<>();
             pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
@@ -89,7 +85,7 @@ public class AutoDrive {
             field2d.getObject("gridDrivePath").setTrajectory(trajectory);
             field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
             PathPlannerServer.sendActivePath(trajectory.getStates());
-            return drivetrain.getPathCommand(trajectory);
+            return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
         });
     }
 }

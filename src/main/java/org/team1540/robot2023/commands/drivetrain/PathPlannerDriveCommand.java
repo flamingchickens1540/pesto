@@ -10,7 +10,7 @@ public class PathPlannerDriveCommand extends SequentialCommandGroup{
     public PathPlannerDriveCommand(Drivetrain drivetrain, PathPlannerTrajectory trajectory) {
         trajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(trajectory, DriverStation.getAlliance());
         PathPlannerServer.sendActivePath(trajectory.getStates());
-        Command ramseteCommand = drivetrain.getPathCommand(trajectory);
+        Command ramseteCommand = drivetrain.getAutoPathCommand(trajectory);
         addRequirements(drivetrain);
         addCommands(ramseteCommand);
     }

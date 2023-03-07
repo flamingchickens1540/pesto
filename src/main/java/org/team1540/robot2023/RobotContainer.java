@@ -66,7 +66,7 @@ public class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true);
         LimelightManager.getInstance().addLimelight("limelight-front");
         LimelightManager.getInstance().addLimelight("limelight-rear");
-
+        AutoDrive.postPIDs();
     }
 
    private void configureButtonBindings() {
