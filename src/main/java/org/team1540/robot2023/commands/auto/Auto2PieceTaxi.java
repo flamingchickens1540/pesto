@@ -2,6 +2,7 @@ package org.team1540.robot2023.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
@@ -18,7 +19,9 @@ public class Auto2PieceTaxi extends AutoCommand {
     public Auto2PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxi"));
         addCommands(
+
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
+                new InstantCommand(drivetrain::stopTags),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
 
@@ -33,7 +36,9 @@ public class Auto2PieceTaxi extends AutoCommand {
                                 pathCommands.get(2)
                         )
                 ),
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCone.withPolePosition(grid.getOuterPole()), intake)
+                new InstantCommand(drivetrain::startTags),
+                new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake)
+
         );
     }
 

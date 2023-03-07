@@ -24,14 +24,14 @@ public final class Constants {
     public static final class Auto {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(32);
-        public static final double hpOffsetX = Units.inchesToMeters(23);
-        public static final double hpOffsetY = -Units.inchesToMeters(32);
+        public static final double hpOffsetX = Units.inchesToMeters(34);
+        public static final double hpOffsetY = -Units.inchesToMeters(25);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(123.0),25);
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),37);
-        public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60),45);
+        public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-45),45);
 
         public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 25.18));
         public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),49));

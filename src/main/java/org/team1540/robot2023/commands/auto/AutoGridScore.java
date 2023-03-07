@@ -19,9 +19,12 @@ import java.util.Objects;
 public class AutoGridScore extends SequentialCommandGroup {
 
     public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake) {
-        this(drivetrain, arm, positions, intake, null);
+        this(drivetrain, arm, positions, intake, null, true);
     }
-    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller){
+    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller) {
+        this(drivetrain, arm, positions, intake, controller, true);
+    }
+    public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller, boolean shouldAlign){
 
         addCommands(
             Commands.race(
@@ -35,7 +38,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                                         new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))
                                 );
                             }
-                            ),
+                            ).unless(()->!shouldAlign),
 //                            new ProxiedGridDriveCommand(drivetrain, positions),
                             new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
                             new ExtensionCommand(arm, positions.approach),
