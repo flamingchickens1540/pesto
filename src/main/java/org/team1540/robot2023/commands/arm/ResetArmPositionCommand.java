@@ -1,8 +1,8 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class ResetArmPositionCommand extends SequentialCommandGroup {
     public ResetArmPositionCommand(Arm arm) {
