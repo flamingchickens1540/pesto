@@ -1,35 +1,31 @@
-package org.team1540.robot2023.commands;
+package org.team1540.robot2023.commands.vision;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.utils.Limelight;
-import org.team1540.robot2023.utils.vision.MiniPID;
 
 public class TurnToCone extends CommandBase{
     Limelight limelight; 
     private PIDController pidController;
     private  Drivetrain drivetrain;
-    private boolean isFinished = false;
-    XboxController controller; 
+    CommandXboxController controller; 
 
+    private final PIDController pid = new PIDController(1, 0, 0);
 
-
-    private final MiniPID pid = new MiniPID(1, 0, 0);
-
-
-
-    public TurnToCone(Limelight limelight, Drivetrain drivetrain, XboxController controller){
+    public TurnToCone(Limelight limelight, Drivetrain drivetrain, CommandXboxController controller){
         this.limelight = limelight; 
         this.drivetrain = drivetrain; 
         this.controller = controller; 
         addRequirements(drivetrain);
     }
     private double getHorizontalDistanceToTarget() {
-        return limelight.getTx();
+        double tx = limelight.getTx(); 
+        return tx;
     }
     private double getError(double distanceToTarget) {
         return Math.abs(distanceToTarget) / (limelight.getHorizontalFov() / 2);
@@ -54,11 +50,11 @@ public class TurnToCone extends CommandBase{
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelight() {
-        double angleXOffset = getHorizontalDistanceToTarget();
+        double angleXOffset = limelight.getTx(); 
         System.out.println(angleXOffset);
         if (Math.abs(angleXOffset) > SmartDashboard.getNumber("pointToTarget/targetDeadzoneDegrees", 5)) {
 
-            double pidOutput = pid.getOutput(getError(angleXOffset));
+            double pidOutput = pid.calculate(angleXOffset); 
             double multiplier = angleXOffset > 0 ? 1 : -1;
 
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
@@ -68,8 +64,7 @@ public class TurnToCone extends CommandBase{
             // double valueR = multiplier * pidOutput;
             drivetrain.drive(0, 0,pidOutput, false);
         } else {
-            System.out.println("Ending TWL");
-            this.isFinished = true;
+            System.out.println("Ending Turing with limelight");
         }
     }
 
@@ -81,24 +76,4 @@ public class TurnToCone extends CommandBase{
         pidController.setPID(p, i, d);
         turnWithLimelight();
     }
-    
-    
-    
-    
-    
-    
-    
-    // private double clampPID(double pidOutput) {
-    //     if (pidOutput > SmartDashboard.getNumber("pointToTarget/pidClamp", 0.8)) {
-    //         SmartDashboard.putBoolean("pointToTarget/isClamping", true);
-    //         this.end(false);
-    //         return 0;
-    //     } else {
-    //         SmartDashboard.putBoolean("pointToTarget/isClamping", false);
-    //         return pidOutput;
-    //     }
-    // }
-    // public boolean isFinished() {
-    //     return this.isFinished;
-    // }
 }

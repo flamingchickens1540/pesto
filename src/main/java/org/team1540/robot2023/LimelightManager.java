@@ -27,7 +27,7 @@ public class LimelightManager {
         limelight.setDriverMode(false);
     }
     public void addLimelight(String name) {
-        addLimelight(new Limelight(name));
+        addLimelight(new Limelight());
     }
 
     public void periodic() {
