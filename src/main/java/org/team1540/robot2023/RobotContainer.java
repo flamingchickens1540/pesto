@@ -107,7 +107,7 @@ public class RobotContainer {
 //                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
 //                new SetArmPosition(arm, Constants.Auto.armDown),
 //                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
-       copilot.rightBumper().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(40), 30)));
+       copilot.rightBumper().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37.0)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
 
