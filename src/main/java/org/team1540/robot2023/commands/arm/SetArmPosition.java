@@ -17,6 +17,7 @@ public class SetArmPosition extends CommandBase {
     private final double rotationThreshold = 0.5;
     private boolean isExtending;
     private long extensionStartTime;
+    private double extensionDelay;
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
         this.arm = arm;
@@ -24,10 +25,18 @@ public class SetArmPosition extends CommandBase {
         addRequirements(arm);
     }
 
+    public SetArmPosition(Arm arm, ArmState setpoint, double extensionDelay) {
+        this.arm = arm;
+        this.setpoint = setpoint;
+        this.extensionDelay = extensionDelay;
+        addRequirements(arm);
+    }
+
     @Override
     public void initialize() {
-//        arm.setExtension(Math.max(setpoint.getExtension(), Constants.ArmConstants.ARM_BASE_LENGTH));
-        extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()));
+//        System.out.println(arm.timeToRotation(setpoint.getRotation2d()) + " " + arm.timeToExtension(setpoint.getExtension()));
+        double temp = Math.min(-arm.timeToExtension(setpoint.getExtension()) + extensionDelay, 0);
+        extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + temp);
         arm.setExtension(arm.getArmState().getExtension());
         arm.setRotation(setpoint.getRotation2d());
         isExtending = false;
@@ -38,7 +47,7 @@ public class SetArmPosition extends CommandBase {
     @Override
     public void execute() {
         if(!isExtending){
-            System.out.println("Extension Start: " + extensionStartTime + " Now: " + System.currentTimeMillis());
+//            System.out.println("Extension Start: " + extensionStartTime + " Now: " + System.currentTimeMillis());
             System.out.println(extensionStartTime - System.currentTimeMillis());
             if(System.currentTimeMillis() >= extensionStartTime){
                 isExtending = true;
