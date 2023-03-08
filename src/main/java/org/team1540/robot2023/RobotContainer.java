@@ -2,6 +2,7 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,10 +18,7 @@ import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.utils.BlinkinPair;
-import org.team1540.robot2023.utils.ButtonPanel;
-import org.team1540.robot2023.utils.PolePosition;
-import org.team1540.robot2023.utils.ScoringGridLocation;
+import org.team1540.robot2023.utils.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -105,12 +103,13 @@ public class RobotContainer {
 
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
-        copilot.rightBumper().whileTrue(Commands.sequence(
-                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
-                new SetArmPosition(arm, Constants.Auto.armDown),
-                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+//        copilot.rightBumper().whileTrue(Commands.sequence(
+//                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
+//                new SetArmPosition(arm, Constants.Auto.armDown),
+//                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+       copilot.rightBumper().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(40), 30)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
-        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
+       copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
 
 
         // INSPECTION CODE

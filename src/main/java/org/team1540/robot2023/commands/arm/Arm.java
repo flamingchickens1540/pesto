@@ -10,6 +10,7 @@ import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.opencv.core.Mat;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
@@ -68,6 +69,38 @@ public class Arm extends SubsystemBase {
 
     public double getMaxExtension() {
         return getMaxExtension(getRotation2d());
+    }
+
+    public double timeToRotation(Rotation2d rotation2d){
+        double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
+        double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
+        double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(ArmConstants.PIVOT_MAX_ACCEL);
+        boolean isAProfile = distance <=
+                timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
+        System.out.println("Rotation A profile: " + isAProfile);
+        if(!isAProfile){
+            return 1000*(distance - timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10)
+                    /(ArmConstants.PIVOT_CRUISE_SPEED*10) + 2*timeToAccelerate;
+        }
+        else{
+            return 1000*2*Math.sqrt(distance/(ArmConstants.PIVOT_MAX_ACCEL*10));
+        }
+    }
+
+    public double timeToExtension(double extension){
+        double setpoint = (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES;
+        double distance = Math.abs(setpoint - telescopeEncoder.getPosition());
+        double timeToAccelerate = (ArmConstants.TELESCOPE_CRUISE_SPEED/60)/((ArmConstants.TELESCOPE_MAX_ACCEL/60));
+        boolean isAProfile = distance <=
+                timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60);
+        System.out.println("Extension A profile: " + isAProfile);
+        if(!isAProfile){
+            return 1000*(distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60))
+                    /(ArmConstants.TELESCOPE_CRUISE_SPEED/60) + 2*timeToAccelerate;
+        }
+        else{
+            return 1000*2*Math.sqrt(distance/(ArmConstants.TELESCOPE_MAX_ACCEL/60));
+        }
     }
 
     public double getMaxExtension(Rotation2d rotation) {
