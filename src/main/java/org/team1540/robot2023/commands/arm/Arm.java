@@ -74,16 +74,16 @@ public class Arm extends SubsystemBase {
     public double timeToRotation(Rotation2d rotation2d){
         double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
         double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
+        System.out.println("Distance: " + distance + " Setpoint: " + setpoint + " Current Position: " + pivot1.getSelectedSensorPosition());
         double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(ArmConstants.PIVOT_MAX_ACCEL);
         boolean isAProfile = distance <=
                 timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
-        System.out.println("Rotation A profile: " + isAProfile);
         if(!isAProfile){
-            return 1000*(distance - timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10)
-                    /(ArmConstants.PIVOT_CRUISE_SPEED*10) + 2*timeToAccelerate;
+            return 1000*((distance - (timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10))
+                    /(ArmConstants.PIVOT_CRUISE_SPEED*10) + (2*timeToAccelerate));
         }
         else{
-            return 1000*2*Math.sqrt(distance/(ArmConstants.PIVOT_MAX_ACCEL*10));
+            return 1000*(2*Math.sqrt(distance/(ArmConstants.PIVOT_MAX_ACCEL*10)));
         }
     }
 
@@ -93,10 +93,10 @@ public class Arm extends SubsystemBase {
         double timeToAccelerate = (ArmConstants.TELESCOPE_CRUISE_SPEED/60)/((ArmConstants.TELESCOPE_MAX_ACCEL/60));
         boolean isAProfile = distance <=
                 timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60);
-        System.out.println("Extension A profile: " + isAProfile);
+//        System.out.println("Extension A profile: " + isAProfile);
         if(!isAProfile){
-            return 1000*(distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60))
-                    /(ArmConstants.TELESCOPE_CRUISE_SPEED/60) + 2*timeToAccelerate;
+            return 1000*((distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60))
+                    /(ArmConstants.TELESCOPE_CRUISE_SPEED/60) + 2*timeToAccelerate);
         }
         else{
             return 1000*2*Math.sqrt(distance/(ArmConstants.TELESCOPE_MAX_ACCEL/60));
