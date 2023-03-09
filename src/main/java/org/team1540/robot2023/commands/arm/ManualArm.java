@@ -55,7 +55,7 @@ public class ManualArm extends CommandBase {
                 if (!(arm.getMaxExtension() < arm.getArmState().getExtension() && limitedExtensionInput > 0)) {
                     isHoldingExtension = false;
                     arm.setExtendingSpeed(limitedExtensionInput);
-                }
+                } else arm.holdExtension();
             }
         }
     }

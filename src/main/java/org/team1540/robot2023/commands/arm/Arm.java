@@ -178,7 +178,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
         SmartDashboard.putNumber("arm/extensionRots", telescopeEncoder.getPosition());
-        SmartDashboard.putBoolean("arm/isLegal", getExtension() > getMaxExtension());
+        SmartDashboard.putBoolean("arm/isLegal", getExtension() < getMaxExtension());
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
     }
