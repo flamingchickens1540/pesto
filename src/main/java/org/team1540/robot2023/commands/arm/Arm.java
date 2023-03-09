@@ -71,15 +71,26 @@ public class Arm extends SubsystemBase {
     }
 
     public double getMaxExtension(Rotation2d rotation) {
-        double angle = Conversions.actualToCartesian(rotation).getRadians();
-        if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
-        if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
-        else if (angle > 0 && angle < Math.PI){
-            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle)));
-        }
-        else {
-            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));
-        }
+//        double angle = Conversions.actualToCartesian(rotation).getRadians();
+//        if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
+//        if (angle == 0 || angle == Math.PI) return ArmConstants.MAX_LEGAL_DISTANCE;
+//        else if (angle > 0 && angle < Math.PI) {
+//            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(angle)));
+//        }
+//        else {
+//            return Math.min(Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(angle)), Math.abs(ArmConstants.PIVOT_HEIGHT / Math.sin(angle)));
+//        }
+        double angle = Conversions.actualToCartesian(rotation).getDegrees();
+        double vMax, hMax;
+        if (angle == 0 || angle == 180) return ArmConstants.MAX_LEGAL_DISTANCE;
+        if (angle == 90) return ArmConstants.MAX_LEGAL_HEIGHT;
+
+        if (angle > 180 || angle < 0) vMax = ArmConstants.PIVOT_HEIGHT / Math.sin(Math.toRadians(angle));
+        else vMax = ArmConstants.MAX_LEGAL_HEIGHT / Math.sin(Math.toRadians(angle));
+        vMax = Math.abs(vMax);
+
+        hMax = Math.abs(ArmConstants.MAX_LEGAL_DISTANCE / Math.cos(Math.toRadians(angle)));
+        return Math.min(hMax, vMax);
     }
 
     private Rotation2d getRotation2d() {
@@ -168,6 +179,8 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
         SmartDashboard.putNumber("arm/extensionRots", telescopeEncoder.getPosition());
         SmartDashboard.putBoolean("arm/isLegal", getExtension() > getMaxExtension());
+        SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
+        SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
     }
 
     @Override

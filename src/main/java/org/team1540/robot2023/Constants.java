@@ -183,7 +183,7 @@ public final class Constants {
         // The distance of the pivot from the ground
         public static final double PIVOT_HEIGHT = 21.5;
         // The distance of the pivot from the edge of the frame perimeter
-        public static final double PIVOT_DISTANCE = 12;
+        public static final double PIVOT_DISTANCE = 14;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
         public static final double PIVOT_MIN_ANGLE = -2.260;
         public static final int PIVOT_FORWARD_LIMIT = 137_000;
@@ -206,7 +206,7 @@ public final class Constants {
         public static final double TELESCOPE_MAX_ACCEL = TELESCOPE_CRUISE_SPEED/(0.25);
 
 
-        public static final float TELESCOPE_FORWARD_LIMIT = (float) ((57 - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);
+        public static final float TELESCOPE_FORWARD_LIMIT = (float) ((67 - ARM_BASE_LENGTH) * EXT_GEAR_RATIO / EXT_ROTS_TO_INCHES);
 
         // The max height from the floor
         public static final double MAX_LEGAL_HEIGHT = 78 - PIVOT_HEIGHT;
