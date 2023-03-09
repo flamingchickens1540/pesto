@@ -40,6 +40,6 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.setRotatingSpeed(0);
+        if (interrupted) arm.holdPivot();
     }
 }

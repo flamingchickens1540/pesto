@@ -43,6 +43,6 @@ public class ExtensionCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.stopAll();
+        if (interrupted) arm.holdExtension();
     }
 }

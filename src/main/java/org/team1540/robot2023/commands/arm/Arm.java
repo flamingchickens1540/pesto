@@ -147,6 +147,14 @@ public class Arm extends SubsystemBase {
         pivot2.setNeutralMode(mode);
     }
 
+    public void holdPivot() {
+        setRotation(getRotation2d());
+    }
+
+    public void holdExtension() {
+        setExtension(getExtension());
+    }
+
     private void smashDartboardInit() {
     }
 
