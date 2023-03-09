@@ -1,5 +1,4 @@
 package org.team1540.robot2023.commands.vision;
-
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.utils.Limelight;
 
@@ -9,14 +8,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-public class TurnToConeWithOffset extends CommandBase{
+public class TurnToCubeWithOffset extends CommandBase{
+
+
     Limelight limelight; 
     private  Drivetrain drivetrain;
     CommandXboxController controller; 
 
     private final PIDController pid = new PIDController(1, 0, 0);
 
-    public TurnToConeWithOffset(Limelight limelight, Drivetrain drivetrain, CommandXboxController controller){
+    public TurnToCubeWithOffset(Limelight limelight, Drivetrain drivetrain, CommandXboxController controller){
         this.limelight = limelight; 
         this.drivetrain = drivetrain; 
         this.controller = controller; 
@@ -50,7 +51,7 @@ public class TurnToConeWithOffset extends CommandBase{
      */
     private void turnToConeWithOffset() {
         double ta = limelight.getTa(); 
-        double angleXOffset = ta *-0.698-2.99; 
+        double angleXOffset = ta *-0.939-2.27; 
         System.out.println(angleXOffset);
         if (Math.abs(angleXOffset) > SmartDashboard.getNumber("pointToTarget/targetDeadzoneDegrees", 5)) {
 
@@ -79,4 +80,5 @@ public class TurnToConeWithOffset extends CommandBase{
         System.out.println("ty = " + limelight.getTy());
 
     }
+
 }
