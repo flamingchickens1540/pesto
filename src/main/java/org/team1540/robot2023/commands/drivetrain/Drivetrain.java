@@ -14,10 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
@@ -42,6 +39,8 @@ public class Drivetrain extends SubsystemBase {
     private final PIDController dummyRotationPID = new PIDController(Constants.Auto.PID.rotationP,Constants.Auto.PID.rotationI,Constants.Auto.PID.rotationD);
     // Whether to allow the wheels to park
     private boolean isParkMode = false;
+    private boolean isRunningPath = false;
+    private boolean isRunningAuto = false;
 
     // Odometry
     private final SwerveDrivePoseEstimator poseEstimator;
@@ -76,6 +75,14 @@ public class Drivetrain extends SubsystemBase {
         gyro.reset();
     }
 
+    public void stopTags() {
+        this.isRunningAuto = true;
+    }
+
+    public void startTags() {
+        this.isRunningAuto = false;
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("gyro/yaw", gyro.getYaw());
@@ -87,7 +94,10 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        LimelightManager.getInstance().applyEstimates(poseEstimator);
+        if (!isRunningPath && !isRunningAuto) {
+            LimelightManager.getInstance().applyEstimates(poseEstimator);
+        }
+
 
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
     }
@@ -148,23 +158,31 @@ public class Drivetrain extends SubsystemBase {
     }
 
 
-    public Command getPathCommand(PathPlannerTrajectory trajectory) {
-        return new PPSwerveControllerCommand(
+    public Command getAutoPathCommand(PathPlannerTrajectory trajectory) {
+        return this.getPathCommand(trajectory, dummyTranslationPID, dummyRotationPID);
+    }
+
+    public Command getPathCommand(PathPlannerTrajectory trajectory, PIDController dummyTranslation, PIDController dummmyRotation) {
+        return Commands.sequence(
+                new InstantCommand(() -> isRunningPath = true),
+                new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
                 // TODO: Tune
-                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
-                new PIDController(dummyTranslationPID.getP(), dummyTranslationPID.getI(), dummyTranslationPID.getD()),
-                new PIDController(dummyRotationPID.getP(), dummyRotationPID.getI(), dummyRotationPID.getD()),
+                new PIDController(dummyTranslation.getP(), dummyTranslation.getI(), dummyTranslation.getD()),
+                new PIDController(dummyTranslation.getP(), dummyTranslation.getI(), dummyTranslation.getD()),
+                new PIDController(dummmyRotation.getP(), dummmyRotation.getI(), dummmyRotation.getD()),
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
+            ),
+            new InstantCommand(() -> isRunningPath = false)
         );
     }
 
     protected Command getResettingPathCommand(PathPlannerTrajectory trajectory) {
         return new SequentialCommandGroup(
                 new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())),
-                getPathCommand(trajectory)
+                getAutoPathCommand(trajectory)
         );
     }
 

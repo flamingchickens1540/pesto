@@ -66,7 +66,7 @@ public class RobotContainer {
         DriverStation.silenceJoystickConnectionWarning(true);
         LimelightManager.getInstance().addLimelight("limelight-front");
         LimelightManager.getInstance().addLimelight("limelight-rear");
-
+        AutoDrive.postPIDs();
     }
 
    private void configureButtonBindings() {
@@ -184,7 +184,7 @@ public class RobotContainer {
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake,ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
-//        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
         manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));

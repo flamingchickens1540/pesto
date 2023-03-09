@@ -24,7 +24,7 @@ public abstract class AutoCommand extends SequentialCommandGroup {
     }
     public List<Command> getPathPlannerDriveCommandGroup(Drivetrain drivetrain, String pathname) {
         this.name = pathname;
-        List<PathPlannerTrajectory> trajectories = PathPlanner.loadPathGroup(pathname, 3, 2);
+        List<PathPlannerTrajectory> trajectories = PathPlanner.loadPathGroup(pathname, 2, 1);
         LinkedList<Command> commands = new LinkedList<>();
         this.fullTrajectory = new Trajectory();
         for (PathPlannerTrajectory trajectory : trajectories) {
