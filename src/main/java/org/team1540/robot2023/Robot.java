@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
+import org.team1540.lib.util.COTSFalconSwerveConstants.driveGearRatios;
+import org.team1540.robot2023.commands.vision.Vision;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to
@@ -86,6 +89,7 @@ public class Robot extends TimedRobot {
         LimelightManager.getInstance().periodic();
         CommandScheduler.getInstance().run();
 
+        
         AutoManager.getInstance().updateSelected();
 
     }

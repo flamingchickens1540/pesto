@@ -130,26 +130,26 @@ public final class Constants {
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0 {
-            private static final int moduleID = isNewRobot ? 8: 4;
+            private static final int moduleID = 4;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_LEFT);
         }
 
         /* Front Right Module - Module 1 */
         public static final class Mod1 {
-            private static final int moduleID = isNewRobot ? 7 : 1;
+            private static final int moduleID = 6;
 
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.FRONT_RIGHT);
         }
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            private static final int moduleID = isNewRobot ? 5:3;
+            private static final int moduleID = 7;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_LEFT);
         }
 
         /* Back Right Module - Module 3 */
         public static final class Mod3 {
-            private static final int moduleID = isNewRobot? 6 : 2;
+            private static final int moduleID = 2;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }

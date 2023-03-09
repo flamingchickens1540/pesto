@@ -1,22 +1,22 @@
 package org.team1540.robot2023.commands.vision;
 
+import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.utils.Limelight;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.utils.Limelight;
-
-public class TurnToCone extends CommandBase{
+public class TurnToConeWithOffset extends CommandBase{
     Limelight limelight; 
     private  Drivetrain drivetrain;
     CommandXboxController controller; 
 
     private final PIDController pid = new PIDController(1, 0, 0);
 
-    public TurnToCone(Limelight limelight, Drivetrain drivetrain, CommandXboxController controller){
+    public TurnToConeWithOffset(Limelight limelight, Drivetrain drivetrain, CommandXboxController controller){
         this.limelight = limelight; 
         this.drivetrain = drivetrain; 
         this.controller = controller; 
@@ -48,8 +48,9 @@ public class TurnToCone extends CommandBase{
      *
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
-    private void turnWithLimelight() {
-        double angleXOffset = limelight.getTx(); 
+    private void turnToConeWithOffset() {
+        double ta = limelight.getTa(); 
+        double angleXOffset = ta *-0.939-2.27; 
         System.out.println(angleXOffset);
         if (Math.abs(angleXOffset) > SmartDashboard.getNumber("pointToTarget/targetDeadzoneDegrees", 5)) {
 
@@ -73,7 +74,7 @@ public class TurnToCone extends CommandBase{
         double i = SmartDashboard.getNumber("pointToTarget/kI", 0);
         double d = SmartDashboard.getNumber("pointToTarget/kD", 0.015);
         pid.setPID(p, i, d);
-        turnWithLimelight();
+        turnToConeWithOffset();
         System.out.println("tx = " + limelight.getTx());
         System.out.println("ty = " + limelight.getTy());
 
