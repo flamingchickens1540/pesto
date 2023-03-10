@@ -127,7 +127,7 @@ public class RobotContainer {
             new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
         ));
 
-        copilot.y().onTrue(new InstantCommand(arm::resetAngle));
+        copilot.y().onTrue(new ZeroArmPositionCommand(arm));
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
                 .onTrue(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_LAVA))
