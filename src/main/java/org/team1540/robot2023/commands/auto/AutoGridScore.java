@@ -34,7 +34,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                                 Translation2d endPoint = AutoDrive.getGridDrivePose(drivetrain, positions);
                                 return AutoDrive.driveToPoints(
                                         drivetrain,
-                                        new PathPoint(endPoint.plus(new Translation2d(0.127,0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)),
+//                                        new PathPoint(endPoint.plus(new Translation2d(0.127,0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)),
                                         new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))
                                 );
                             }
