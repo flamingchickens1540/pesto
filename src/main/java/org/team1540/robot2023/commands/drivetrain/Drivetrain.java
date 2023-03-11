@@ -164,7 +164,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Command getPathCommand(PathPlannerTrajectory trajectory, PIDController dummyTranslation, PIDController dummmyRotation) {
         return Commands.sequence(
-                new InstantCommand(() -> isRunningPath = true),
+                new InstantCommand(() -> isRunningPath = true).withName("StartBlockingTags"),
                 new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
@@ -175,13 +175,13 @@ public class Drivetrain extends SubsystemBase {
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
             ),
-            new InstantCommand(() -> isRunningPath = false)
+            new InstantCommand(() -> isRunningPath = false).withName("StopBlockingTags")
         );
     }
 
     protected Command getResettingPathCommand(PathPlannerTrajectory trajectory) {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())),
+                new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())).withName("ResetOdometry"),
                 getAutoPathCommand(trajectory)
         );
     }

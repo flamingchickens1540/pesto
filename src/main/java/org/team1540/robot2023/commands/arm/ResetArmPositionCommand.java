@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class ResetArmPositionCommand extends SequentialCommandGroup {
     public ResetArmPositionCommand(Arm arm) {
         addCommands(
-                new InstantCommand(arm::stopAll),
-                //new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)),
-                //new InstantCommand(arm::resetAngle),
+                new InstantCommand(arm::stopAll).withName("StopArm"),
+                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0)),
+                new InstantCommand(arm::resetAngle).withName("ResetArmAngle"),
                 new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(0))
         );
     }

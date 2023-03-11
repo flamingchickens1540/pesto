@@ -18,7 +18,7 @@ public abstract class AutoCommand extends SequentialCommandGroup {
 
     public Command getPathPlannerDriveCommand(Drivetrain drivetrain, String pathname) {
         this.name = pathname;
-        PathPlannerTrajectory trajectory = PathPlanner.loadPath(pathname, 3, 2);
+        PathPlannerTrajectory trajectory = PathPlanner.loadPath(pathname, 1.5, 2);
         this.fullTrajectory = trajectory;
         return new ProxyCommand(() -> new PathPlannerDriveCommand(drivetrain, trajectory));
     }

@@ -52,7 +52,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                         new WaitCommand(0.25),
 
                     new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
-                    new ResetArmPositionCommand(arm)
+                    new ZeroArmPositionCommand(arm)
 //                    new ResetArmPositionCommand(arm)
                 )
             )

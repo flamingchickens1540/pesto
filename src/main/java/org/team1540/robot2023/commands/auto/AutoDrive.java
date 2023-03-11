@@ -86,6 +86,6 @@ public class AutoDrive {
             field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
             PathPlannerServer.sendActivePath(trajectory.getStates());
             return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
-        });
+        }).withName("AutoDriveToPoints");
     }
 }

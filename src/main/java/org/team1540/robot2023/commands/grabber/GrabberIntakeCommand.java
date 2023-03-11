@@ -12,7 +12,7 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        wheeledGrabber.setCurrentLimit(20);
+//        wheeledGrabber.setCurrentLimit(10);
         wheeledGrabber.setSpeed(1);
     }
 

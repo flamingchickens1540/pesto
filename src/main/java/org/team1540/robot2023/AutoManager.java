@@ -58,4 +58,8 @@ public class AutoManager {
     public Command getSelected() {
         return chooser.getSelected().command;
     }
+
+    public Trajectory getSelectedTrajectory() {
+        return chooser.getSelected().trajectory;
+    }
 }
