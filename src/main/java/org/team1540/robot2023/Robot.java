@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
         new WaitCommand(5).andThen(() -> {
             robotContainer.drivetrain.resetAllToAbsolute();
             robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
-        }, robotContainer.drivetrain).ignoringDisable(true).schedule();
+        }, robotContainer.drivetrain).ignoringDisable(true).withName("ResetModuleCommand").schedule();
 
         // OK so this one is really stupid and really shouldn't have to be here, but it does, just deal with it.
         aprilTagLayout.getTagPose(-1);

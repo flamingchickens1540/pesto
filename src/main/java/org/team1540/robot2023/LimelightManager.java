@@ -42,17 +42,20 @@ public class LimelightManager {
         }
     }
 
-    public void applyEstimates(SwerveDrivePoseEstimator poseEstimator) {
+    public boolean applyEstimates(SwerveDrivePoseEstimator poseEstimator) {
         for (Limelight limelight: limelights) {
-            Pose2d pose = limelight.getFilteredBotPose();
+            Pose2d pose = limelight.getBotPose();
             if (pose != null) {
                 field2d.getObject("pose/"+limelight.name).setPose(pose);
                 poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
+                return true;
             } else {
                 // Remove poses if no target is seen
+
                 field2d.getObject("pose/"+limelight.name).setPoses();
             }
         }
+        return false;
     }
 
     public boolean canSeeTargets() {

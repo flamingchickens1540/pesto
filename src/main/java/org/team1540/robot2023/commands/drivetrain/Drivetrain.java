@@ -94,12 +94,14 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        if (!isRunningPath && !isRunningAuto) {
-            LimelightManager.getInstance().applyEstimates(poseEstimator);
-        }
-
-
+//        if (!isRunningPath && !isRunningAuto) {
+//            LimelightManager.getInstance().applyEstimates(poseEstimator);
+//        }
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
+    }
+
+    public boolean updateWithApriltags() {
+        return LimelightManager.getInstance().applyEstimates(poseEstimator);
     }
 
 
@@ -193,6 +195,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroGyroscope() {
         gyro.zeroYaw();
+
     }
 
 //    public void zeroFieldOrientation() {

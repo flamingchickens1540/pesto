@@ -50,6 +50,8 @@ public class RobotContainer {
 
     // Commands
 
+
+
     public RobotContainer() {
         pdh.clearStickyFaults();
         ph.clearStickyFaults();
@@ -63,7 +65,7 @@ public class RobotContainer {
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
         LimelightManager.getInstance().addLimelight("limelight-front");
-        LimelightManager.getInstance().addLimelight("limelight-rear");
+//        LimelightManager.getInstance().addLimelight("limelight-rear");
         AutoDrive.postPIDs();
     }
 
@@ -71,9 +73,9 @@ public class RobotContainer {
         // Driver
 
         // coop:button(A, Zero Field Oriented [Press],pilot)
-        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
+//        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
-        driver.x().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
+        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
         driver.rightTrigger().whileTrue(new FunctionalCommand(() -> intake.setCurrentLimit(30), () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false).withName("AgressiveMode"));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
