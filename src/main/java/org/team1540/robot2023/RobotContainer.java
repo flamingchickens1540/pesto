@@ -65,7 +65,7 @@ public class RobotContainer {
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
         LimelightManager.getInstance().addLimelight("limelight-front");
-//        LimelightManager.getInstance().addLimelight("limelight-rear");
+        LimelightManager.getInstance().addLimelight("limelight-rear");
         AutoDrive.postPIDs();
     }
 
@@ -75,7 +75,7 @@ public class RobotContainer {
         // coop:button(A, Zero Field Oriented [Press],pilot)
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
-        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
+        driver.y().and(driver.x()).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
         driver.rightTrigger().whileTrue(new FunctionalCommand(() -> intake.setCurrentLimit(30), () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false).withName("AgressiveMode"));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
@@ -189,8 +189,8 @@ public class RobotContainer {
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
         manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
         manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
-        manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube, intake));
-        manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.midCube, intake));
+        manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
+        manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
 

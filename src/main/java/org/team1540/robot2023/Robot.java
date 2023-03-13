@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 
     private Command autonomousCommand;
     private boolean hasRunAuto;
+    private boolean hasEnabled;
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -103,6 +104,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        if (!hasEnabled) {
+            robotContainer.drivetrain.updateWithApriltags();
+        }
     }
 
     @Override
@@ -111,7 +115,9 @@ public class Robot extends TimedRobot {
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
+        robotContainer.drivetrain.updateWithApriltags();
         hasRunAuto = true;
+        hasEnabled = true;
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
@@ -128,6 +134,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        hasEnabled = true;
         robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
         robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
         if (autonomousCommand != null) {
@@ -148,6 +155,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        hasEnabled = true;
         System.out.println("Test enabled");
         LiveWindow.setEnabled(false);
     }
