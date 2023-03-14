@@ -142,6 +142,7 @@ public class Robot extends TimedRobot {
         }
         if (!hasRunAuto) {
             robotContainer.drivetrain.zeroFieldOrientation();
+            robotContainer.arm.resetAngle();
         }
         robotContainer.setTeleopDefaultCommands();
     }

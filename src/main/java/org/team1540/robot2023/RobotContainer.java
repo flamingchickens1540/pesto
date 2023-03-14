@@ -103,11 +103,9 @@ public class RobotContainer {
 
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
-//        copilot.rightBumper().whileTrue(Commands.sequence(
-//                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
-//                new SetArmPosition(arm, Constants.Auto.armDown),
-//                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
-       copilot.rightBumper().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),37.0), 400));
+        copilot.rightBumper().whileTrue(Commands.sequence(
+                new SetArmPosition(arm, Constants.Auto.armDown),
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
 
@@ -121,8 +119,7 @@ public class RobotContainer {
 
         //coop:button(X, Downed Cone Intake [ HOLD, copilot)
         copilot.x().whileTrue(Commands.sequence(
-            new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards).withTimeout(1),
-            new SetArmPosition(arm, Constants.Auto.armDownBackwards).withTimeout(1),
+            new SetArmPosition(arm, Constants.Auto.armDownBackwards),
             new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
         ).withName("DownedConeIntake"));
 
