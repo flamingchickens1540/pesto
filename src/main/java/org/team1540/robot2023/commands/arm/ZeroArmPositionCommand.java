@@ -8,7 +8,7 @@ public class ZeroArmPositionCommand extends SequentialCommandGroup {
         addCommands(
 //                new InstantCommand(arm::stopAll),
 //                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-20)).withTimeout(1),
-                new InstantCommand(arm::resetAngle)
+                new InstantCommand(arm::resetToGyro)
         );
     }
 }
