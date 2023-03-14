@@ -36,7 +36,7 @@ public class RobotContainer {
     // Subsystems
 
     Drivetrain drivetrain = new Drivetrain(gyro);
-    Arm arm = new Arm(gyro);
+    Arm arm = new Arm();
     WheeledGrabber intake = new WheeledGrabber();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
