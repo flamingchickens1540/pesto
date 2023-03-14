@@ -10,7 +10,6 @@ public class ExtensionCommand extends CommandBase {
     private final double targetExtension;
     private final AverageFilter average = new AverageFilter(10);
     private final double threshold = 0.25;
-    private long time;
 
     public ExtensionCommand(Arm arm, ArmState target) {
         this(arm, target.getExtension());
@@ -26,7 +25,6 @@ public class ExtensionCommand extends CommandBase {
         arm.setExtension(targetExtension);
         average.clear();
         arm.setRotation(arm.getArmState().getRotation2d());
-        time = System.currentTimeMillis();
     }
 
     @Override

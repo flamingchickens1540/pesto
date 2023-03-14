@@ -10,7 +10,6 @@ public class PivotCommand extends CommandBase {
     private final Rotation2d targetAngle;
     private final AverageFilter average = new AverageFilter(5);
     private final double threshold = 0.5;
-    private long time;
 
 
     public PivotCommand(Arm arm, ArmState target) {
@@ -26,7 +25,6 @@ public class PivotCommand extends CommandBase {
     public void initialize() {
         arm.setRotation(targetAngle);
         average.clear();
-        time = System.currentTimeMillis();
         arm.setExtension(arm.getArmState().getExtension());
     }
 

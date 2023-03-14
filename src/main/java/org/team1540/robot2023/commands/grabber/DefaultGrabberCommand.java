@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class DefaultGrabberCommand extends CommandBase {
     private final WheeledGrabber wheeledGrabber;
-    private boolean isHigh;
 
     public DefaultGrabberCommand(WheeledGrabber wheeledGrabber) {
         this.wheeledGrabber = wheeledGrabber;

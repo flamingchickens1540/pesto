@@ -41,8 +41,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                                     }
                                     ).unless(()->!shouldAlign),
 //                            new ProxiedGridDriveCommand(drivetrain, positions),
-                                    new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
-                                    new ExtensionCommand(arm, positions.approach),
+                                    new SetArmPosition(arm, positions.approach),
                                     new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null || positions.polePosition == PolePosition.CENTER),
                                     new PivotCommand(arm,catchNull(positions.score)).unless(() -> positions.score == null)
                             )
@@ -51,10 +50,8 @@ public class AutoGridScore extends SequentialCommandGroup {
                             new GrabberOuttakeCommand(intake),
                             Commands.sequence(
                                     new WaitCommand(0.25),
-
                                     new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
-                                    new ZeroArmPositionCommand(arm)
-//                    new ResetArmPositionCommand(arm)
+                                    new ResetArmPositionCommand(arm)
                             )
                     )
             ),

@@ -17,6 +17,7 @@ public class SetArmPosition extends CommandBase {
     private final double rotationThreshold = 0.5;
     private boolean isExtending;
     private long extensionStartTime;
+    private long extensionFinishTime;
     private double extensionDelay;
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
@@ -35,8 +36,8 @@ public class SetArmPosition extends CommandBase {
     @Override
     public void initialize() {
 //        System.out.println(arm.timeToRotation(setpoint.getRotation2d()) + " " + arm.timeToExtension(setpoint.getExtension()));
-        double temp = Math.min(-arm.timeToExtension(setpoint.getExtension()) + extensionDelay, 0);
-        extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + temp);
+        extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
+        extensionFinishTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
         arm.setExtension(arm.getArmState().getExtension());
         arm.setRotation(setpoint.getRotation2d());
         isExtending = false;
@@ -60,12 +61,7 @@ public class SetArmPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return (
-                ((setpoint.getExtension() <= Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()) ||
-                    extensionFilter.getAverage() < extensionThreshold) &&
-                (rotationFilter.getAverage() < rotationThreshold &&
-                    Math.abs(arm.getArmState().getRotation2d().getDegrees() - setpoint.getRotation2d().getDegrees()) < rotationThreshold)
-        );
+        return System.currentTimeMillis() > extensionFinishTime;
     }
 
     @Override
