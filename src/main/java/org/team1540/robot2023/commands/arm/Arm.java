@@ -5,19 +5,23 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import org.opencv.core.Mat;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
+import org.team1540.robot2023.utils.ChickEncoder;
 
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
+    private final ChickEncoder pivotEncoder = new ChickEncoder(
+            ArmConstants.PIVOT_ENCODER_CHANNEL_A,
+            ArmConstants.PIVOT_ENCODER_CHANNEL_B,
+            ArmConstants.PIVOT_ENCODER_PULSES_PER_REV
+    );
 
     private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
             CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -26,10 +30,8 @@ public class Arm extends SubsystemBase {
     private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
     private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
-    private final AHRS navx;
 
-    public Arm(AHRS navx) {
-        this.navx = navx;
+    public Arm() {
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
@@ -162,19 +164,38 @@ public class Arm extends SubsystemBase {
         telescope.set(0);
     }
 
-    public void resetAngle() {
+    public Rotation2d getGyroAngle() {
         short[] pigeonAccel = new short[3];
         pigeon2.getBiasedAccelerometer(pigeonAccel);
         double pigeonRoll;
         if (pigeonAccel[0] > 0) {
             pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
         } else pigeonRoll = pigeon2.getRoll();
-//        pigeonRoll += navx.getRoll();
+        return Rotation2d.fromDegrees(pigeonRoll);
+    }
+
+    public void resetToGyro() {
+//        short[] pigeonAccel = new short[3];
+//        pigeon2.getBiasedAccelerometer(pigeonAccel);
+//        double pigeonRoll;
+//        if (pigeonAccel[0] > 0) {
+//            pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
+//        } else pigeonRoll = pigeon2.getRoll();
+//        pivot1.setSelectedSensorPosition(
+//                Conversions.degreesToFalcon(
+//                        pigeonRoll + ArmConstants.PIGEON_OFFSET,
+//                        ArmConstants.PIVOT_GEAR_RATIO
+//                )
+//        );
         pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(
-                        pigeonRoll + ArmConstants.PIGEON_OFFSET,
-                        ArmConstants.PIVOT_GEAR_RATIO
-                )
+                Conversions.degreesToFalcon(getGyroAngle().getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
+        pivotEncoder.setPosition(getGyroAngle());
+    }
+
+    public void resetToEncoder() {
+        pivot1.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
         );
     }
 
@@ -206,7 +227,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
         SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
         SmartDashboard.putNumber("arm/extension", getExtension());
-        SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
+        SmartDashboard.putNumber("arm/pivotEncoder", pivotEncoder.getDegrees());
         SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
         SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());

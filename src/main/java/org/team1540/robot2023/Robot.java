@@ -121,7 +121,7 @@ public class Robot extends TimedRobot {
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
-            robotContainer.arm.resetAngle();
+            robotContainer.arm.resetToGyro();
         }
     }
 
@@ -142,7 +142,7 @@ public class Robot extends TimedRobot {
         }
         if (!hasRunAuto) {
             robotContainer.drivetrain.zeroFieldOrientation();
-            robotContainer.arm.resetAngle();
+            robotContainer.arm.resetToGyro();
         }
         robotContainer.setTeleopDefaultCommands();
     }

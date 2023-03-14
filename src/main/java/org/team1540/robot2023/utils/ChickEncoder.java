@@ -21,8 +21,13 @@ public class ChickEncoder extends Encoder {
         offsetDegrees = positionDegrees;
     }
 
+    public void setPosition(Rotation2d position) {
+        reset();
+        offsetDegrees = position.getDegrees();
+    }
+
     public double getDegrees() {
-        return get()/(pulsesPerRevolution * 360) + offsetDegrees;
+        return get()/(pulsesPerRevolution * 360.0) + offsetDegrees;
     }
 
     public Rotation2d getRotation2d() {
