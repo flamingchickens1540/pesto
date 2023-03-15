@@ -171,8 +171,8 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int PIVOT1_ID = 10;
         public static final int PIVOT2_ID = 11;
-        public static final int PIVOT_ENCODER_CHANNEL_A = 9;
-        public static final int PIVOT_ENCODER_CHANNEL_B = 8;
+        public static final int PIVOT_ENCODER_CHANNEL_A = 8;
+        public static final int PIVOT_ENCODER_CHANNEL_B = 9;
         public static final int PIVOT_ENCODER_PULSES_PER_REV = 2048;
         public static final int TELESCOPE_ID = 12;
         public static final int PIGEON_ID = 13;
