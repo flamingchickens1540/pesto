@@ -42,7 +42,7 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        if (interrupted) arm.holdPivot();
-        else arm.resetToEncoder();
+        if (interrupted) arm.setRotatingSpeed(0);
+        arm.resetToEncoder();
     }
 }
