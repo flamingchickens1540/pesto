@@ -8,6 +8,8 @@ import org.team1540.robot2023.utils.AverageFilter;
 
 import java.util.function.Supplier;
 
+import static org.team1540.robot2023.utils.MathUtils.deadzone;
+
 public class AutoSideBalanceCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final PIDController pidController = new PIDController(0.01, 0, 0.002);
@@ -29,7 +31,7 @@ public class AutoSideBalanceCommand extends CommandBase {
         filter.add(pidController.getPositionError());
             drivetrain.drive(
                     0,
-                     pidController.calculate(angleSupplier.get().getDegrees()),0, false);
+                     deadzone(pidController.calculate(angleSupplier.get().getDegrees()), 0.02),0, false);
     }
 
     @Override

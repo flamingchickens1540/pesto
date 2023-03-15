@@ -131,9 +131,7 @@ public class Drivetrain extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().minus(Rotation2d.fromDegrees(fieldOrientationOffset)))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
-        double deadzone = 0.02;
-        double rotDeadzone = 0.1;
-        if (Math.abs(xPercent) > 0 || Math.abs(yPercent) > deadzone || Math.abs(rot) > rotDeadzone) {
+        if (xPercent != 0 || yPercent != 0 || rot != 0) {
             isParkMode = false;
             setChassisSpeeds(chassisSpeeds);
         } else {
