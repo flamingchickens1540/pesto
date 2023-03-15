@@ -45,7 +45,7 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
     }
 
     public static Command get(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
-            return new ProxyCommand(() -> new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset));
+            return new ProxyCommand(() -> new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset)).withName("AutoSubstationAlignProxier");
         }
 //                new PrintCommand("Done")
 //        addRequirements(drivetrain,arm);

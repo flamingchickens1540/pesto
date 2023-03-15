@@ -16,8 +16,10 @@ public class WheeledGrabber extends SubsystemBase {
     private final AverageFilter averageFilter = new AverageFilter(5);
 
     public WheeledGrabber() {
-        setCurrentLimit(15);
+        motor1.restoreFactoryDefaults();
+        motor2.restoreFactoryDefaults();
 
+        setCurrentLimit(20);
 
         motor1.setIdleMode(CANSparkMax.IdleMode.kBrake);
         motor2.setIdleMode(CANSparkMax.IdleMode.kBrake);

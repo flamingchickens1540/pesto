@@ -2,7 +2,8 @@ package org.team1540.robot2023;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import org.team1540.robot2023.utils.Limelight;
 
 import java.util.LinkedList;
@@ -42,17 +43,37 @@ public class LimelightManager {
         }
     }
 
-    public void applyEstimates(SwerveDrivePoseEstimator poseEstimator) {
+    public boolean applyFrontEstimates(SwerveDrivePoseEstimator poseEstimator, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+        Limelight limelight = limelights.getFirst();
+        Pose2d pose = limelight.getBotPose();
+        if (pose != null) {
+            field2d.getObject("pose/"+limelight.name).setPose(pose);
+//                poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
+            poseEstimator.resetPosition(gyroAngle, positions, pose);
+            return true;
+        } else {
+            // Remove poses if no target is seen
+
+            field2d.getObject("pose/"+limelight.name).setPoses();
+        }
+        return false;
+    }
+
+    public boolean zeroFromLimelights(SwerveDrivePoseEstimator poseEstimator, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
         for (Limelight limelight: limelights) {
-            Pose2d pose = limelight.getFilteredBotPose();
+            Pose2d pose = limelight.getBotPose();
             if (pose != null) {
                 field2d.getObject("pose/"+limelight.name).setPose(pose);
-                poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
+//                poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
+                poseEstimator.resetPosition(gyroAngle, positions, pose);
+                return true;
             } else {
                 // Remove poses if no target is seen
+
                 field2d.getObject("pose/"+limelight.name).setPoses();
             }
         }
+        return false;
     }
 
     public boolean canSeeTargets() {
