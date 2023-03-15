@@ -33,7 +33,7 @@ public class Limelight {
 
 
     public Limelight() {
-        table = NetworkTableInstance.getDefault().getTable("");
+        table = NetworkTableInstance.getDefault().getTable("limelight-rear");
             
     }
 
@@ -136,33 +136,33 @@ public class Limelight {
 
     //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
     public double getTx(){
-         tx = table.getEntry("tx").getDouble(0.1234);
+         tx = table.getEntry("tx").getDouble(0.0);
         SmartDashboard.putNumber("LimelightX", tx);
         return tx;
     }
     public NetworkTableEntry getTxEntry(){
         NetworkTableEntry txEntry = table.getEntry("tx");
-       SmartDashboard.putNumber("LimelightX", tx);
+       SmartDashboard.putNumber("vision/LimelightX", tx);
        return txEntry;
    }
    
     //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
     public double getTy(){
-         ty = table.getEntry("ty").getDouble(0.1234);
+         ty = table.getEntry("ty").getDouble(0.0);
         SmartDashboard.putNumber("LimelightY", ty);
         return ty;
     }
 
     //Target Area (0% of image to 100% of image)
     public double getTa(){
-         ta = table.getEntry("ta").getDouble(0.1234);
+         ta = table.getEntry("ta").getDouble(0.0);
         SmartDashboard.putNumber("LimelightArea", ta);
         return ta;
     }
 
     //Whether the limelight has any valid targets (0 or 1)
     public double getTv() {
-        tv = table.getEntry("tv").getDouble(0.1234);
+        tv = table.getEntry("tv").getDouble(0.0);
         SmartDashboard.putNumber("LimelightTargets", tv);
         return tv;
     }
@@ -174,7 +174,7 @@ public class Limelight {
         return classID;
     }
     public Translation2d getTargetAngles() {
-        double x = table.getEntry("tx").getDouble(0.1234);
+        double x = table.getEntry("tx").getDouble(0.0);
         double y = table.getEntry("ty").getDouble(0);
         return new Translation2d(x, y);
     }

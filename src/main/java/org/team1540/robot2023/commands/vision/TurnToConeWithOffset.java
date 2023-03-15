@@ -30,7 +30,6 @@ public class TurnToConeWithOffset extends CommandBase{
         return Math.abs(distanceToTarget) / (limelight.getHorizontalFov() / 2);
     }
 
-
     @Override
     public void initialize() {
         double p = SmartDashboard.getNumber("pointToTarget/kP", 0.008);
