@@ -63,8 +63,8 @@ public class ResetArmPositionCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
-            arm.holdPivot();
-            arm.holdExtension();
-        } else arm.resetToEncoder();
+            arm.stopAll();
+        }
+        arm.resetToEncoder();
     }
 }
