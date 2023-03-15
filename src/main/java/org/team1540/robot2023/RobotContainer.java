@@ -19,8 +19,10 @@ import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+import org.team1540.robot2023.commands.vision.TurnToCone;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
+import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
 
@@ -42,6 +44,8 @@ public class RobotContainer {
     Drivetrain drivetrain = new Drivetrain(gyro);
     Arm arm = new Arm(gyro);
     WheeledGrabber intake = new WheeledGrabber();
+    Limelight limelight = new Limelight(); 
+
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
     CommandXboxController copilot = new CommandXboxController(1);
@@ -81,6 +85,8 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
+        
+        driver.b().whileTrue(new TurnToCone(limelight,drivetrain,driver));
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));

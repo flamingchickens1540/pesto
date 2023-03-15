@@ -26,10 +26,12 @@ public class LimelightManager {
         limelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
         limelight.setDriverMode(false);
     }
+    // public void addLimelight(String name) {
+    //     addLimelight(new Limelight(name));
+    // }
     public void addLimelight(String name) {
-        addLimelight(new Limelight(name));
+        addLimelight(new Limelight());
     }
-
     public void periodic() {
         for (Limelight limelight: limelights) {
             limelight.periodic();
@@ -42,15 +44,27 @@ public class LimelightManager {
         }
     }
 
+    // public void applyEstimates(SwerveDrivePoseEstimator poseEstimator) {
+    //     for (Limelight limelight: limelights) {
+    //         Pose2d pose = limelight.getFilteredBotPose();
+    //         if (pose != null) {
+    //             field2d.getObject("pose/"+limelight.name).setPose(pose);
+    //             poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
+    //         } else {
+    //             // Remove poses if no target is seen
+    //             field2d.getObject("pose/"+limelight.name).setPoses();
+    //         }
+    //     }
+    // }
     public void applyEstimates(SwerveDrivePoseEstimator poseEstimator) {
         for (Limelight limelight: limelights) {
             Pose2d pose = limelight.getFilteredBotPose();
             if (pose != null) {
-                field2d.getObject("pose/"+limelight.name).setPose(pose);
+                field2d.getObject("pose/"+limelight).setPose(pose);
                 poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp()-(limelight.getDeltaTime()/1000));
             } else {
                 // Remove poses if no target is seen
-                field2d.getObject("pose/"+limelight.name).setPoses();
+                field2d.getObject("pose/"+limelight).setPoses();
             }
         }
     }
