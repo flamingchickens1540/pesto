@@ -27,7 +27,7 @@ public class ChickEncoder extends Encoder {
     }
 
     public double getDegrees() {
-        return get()/(pulsesPerRevolution * 360.0) + offsetDegrees;
+        return (get() * 360)/pulsesPerRevolution + offsetDegrees;
     }
 
     public Rotation2d getRotation2d() {

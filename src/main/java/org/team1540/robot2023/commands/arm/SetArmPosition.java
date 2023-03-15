@@ -1,8 +1,6 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
 
@@ -35,7 +33,7 @@ public class SetArmPosition extends CommandBase {
 
     @Override
     public void initialize() {
-//        System.out.println(arm.timeToRotation(setpoint.getRotation2d()) + " " + arm.timeToExtension(setpoint.getExtension()));
+        arm.resetToEncoder();
         extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
         extensionFinishTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
         arm.setExtension(arm.getArmState().getExtension());
@@ -48,9 +46,7 @@ public class SetArmPosition extends CommandBase {
     @Override
     public void execute() {
         if(!isExtending){
-//            System.out.println("Extension Start: " + extensionStartTime + " Now: " + System.currentTimeMillis());
-            System.out.println(extensionStartTime - System.currentTimeMillis());
-            if(System.currentTimeMillis() >= extensionStartTime){
+            if (System.currentTimeMillis() >= extensionStartTime){
                 isExtending = true;
                 arm.setExtension(setpoint.getExtension());
             }
@@ -66,6 +62,9 @@ public class SetArmPosition extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.stopAll();
+        if (interrupted) {
+            arm.holdPivot();
+            arm.holdExtension();
+        } else arm.resetToEncoder();
     }
 }

@@ -23,6 +23,7 @@ public class PivotCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        arm.resetToEncoder();
         arm.setRotation(targetAngle);
         average.clear();
         arm.setExtension(arm.getArmState().getExtension());
@@ -42,5 +43,6 @@ public class PivotCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) arm.holdPivot();
+        else arm.resetToEncoder();
     }
 }

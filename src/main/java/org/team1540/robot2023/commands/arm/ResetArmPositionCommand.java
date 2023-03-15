@@ -27,6 +27,8 @@ public class ResetArmPositionCommand extends CommandBase {
 
     @Override
     public void initialize() {
+        arm.resetToEncoder();
+        System.out.println("command start");
         System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
         arm.setExtension(setpoint.getExtension());
@@ -39,8 +41,6 @@ public class ResetArmPositionCommand extends CommandBase {
     @Override
     public void execute() {
         if(!isRotating){
-//            System.out.println("Extension Start: " + extensionStartTime + " Now: " + System.currentTimeMillis());
-            System.out.println(pivotStartTime - System.currentTimeMillis());
             if(System.currentTimeMillis() >= pivotStartTime){
                 isRotating = true;
                 arm.setRotation(setpoint.getRotation2d());
@@ -62,6 +62,9 @@ public class ResetArmPositionCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        arm.stopAll();
+        if (interrupted) {
+            arm.holdPivot();
+            arm.holdExtension();
+        } else arm.resetToEncoder();
     }
 }

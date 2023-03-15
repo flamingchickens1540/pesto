@@ -20,7 +20,8 @@ public class Arm extends SubsystemBase {
     private final ChickEncoder pivotEncoder = new ChickEncoder(
             ArmConstants.PIVOT_ENCODER_CHANNEL_A,
             ArmConstants.PIVOT_ENCODER_CHANNEL_B,
-            ArmConstants.PIVOT_ENCODER_PULSES_PER_REV
+            ArmConstants.PIVOT_ENCODER_PULSES_PER_REV,
+            true
     );
 
     private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
@@ -76,7 +77,6 @@ public class Arm extends SubsystemBase {
     public double timeToRotation(Rotation2d rotation2d){
         double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
         double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
-        System.out.println("Distance: " + distance + " Setpoint: " + setpoint + " Current Position: " + pivot1.getSelectedSensorPosition());
         double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(ArmConstants.PIVOT_MAX_ACCEL);
         boolean isAProfile = distance <=
                 timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
@@ -130,7 +130,9 @@ public class Arm extends SubsystemBase {
 
     private Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(
-                Conversions.falconToDegrees(pivot1.getSelectedSensorPosition(), ArmConstants.PIVOT_GEAR_RATIO)
+                Conversions.falconToDegrees(
+                        (pivot1.getSelectedSensorPosition() + pivot2.getSelectedSensorPosition())/2,
+                        ArmConstants.PIVOT_GEAR_RATIO)
         );
     }
 
@@ -146,9 +148,14 @@ public class Arm extends SubsystemBase {
         return telescopeLimitSwitch.isPressed();
     }
 
-    public void setRotation(Rotation2d rotation) {
+    protected void setRotation(Rotation2d rotation) {
+        setRotation(rotation, true);
+    }
+
+    protected void setRotation(Rotation2d rotation, boolean resetEncoders) {
+        if (resetEncoders) resetToEncoder();
         double angle = rotation.getDegrees();
-         pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
+        pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
     protected void setExtension(double extension) {
@@ -156,7 +163,6 @@ public class Arm extends SubsystemBase {
                 (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
                 CANSparkMax.ControlType.kSmartMotion, 0
         );
-
     }
 
     public void stopAll() {
@@ -171,7 +177,7 @@ public class Arm extends SubsystemBase {
         if (pigeonAccel[0] > 0) {
             pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
         } else pigeonRoll = pigeon2.getRoll();
-        return Rotation2d.fromDegrees(pigeonRoll);
+        return Rotation2d.fromDegrees(pigeonRoll + ArmConstants.PIGEON_OFFSET);
     }
 
     public void resetToGyro() {
@@ -197,6 +203,9 @@ public class Arm extends SubsystemBase {
         pivot1.setSelectedSensorPosition(
                 Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
         );
+        pivot2.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
     }
 
 
@@ -204,7 +213,7 @@ public class Arm extends SubsystemBase {
         telescope.set(speed);
     }
 
-    public void setRotatingSpeed(double speed){
+    public void setRotatingSpeed(double speed) {
         pivot1.set(ControlMode.PercentOutput, speed);
     }
     public void setRotationNeutralMode(NeutralMode mode){
@@ -213,7 +222,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void holdPivot() {
-        setRotation(getRotation2d());
+        setRotation(getRotation2d(), false);
     }
 
     public void holdExtension() {
@@ -224,7 +233,7 @@ public class Arm extends SubsystemBase {
     }
 
     private void smashDartboard() {
-        SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
+        SmartDashboard.putNumber("arm/pigeonRoll", getGyroAngle().getDegrees());
         SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
         SmartDashboard.putNumber("arm/extension", getExtension());
         SmartDashboard.putNumber("arm/pivotEncoder", pivotEncoder.getDegrees());
