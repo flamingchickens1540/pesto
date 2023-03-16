@@ -18,8 +18,9 @@ public class ResetArmPositionCommand extends CommandBase {
     private boolean isRotating;
     private long pivotStartTime;
     private double extensionDelay;
+    private long endTime;
 
-    public ResetArmPositionCommand(Arm arm){
+    public ResetArmPositionCommand(Arm arm) {
         this.arm = arm;
         this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), Constants.ArmConstants.ARM_BASE_LENGTH);
         addRequirements(arm);
@@ -31,6 +32,7 @@ public class ResetArmPositionCommand extends CommandBase {
         System.out.println("command start");
         System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
+        endTime = (long) (System.currentTimeMillis()  + arm.timeToExtension(setpoint.getExtension()));
         arm.setExtension(setpoint.getExtension());
         arm.setRotation(arm.getArmState().getRotation2d());
         isRotating = false;
@@ -44,6 +46,7 @@ public class ResetArmPositionCommand extends CommandBase {
             if(System.currentTimeMillis() >= pivotStartTime){
                 isRotating = true;
                 arm.setRotation(setpoint.getRotation2d());
+                endTime = (long) Math.max(endTime, System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()));
             }
         }
         extensionFilter.add(Math.abs(setpoint.getExtension() - arm.getArmState().getExtension()));
@@ -52,12 +55,13 @@ public class ResetArmPositionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        System.out.println(rotationFilter.getAverage() + "      " + Math.abs(arm.getArmState().getRotation2d().getDegrees() - setpoint.getRotation2d().getDegrees()));
         return (
                 ((setpoint.getExtension() <= Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()) ||
                         extensionFilter.getAverage() < extensionThreshold) &&
                         (rotationFilter.getAverage() < rotationThreshold &&
                                 Math.abs(arm.getArmState().getRotation2d().getDegrees() - setpoint.getRotation2d().getDegrees()) < rotationThreshold)
-        );
+        ) || System.currentTimeMillis() > endTime;
     }
 
     @Override
