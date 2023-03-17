@@ -17,23 +17,25 @@ public class SetArmPosition extends CommandBase {
     private long extensionStartTime;
     private long extensionFinishTime;
     private double extensionDelay;
+    private boolean shouldZero;
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
-        this.arm = arm;
-        this.setpoint = setpoint;
-        addRequirements(arm);
+        this(arm, setpoint, 0, true);
     }
 
-    public SetArmPosition(Arm arm, ArmState setpoint, double extensionDelay) {
+    public SetArmPosition(Arm arm, ArmState setpoint, double extensionDelay, boolean shouldZero) {
         this.arm = arm;
         this.setpoint = setpoint;
         this.extensionDelay = extensionDelay;
+        this.shouldZero = shouldZero;
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
         extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
         extensionFinishTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
         arm.setExtension(arm.getArmState().getExtension());
@@ -65,6 +67,8 @@ public class SetArmPosition extends CommandBase {
         if (interrupted) {
             arm.stopAll();
         }
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.team1540.robot2023.utils.AverageFilter;
 public class ResetArmPositionCommand extends CommandBase {
 
     Arm arm;
+    private boolean shouldZero;
     ArmState setpoint;
 
     private final AverageFilter extensionFilter = new AverageFilter(10);
@@ -21,14 +22,20 @@ public class ResetArmPositionCommand extends CommandBase {
     private long endTime;
 
     public ResetArmPositionCommand(Arm arm) {
+        this(arm, true);
+    }
+    public ResetArmPositionCommand(Arm arm, boolean shouldZero) {
         this.arm = arm;
+        this.shouldZero = shouldZero;
         this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), Constants.ArmConstants.ARM_BASE_LENGTH);
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
         System.out.println("command start");
         System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
@@ -69,6 +76,8 @@ public class ResetArmPositionCommand extends CommandBase {
         if (interrupted) {
             arm.stopAll();
         }
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
     }
 }

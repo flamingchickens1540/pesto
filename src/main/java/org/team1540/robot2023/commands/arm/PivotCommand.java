@@ -8,6 +8,7 @@ import org.team1540.robot2023.utils.AverageFilter;
 public class PivotCommand extends CommandBase {
     private final Arm arm;
     private final Rotation2d targetAngle;
+    private boolean shouldZero;
     private final AverageFilter average = new AverageFilter(5);
     private final double threshold = 0.5;
     private long endTime;
@@ -16,15 +17,22 @@ public class PivotCommand extends CommandBase {
     public PivotCommand(Arm arm, ArmState target) {
         this(arm, target.getRotation2d());
     }
+
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
+        this(arm, targetAngle, true);
+    }
+    public PivotCommand(Arm arm, Rotation2d targetAngle, boolean shouldZero) {
         this.arm = arm;
         this.targetAngle = targetAngle;
+        this.shouldZero = shouldZero;
         addRequirements(arm);
     }
 
     @Override
     public void initialize() {
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
         arm.setRotation(targetAngle);
         average.clear();
         arm.setExtension(arm.getArmState().getExtension());
@@ -45,6 +53,8 @@ public class PivotCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) arm.setRotatingSpeed(0);
-        arm.resetToEncoder();
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
     }
 }
