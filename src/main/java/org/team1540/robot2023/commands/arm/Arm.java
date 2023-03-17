@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.lib.math.Conversions;
@@ -23,6 +24,7 @@ public class Arm extends SubsystemBase {
             ArmConstants.PIVOT_ENCODER_PULSES_PER_REV,
             true
     );
+    private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(7);
 
     private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
             CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -244,6 +246,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("arm/isLegal", getExtension() < getMaxExtension());
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
+        SmartDashboard.putNumber("arm/absoluteEncoder", absEncoder.getAbsolutePosition() * 360);
     }
 
     @Override
