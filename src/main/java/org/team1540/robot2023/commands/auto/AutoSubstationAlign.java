@@ -12,6 +12,7 @@ import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ExtensionCommand;
 import org.team1540.robot2023.commands.arm.PivotCommand;
+import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
@@ -37,9 +38,9 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                                         AutoDrive.driveToPoints(drivetrain, 0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
                                         new WaitUntilCommand(() -> intake.hasGamePiece() || controller.getLeftTriggerAxis() > 0.95),
                                         //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
-                                        new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat)
+                                        new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat),
 //                                AutoDrive.driveToPoints(drivetrain,new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
-//                                new ResetArmPositionCommand(arm)
+                                new ResetArmPositionCommand(arm)
                                 )
                         ), new InstantCommand(),
                         drivetrain::updateWithScoringApriltags

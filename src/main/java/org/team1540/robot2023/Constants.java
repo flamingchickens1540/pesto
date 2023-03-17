@@ -25,12 +25,12 @@ public final class Constants {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(32);
         public static final double hpOffsetX = Units.inchesToMeters(34);
-        public static final double hpOffsetY = -Units.inchesToMeters(25);
+        public static final double hpOffsetY = -Units.inchesToMeters(29);
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
 
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
-        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(123.0),35);
+        public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(123.0),37.8);
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-62.5),55);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-45),55);
 
@@ -43,9 +43,9 @@ public final class Constants {
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),47.0) // Mid Cone Score
         );
         public static final GridScoreData highCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-47.9125),67), // High Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-58.15),67), // High Cone Score
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),67) // High Cone Retreat
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),66), // High Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-63),66) // High Cone Score
+//                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),66) // High Cone Retreat
         );
 
         public static final GridScoreData hybridNode = new GridScoreData(armDown).withAdditionalBackoff(Units.inchesToMeters(5));
@@ -190,7 +190,7 @@ public final class Constants {
         public static final double PIVOT_DISTANCE = 14;
         // Minimum pivot angle before arm collides with robot (radians) (should be negative)
         public static final double PIVOT_MIN_ANGLE = -2.260;
-        public static final int PIVOT_FORWARD_LIMIT = 137_000;
+        public static final int PIVOT_FORWARD_LIMIT = 139_000;
         public static final int PIVOT_REVERSE_LIMIT = -134_500;
         // Pivot motor revolutions to pivot revolutions
         public static final double PIVOT_GEAR_RATIO = 196.875;

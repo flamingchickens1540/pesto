@@ -5,7 +5,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import org.team1540.robot2023.commands.arm.*;
+import org.team1540.robot2023.commands.arm.Arm;
+import org.team1540.robot2023.commands.arm.PivotCommand;
+import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
+import org.team1540.robot2023.commands.arm.SetArmPosition;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
@@ -51,7 +54,8 @@ public class AutoGridScore extends SequentialCommandGroup {
                             Commands.sequence(
                                     new WaitCommand(0.25),
                                     new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
-                                    new ResetArmPositionCommand(arm)
+                                    new ResetArmPositionCommand(arm, false),
+                                    new ResetArmPositionCommand(arm, true)
                             )
                     )
             ),
