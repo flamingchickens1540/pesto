@@ -153,7 +153,7 @@ public class Limelight {
         return tv;
     }
 
-    //	Class ID of primary neural classifier result
+    //	Class ID of primary neural detector result
     public double getTclass(){
         double classID = table.getEntry("tclass").getDouble(0.0);
         SmartDashboard.putNumber("LimelightClassID", classID);
@@ -178,7 +178,7 @@ public class Limelight {
     public double getHorizontalFov() {
         return HORIZONTAL_FOV;
     }
-    
+
     public double getVerticalFov() {
         return VERTICAL_FOV;
     }

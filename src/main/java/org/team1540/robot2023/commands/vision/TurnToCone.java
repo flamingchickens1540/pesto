@@ -42,6 +42,7 @@ public class TurnToCone extends CommandBase{
     
         SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
         System.out.println("PTT Initialized");
+        
     }
 
      /**
@@ -49,25 +50,50 @@ public class TurnToCone extends CommandBase{
      *
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
-    private void turnWithLimelight() {
-        double angleXOffset = limelight.getTx(); 
-        if (angleXOffset == 0){
-            System.out.println("not detecting anything");
+    private void turnWithLimelightToCone() {
+
+        if(limelight.getTa() != 0){
+        double angleXOffset = limelight.getTx() - limelight.getTa()*-0.698-2.99; 
+        
+            System.out.println("cone being detected "); 
+    
+            System.out.println("angleXOffset" + angleXOffset);
+
+            double pidOutput = pid.calculate(angleXOffset); 
+
+            SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
+
+        drivetrain.drive(MathUtils.deadzone(controller.getLeftY(), 0.1), MathUtils.deadzone(controller.getLeftX(),0.1),pidOutput, false);
         }
         else{
-            System.out.println("cone being detected "); 
+            System.out.println("not detecting anything");
+
         }
-        System.out.println(angleXOffset);
+    
+    }
+
+    private void turnWithLimelightToCube() {
+
+        if(limelight.getTa() != 0){
+        double angleXOffset = limelight.getTx() - limelight.getTa()*-0.939-2.27; 
+        
+            System.out.println("cone being detected "); 
+    
+        System.out.println("angleXOffset" + angleXOffset);
 
         double pidOutput = pid.calculate(angleXOffset); 
 
         SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
 
-        drivetrain.drive(MathUtils.deadzone(controller.getLeftY(), 0.1), MathUtils.deadzone(controller.getLeftX(),0.1),pidOutput, false);
+        drivetrain.drive(MathUtils.deadzone(-controller.getLeftY(), 0.1), MathUtils.deadzone(-controller.getLeftX(),0.1),pidOutput, false);
+        }
+        else{
+            System.out.println("not detecting anything");
+        }
     
     }
  
-
+//target-current 
 
     @Override
     public void execute() {
@@ -76,7 +102,7 @@ public class TurnToCone extends CommandBase{
         double d = SmartDashboard.getNumber("pointToTarget/kD", 0.0);
 
         pid.setPID(p, i, d);
-        turnWithLimelight();
+        turnWithLimelightToCube();
         System.out.println("tx = " + limelight.getTx());
         System.out.println("ty = " + limelight.getTy());
 
