@@ -15,7 +15,11 @@ public class PivotCommand extends CommandBase {
 
 
     public PivotCommand(Arm arm, ArmState target) {
-        this(arm, target.getRotation2d());
+        this(arm, target, true);
+    }
+
+    public PivotCommand(Arm arm, ArmState target, boolean shouldZero) {
+        this(arm, target.getRotation2d(), shouldZero);
     }
 
     public PivotCommand(Arm arm, Rotation2d targetAngle) {
