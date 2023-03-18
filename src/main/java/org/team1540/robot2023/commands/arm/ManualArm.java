@@ -44,8 +44,10 @@ public class ManualArm extends CommandBase {
         }
 
 
-        double extensionInput = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
-        double limitedExtensionInput = Math.abs(extensionInput) < deadzone ? 0 : slewRateLimiter.calculate(extensionInput);
+        double extensionInput =
+                Math.abs(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis()) < deadzone ? 0
+                : controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+        double limitedExtensionInput = slewRateLimiter.calculate(extensionInput);
         if (!startedManualExtension && Math.abs(extensionInput) >= deadzone) startedManualExtension = true;
         if (startedManualExtension) {
             if (Math.abs(limitedExtensionInput) <= deadzone && !isHoldingExtension) {
