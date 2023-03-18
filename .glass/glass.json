@@ -21,13 +21,21 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/align/rotationPID": "PIDController",
+      "/SmartDashboard/align/translationPID": "PIDController",
       "/SmartDashboard/autoChooser": "String Chooser",
+      "/SmartDashboard/balancy": "PIDController",
       "/SmartDashboard/drivetrain/rotationPID": "PIDController",
       "/SmartDashboard/drivetrain/translationPID": "PIDController",
       "/SmartDashboard/field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/autoChooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/balancy": {
         "window": {
           "visible": true
         }

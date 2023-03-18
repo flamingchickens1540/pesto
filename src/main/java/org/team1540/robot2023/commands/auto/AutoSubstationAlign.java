@@ -25,28 +25,31 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
         Translation2d endPoint = aprilTagLayout.getTagPose(substationTagID).orElseThrow().toPose2d().getTranslation().plus(new Translation2d(-Constants.Auto.hpOffsetX, offset));
 
         addCommands(
-                Commands.race(
-                        new RepeatCommand(new GrabberIntakeCommand(intake)),
-                        Commands.sequence(
-                                Commands.parallel(
-                                        AutoDrive.driveToPoints(drivetrain, new PathPoint(endPoint.plus(new Translation2d(-Units.inchesToMeters(20), 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
-                                        new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
-                                ),
-                                new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
-                                AutoDrive.driveToPoints(drivetrain,  0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
-                                new WaitUntilCommand(() -> intake.hasGamePiece() || controller.getLeftTriggerAxis() > 0.95),
-            //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
-                                new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat)
+                new ConditionalCommand(
+                        Commands.race(
+                                new RepeatCommand(new GrabberIntakeCommand(intake)),
+                                Commands.sequence(
+                                        Commands.parallel(
+                                                AutoDrive.driveToPoints(drivetrain, new PathPoint(endPoint.plus(new Translation2d(-Units.inchesToMeters(20), 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
+                                                new PivotCommand(arm, Constants.Auto.armHumanPlayer.getRotation2d())
+                                        ),
+                                        new ExtensionCommand(arm, Constants.Auto.armHumanPlayer.getExtension()),
+                                        AutoDrive.driveToPoints(drivetrain, 0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
+                                        new WaitUntilCommand(() -> intake.hasGamePiece() || controller.getLeftTriggerAxis() > 0.95),
+                                        //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
+                                        new PivotCommand(arm, Constants.Auto.armHumanPlayerRetreat)
 //                                AutoDrive.driveToPoints(drivetrain,new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
 //                                new ResetArmPositionCommand(arm)
-                        )
+                                )
+                        ), new InstantCommand(),
+                        drivetrain::updateWithScoringApriltags
                 )
         );
     }
 
     public static Command get(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, CommandXboxController controller, double offset) {
-            return new ProxyCommand(() -> new AutoSubstationAlign( drivetrain,  arm,  intake,  controller, offset));
-        }
+        return new ProxyCommand(() -> new AutoSubstationAlign(drivetrain, arm, intake, controller, offset)).withName("AutoSubstationAlignProxier");
+    }
 //                new PrintCommand("Done")
 //        addRequirements(drivetrain,arm);
 }

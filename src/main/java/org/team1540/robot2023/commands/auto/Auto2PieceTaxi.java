@@ -21,7 +21,7 @@ public class Auto2PieceTaxi extends AutoCommand {
         addCommands(
 
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
-                new InstantCommand(drivetrain::stopTags),
+                new InstantCommand(drivetrain::stopTags).withName("Stop Tag Tracking"),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
 
@@ -36,7 +36,7 @@ public class Auto2PieceTaxi extends AutoCommand {
                                 pathCommands.get(2)
                         )
                 ),
-                new InstantCommand(drivetrain::startTags),
+                new InstantCommand(drivetrain::startTags).withName("Start Tag Tracking"),
                 new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake)
 
         );

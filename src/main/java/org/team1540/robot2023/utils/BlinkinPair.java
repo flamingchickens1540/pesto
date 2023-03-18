@@ -13,7 +13,7 @@ public class BlinkinPair {
     }
 
     public Command commandSet(ColorPair pattern) {
-        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true);
+        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true).withName("SetBlinkins");
     }
     public void set(ColorPair pair) {
         frontBlinkin.setPattern(pair.front);
@@ -21,7 +21,7 @@ public class BlinkinPair {
     }
 
     public Command commandSet(ColorPattern pattern) {
-        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true);
+        return new InstantCommand(() -> this.set(pattern)).ignoringDisable(true).withName("SetBlinkins");
     }
     public void set(ColorPattern pattern) {
         frontBlinkin.setPattern(pattern);
@@ -29,7 +29,7 @@ public class BlinkinPair {
     }
 
     public Command commandSet(ColorPattern front, ColorPattern rear) {
-        return new InstantCommand(() -> this.set(front, rear)).ignoringDisable(true);
+        return new InstantCommand(() -> this.set(front, rear)).ignoringDisable(true).withName("SetBlinkins");
     }
     public void set(ColorPattern front,ColorPattern rear) {
         frontBlinkin.setPattern(front);
@@ -51,7 +51,7 @@ public class BlinkinPair {
 
             this.front = front;
             this.rear = rear;
-        };
+        }
 
     }
 }

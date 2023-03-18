@@ -25,36 +25,41 @@ public class AutoGridScore extends SequentialCommandGroup {
         this(drivetrain, arm, positions, intake, controller, true);
     }
     public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller, boolean shouldAlign){
-
         addCommands(
-            Commands.race(
-                    new DefaultGrabberCommand(intake),
+            new ConditionalCommand(
                     Commands.sequence(
-                            new ProxyCommand(() -> {
-                                Translation2d endPoint = AutoDrive.getGridDrivePose(drivetrain, positions);
-                                return AutoDrive.driveToPoints(
-                                        drivetrain,
+                    Commands.race(
+                            new DefaultGrabberCommand(intake),
+                            Commands.sequence(
+                                    new ProxyCommand(() -> {
+                                        Translation2d endPoint = AutoDrive.getGridDrivePose(drivetrain, positions);
+                                        return AutoDrive.driveToPoints(
+                                                drivetrain,
 //                                        new PathPoint(endPoint.plus(new Translation2d(0.127,0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180)),
-                                        new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))
-                                );
-                            }
-                            ).unless(()->!shouldAlign),
+                                                new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(180))
+                                        );
+                                    }
+                                    ).unless(()->!shouldAlign),
 //                            new ProxiedGridDriveCommand(drivetrain, positions),
-                            new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
-                            new ExtensionCommand(arm, positions.approach),
-                            new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null || positions.polePosition == PolePosition.CENTER),
-                            new PivotCommand(arm,catchNull(positions.score)).unless(() -> positions.score == null)
+                                    new RetractAndPivotCommand(arm, positions.approach.getRotation2d()),
+                                    new ExtensionCommand(arm, positions.approach),
+                                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null || positions.polePosition == PolePosition.CENTER),
+                                    new PivotCommand(arm,catchNull(positions.score)).unless(() -> positions.score == null)
+                            )
+                    ),
+                    Commands.race(
+                            new GrabberOuttakeCommand(intake),
+                            Commands.sequence(
+                                    new WaitCommand(0.25),
+
+                                    new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
+                                    new ZeroArmPositionCommand(arm)
+//                    new ResetArmPositionCommand(arm)
+                            )
                     )
             ),
-            Commands.race(
-                new GrabberOuttakeCommand(intake),
-                Commands.sequence(
-                        new WaitCommand(0.25),
-
-                    new PivotCommand(arm, catchNull(positions.retreat)).unless(() -> positions.retreat == null),
-                    new ResetArmPositionCommand(arm)
-//                    new ResetArmPositionCommand(arm)
-                )
+            new InstantCommand(),
+            drivetrain::updateWithScoringApriltags
             )
         );
     }
