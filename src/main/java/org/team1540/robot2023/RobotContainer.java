@@ -74,7 +74,7 @@ public class RobotContainer {
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
         driver.y().and(driver.x()).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
-        driver.rightTrigger().whileTrue(new FunctionalCommand(() -> intake.setCurrentLimit(30), () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false).withName("AgressiveMode"));
+        driver.rightTrigger().whileTrue(new FunctionalCommand(() -> {intake.setCurrentLimit(40); intake.setSpeed(1);}, () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false, intake).withName("AgressiveMode"));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
        // coop:button(RBumper, Substation Right [HOLD],pilot)
