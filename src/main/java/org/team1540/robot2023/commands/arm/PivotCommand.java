@@ -53,8 +53,8 @@ public class PivotCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         if (interrupted) arm.setRotatingSpeed(0);
-//        if (shouldZero) {
-//            arm.resetToEncoder();
-//        }
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
     }
 }

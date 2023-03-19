@@ -2,7 +2,6 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,7 +17,10 @@ import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
-import org.team1540.robot2023.utils.*;
+import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.utils.ButtonPanel;
+import org.team1540.robot2023.utils.PolePosition;
+import org.team1540.robot2023.utils.ScoringGridLocation;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -80,7 +82,7 @@ public class RobotContainer {
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         // Copilot
-
+        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
 
@@ -177,14 +179,16 @@ public class RobotContainer {
     private void initAutos() {
         AutoManager manager = AutoManager.getInstance();
         manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
-//        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake,ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto(new AutoMiddleGrid1PieceBalance(drivetrain, arm, intake));
 //        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
-        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new AutoTopGrid1PieceBalance(drivetrain, arm, intake));
+        manager.addAuto(new Auto2PieceTaxiCone(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new AutoTopGrid2PieceTaxi(drivetrain, arm, intake));
+        manager.addAuto(new AutoBottomGrid2PieceTaxi(drivetrain, arm, intake));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
-        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
+//        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
+//        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);

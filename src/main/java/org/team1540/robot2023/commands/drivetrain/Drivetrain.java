@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.Constants;
@@ -102,6 +103,11 @@ public class Drivetrain extends SubsystemBase {
 
     public boolean updateWithApriltags() {
         return LimelightManager.getInstance().zeroFromLimelights(poseEstimator, getYaw(), getModulePositions());
+    }
+
+    public void resetToPath(PathPlannerTrajectory rawTrajectory) {
+        PathPlannerTrajectory transformedTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(rawTrajectory, DriverStation.getAlliance());
+        resetOdometry(transformedTrajectory.getInitialHolonomicPose());
     }
     public boolean updateWithScoringApriltags() {
         return LimelightManager.getInstance().applyFrontEstimates(poseEstimator, getYaw(), getModulePositions());
