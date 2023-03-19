@@ -37,7 +37,7 @@ public class SetArmPosition extends CommandBase {
             arm.resetToEncoder();
         }
         extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
-        extensionFinishTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
+        extensionFinishTime = (long) (System.currentTimeMillis() + 0.9*(arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension())) + extensionDelay);
         arm.setExtension(arm.getArmState().getExtension());
         arm.setRotation(setpoint.getRotation2d());
         isExtending = false;
