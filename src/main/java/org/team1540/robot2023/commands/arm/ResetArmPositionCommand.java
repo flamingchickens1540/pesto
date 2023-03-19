@@ -39,7 +39,7 @@ public class ResetArmPositionCommand extends CommandBase {
         System.out.println("command start");
         System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
-        endTime = (long) (System.currentTimeMillis()  + arm.timeToExtension(setpoint.getExtension()));
+        endTime = (long) (System.currentTimeMillis() + 0.9*arm.timeToExtension(setpoint.getExtension()));
         arm.setExtension(setpoint.getExtension());
         arm.setRotation(arm.getArmState().getRotation2d());
         isRotating = false;

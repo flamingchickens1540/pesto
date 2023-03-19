@@ -215,9 +215,21 @@ public class Arm extends SubsystemBase {
         telescope.set(speed);
     }
 
+    public double getExtendingSpeed() {
+        return telescopeEncoder.getVelocity();
+    }
+
     public void setRotatingSpeed(double speed) {
         pivot1.set(ControlMode.PercentOutput, speed);
     }
+
+    public double getRotationSpeed() {
+        return Conversions.falconToRPM(
+                (pivot1.getSelectedSensorVelocity() + pivot2.getSelectedSensorVelocity()) / 2,
+                1
+        );
+    }
+
     public void setRotationNeutralMode(NeutralMode mode){
         pivot1.setNeutralMode(mode);
         pivot2.setNeutralMode(mode);
