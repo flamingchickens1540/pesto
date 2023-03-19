@@ -40,7 +40,7 @@ public class PivotCommand extends CommandBase {
         arm.setRotation(targetAngle);
         average.clear();
         arm.setExtension(arm.getArmState().getExtension());
-        endTime = (long) arm.timeToRotation(targetAngle) + System.currentTimeMillis() + 250;
+        endTime = (long) (0.9 * arm.timeToRotation(targetAngle) + System.currentTimeMillis() + 250);
     }
 
     @Override
