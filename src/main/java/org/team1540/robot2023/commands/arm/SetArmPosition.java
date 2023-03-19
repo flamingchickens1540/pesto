@@ -67,8 +67,8 @@ public class SetArmPosition extends CommandBase {
         if (interrupted) {
             arm.stopAll();
         }
-//        if (shouldZero) {
-//            arm.resetToEncoder();
-//        }
+        if (shouldZero) {
+            arm.resetToEncoder();
+        }
     }
 }

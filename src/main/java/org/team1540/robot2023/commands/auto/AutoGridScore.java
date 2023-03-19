@@ -60,7 +60,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                     )
             ),
             new InstantCommand(),
-            drivetrain::updateWithScoringApriltags
+            () -> drivetrain.updateWithScoringApriltags() || !shouldAlign
             )
         );
     }
