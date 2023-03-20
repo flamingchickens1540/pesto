@@ -34,6 +34,8 @@ public class Arm extends SubsystemBase {
 
     private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
 
+    private double pivotAccel;
+
     public Arm() {
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
@@ -79,15 +81,18 @@ public class Arm extends SubsystemBase {
     public double timeToRotation(Rotation2d rotation2d){
         double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
         double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
-        double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(ArmConstants.PIVOT_MAX_ACCEL);
+        double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(pivotAccel);
         boolean isAProfile = distance <=
                 timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
         if(!isAProfile){
-            return 1000*((distance - (timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10))
-                    /(ArmConstants.PIVOT_CRUISE_SPEED*10) + (2*timeToAccelerate));
+            double value = (distance - (timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED * 10))
+                    / (ArmConstants.PIVOT_CRUISE_SPEED * 10) + (2 * timeToAccelerate);
+            SmartDashboard.putNumber("arm/timeToRotation", 1000* value);
+            return 1000* value;
         }
         else{
-            return 1000*(2*Math.sqrt(distance/(ArmConstants.PIVOT_MAX_ACCEL*10)));
+            SmartDashboard.putNumber("arm/timeToRotation", 1000*(2*Math.sqrt(distance/(pivotAccel*10))));
+            return 1000*(2*Math.sqrt(distance/(pivotAccel*10)));
         }
     }
 
@@ -97,14 +102,21 @@ public class Arm extends SubsystemBase {
         double timeToAccelerate = (ArmConstants.TELESCOPE_CRUISE_SPEED/60)/((ArmConstants.TELESCOPE_MAX_ACCEL/60));
         boolean isAProfile = distance <=
                 timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60);
-//        System.out.println("Extension A profile: " + isAProfile);
         if(!isAProfile){
-            return 1000*((distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60))
-                    /(ArmConstants.TELESCOPE_CRUISE_SPEED/60) + 2*timeToAccelerate);
+            double value = 1000 * ((distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED / 60))
+                    / (ArmConstants.TELESCOPE_CRUISE_SPEED / 60) + 2 * timeToAccelerate);
+            SmartDashboard.putNumber("arm/timeToExtension", value);
+            return value;
         }
         else{
-            return 1000*2*Math.sqrt(distance/(ArmConstants.TELESCOPE_MAX_ACCEL/60));
+            double value = 1000 * 2 * Math.sqrt(distance / (ArmConstants.TELESCOPE_MAX_ACCEL / 60));
+            SmartDashboard.putNumber("arm/timeToExtension", value);
+            return value;
         }
+    }
+
+    public double timeToState(ArmState state){
+        return Math.max(timeToRotation(state.getRotation2d()) , (timeToExtension(state.getExtension())));
     }
 
     public double getMaxExtension(Rotation2d rotation) {
@@ -239,12 +251,18 @@ public class Arm extends SubsystemBase {
         setRotation(getRotation2d(), false);
     }
 
+    public void setPivotAccel(double pivotAccel){
+        pivot1.configMotionAcceleration(pivotAccel);
+        this.pivotAccel = pivotAccel;
+    }
+
     public void holdExtension() {
         setExtension(getExtension());
     }
 
     private void smashDartboardInit() {
     }
+
 
     private void smashDartboard() {
         SmartDashboard.putNumber("arm/pigeonRoll", getGyroAngle().getDegrees());

@@ -34,7 +34,7 @@ public final class Constants {
 
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.5),37.8);
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-62.5),55);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60.75),55);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-45),55);
 
         public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 35.18));
@@ -42,17 +42,17 @@ public final class Constants {
         public static final GridScoreData reverseHighCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(55),59));
 
         public static final GridScoreData midCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),47.0), // Mid Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-69.7),47.0) // Mid Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),46.0), // Mid Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-70.7),46.0) // Mid Cone Score
         );
         public static final GridScoreData highCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),66), // High Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-63),66) // High Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),66), // High Cone Approach
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65.5),66) // High Cone Score
 //                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),66) // High Cone Retreat
         );
 
-        public static final GridScoreData hybridNode = new GridScoreData(armDown).withAdditionalBackoff(Units.inchesToMeters(5));
-        public static final GridScoreData middleHybridNode = new GridScoreData(armDown).withAdditionalBackoff(Units.inchesToMeters(8));
+        public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).withAdditionalBackoff(Units.inchesToMeters(0));
+        public static final GridScoreData middleHybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30),0)).withAdditionalBackoff(Units.inchesToMeters(0));
 
 
 

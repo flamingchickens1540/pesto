@@ -2,6 +2,7 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +22,8 @@ import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
+import org.team1540.robot2023.commands.grabber.*;
+import org.team1540.robot2023.utils.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,7 +48,7 @@ public class RobotContainer {
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
-    public final LogManager logManager = new LogManager(pdh);
+//    public final LogManager logManager = new LogManager(pdh);
 
 
     // Commands
@@ -76,7 +79,7 @@ public class RobotContainer {
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
         driver.y().and(driver.x()).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
-        driver.rightTrigger().whileTrue(new FunctionalCommand(() -> {intake.setCurrentLimit(40); intake.setSpeed(1);}, () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false, intake).withName("AgressiveMode"));
+        driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
        // coop:button(RBumper, Substation Right [HOLD],pilot)
@@ -106,8 +109,8 @@ public class RobotContainer {
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
         copilot.rightBumper().whileTrue(Commands.sequence(
-                new SetArmPosition(arm, Constants.Auto.armDown),
-                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
+                new SetArmPosition(arm, Constants.Auto.armDown)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
 
@@ -121,8 +124,8 @@ public class RobotContainer {
 
         //coop:button(X, Downed Cone Intake [ HOLD, copilot)
         copilot.x().whileTrue(Commands.sequence(
-            new SetArmPosition(arm, Constants.Auto.armDownBackwards),
-            new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
+                new SetArmPosition(arm, Constants.Auto.armDownBackwards)
         ).withName("DownedConeIntake"));
 
         copilot.y().whileTrue(new ZeroArmPositionCommand(arm));

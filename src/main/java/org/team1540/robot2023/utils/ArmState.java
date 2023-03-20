@@ -2,6 +2,7 @@ package org.team1540.robot2023.utils;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.team1540.lib.math.Conversions;
+import org.team1540.robot2023.commands.arm.Arm;
 
 public class ArmState {
     private final double extension;
@@ -34,5 +35,13 @@ public class ArmState {
 
     public double getY() {
         return extension * Math.sin(Conversions.actualToCartesian(angle).getRadians());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() != ArmState.class){
+            return false;
+        }
+        return extension == ((ArmState)obj).getExtension() && angle.equals(((ArmState)obj).getRotation2d());
     }
 }

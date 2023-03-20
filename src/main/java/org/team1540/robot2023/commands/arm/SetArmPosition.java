@@ -1,11 +1,15 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
 
+import java.util.Set;
+
 public class SetArmPosition extends CommandBase {
 
+    private final double pivotAccel;
     Arm arm;
     ArmState setpoint;
 
@@ -19,15 +23,18 @@ public class SetArmPosition extends CommandBase {
     private double extensionDelay;
     private boolean shouldZero;
 
+
     public SetArmPosition(Arm arm, ArmState setpoint) {
-        this(arm, setpoint, 0, true);
+        this(arm, setpoint, 0, true, Constants.ArmConstants.PIVOT_MAX_ACCEL);
     }
 
-    public SetArmPosition(Arm arm, ArmState setpoint, double extensionDelay, boolean shouldZero) {
+
+    public SetArmPosition(Arm arm, ArmState setpoint, double extensionDelay, boolean shouldZero, double pivotAccel) {
         this.arm = arm;
         this.setpoint = setpoint;
         this.extensionDelay = extensionDelay;
         this.shouldZero = shouldZero;
+        this.pivotAccel = pivotAccel;
         addRequirements(arm);
     }
 
@@ -36,8 +43,9 @@ public class SetArmPosition extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
+        arm.setPivotAccel(pivotAccel);
         extensionStartTime = (long) (System.currentTimeMillis() + arm.timeToRotation(setpoint.getRotation2d()) - arm.timeToExtension(setpoint.getExtension()) + extensionDelay);
-        extensionFinishTime = (long) (System.currentTimeMillis() + 0.9*(arm.timeToRotation(setpoint.getRotation2d()) + arm.timeToExtension(setpoint.getExtension())) + extensionDelay);
+        extensionFinishTime = (long) (System.currentTimeMillis() + Math.max(arm.timeToRotation(setpoint.getRotation2d()) , (arm.timeToExtension(setpoint.getExtension())) + extensionDelay));
         arm.setExtension(arm.getArmState().getExtension());
         arm.setRotation(setpoint.getRotation2d());
         isExtending = false;
@@ -67,8 +75,8 @@ public class SetArmPosition extends CommandBase {
         if (interrupted) {
             arm.stopAll();
         }
-        if (shouldZero) {
-            arm.resetToEncoder();
-        }
+//        if (shouldZero) {
+//            arm.resetToEncoder();
+//        }
     }
 }

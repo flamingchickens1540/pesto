@@ -36,8 +36,8 @@ public class ResetArmPositionCommand extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
-        System.out.println("command start");
-        System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
+//        System.out.println("command start");
+//        System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
         endTime = (long) (System.currentTimeMillis() + 0.9*arm.timeToExtension(setpoint.getExtension()));
         arm.setExtension(setpoint.getExtension());
@@ -62,7 +62,7 @@ public class ResetArmPositionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        System.out.println(rotationFilter.getAverage() + "      " + Math.abs(arm.getArmState().getRotation2d().getDegrees() - setpoint.getRotation2d().getDegrees()));
+//        System.out.println(rotationFilter.getAverage() + "      " + Math.abs(arm.getArmState().getRotation2d().getDegrees() - setpoint.getRotation2d().getDegrees()));
         return (
                 ((setpoint.getExtension() <= Constants.ArmConstants.ARM_BASE_LENGTH && arm.getLimitSwitch()) ||
                         extensionFilter.getAverage() < extensionThreshold) &&
