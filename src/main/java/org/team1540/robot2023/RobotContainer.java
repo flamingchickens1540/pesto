@@ -3,6 +3,7 @@ package org.team1540.robot2023;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlanner;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -18,8 +19,6 @@ import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -44,7 +43,7 @@ public class RobotContainer {
 
     RevBlinkin.ColorPattern frontPattern = BlinkinPair.ColorPair.TELEOP.front;
 //    public final LogManager logManager = new LogManager(pdh);
-
+    boolean armIsBrakeMode = false;
 
     // Commands
 
@@ -53,6 +52,7 @@ public class RobotContainer {
     public RobotContainer() {
         pdh.clearStickyFaults();
         ph.clearStickyFaults();
+        setNeutralModes();
         if (ENABLE_PNEUMATICS) {
             ph.enableCompressorDigital();
         } else {
@@ -139,19 +139,19 @@ public class RobotContainer {
                 .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP))
         ;
 
-        AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
-        new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(()->{
-            if (currentMode.get() == NeutralMode.Brake) {
-                currentMode.set(NeutralMode.Coast);
-            } else {
-                currentMode.set(NeutralMode.Brake);
-            }
-            DataLogManager.log("FPGA User Button: Setting pivot falcons to NeutralMode."+currentMode);
-            arm.setRotationNeutralMode(currentMode.get());
+        new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
+            armIsBrakeMode = !armIsBrakeMode;
+            setNeutralModes();
         }).withName("InstantToggleBreakMode").ignoringDisable(true));
 
         // SmartDashboard Commands
 
+    }
+
+    public void setNeutralModes() {
+        DataLogManager.log("FPGA User Button: Setting pivot falcons to Brake: "+armIsBrakeMode);
+        arm.setRotationNeutralMode(armIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+        arm.setExtensionNeutralMode(armIsBrakeMode ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
     }
 
     public void setTeleopDefaultCommands() {

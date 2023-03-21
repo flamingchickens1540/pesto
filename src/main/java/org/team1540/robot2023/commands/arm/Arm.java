@@ -247,6 +247,9 @@ public class Arm extends SubsystemBase {
         pivot1.setNeutralMode(mode);
         pivot2.setNeutralMode(mode);
     }
+    public void setExtensionNeutralMode(CANSparkMax.IdleMode mode){
+        telescope.setIdleMode(mode);
+    }
 
     public void holdPivot() {
         setRotation(getRotation2d(), false);
