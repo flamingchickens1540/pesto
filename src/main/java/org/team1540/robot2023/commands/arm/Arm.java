@@ -177,6 +177,7 @@ public class Arm extends SubsystemBase {
                 (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES,
                 CANSparkMax.ControlType.kSmartMotion, 0
         );
+
     }
 
     public void stopAll() {
