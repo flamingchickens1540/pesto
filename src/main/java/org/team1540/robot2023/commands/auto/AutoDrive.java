@@ -29,7 +29,7 @@ import static org.team1540.robot2023.Globals.field2d;
 
 public class AutoDrive {
     public static PIDController alignmentTranslationPID = new PIDController(5,0,0);
-    public static PIDController alignmentRotationPID = new PIDController(5,0,0);
+    public static PIDController alignmentRotationPID = new PIDController(2,0,0);
 
     public static void postPIDs() {
         SmartDashboard.putData("align/rotationPID", alignmentRotationPID);

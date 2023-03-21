@@ -47,8 +47,8 @@ public final class Constants {
         );
         public static final GridScoreData highCone = new GridScoreData(
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),66), // High Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65.5),66) // High Cone Score
-//                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-54),66) // High Cone Retreat
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65.5),66), // High Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-58),66) // High Cone Retreat
         );
 
         public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).withAdditionalBackoff(Units.inchesToMeters(0));

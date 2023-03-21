@@ -1,11 +1,9 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import org.team1540.robot2023.Constants;
+import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
-
-import java.util.Set;
 
 public class SetArmPosition extends CommandBase {
 
@@ -25,7 +23,7 @@ public class SetArmPosition extends CommandBase {
 
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
-        this(arm, setpoint, 0, true, Constants.ArmConstants.PIVOT_MAX_ACCEL);
+        this(arm, setpoint, 0, true, 20000*(1+((ArmConstants.ARM_LENGTH_EXT-ArmConstants.ARM_BASE_LENGTH)-(setpoint.getExtension()-ArmConstants.ARM_BASE_LENGTH))/(ArmConstants.ARM_LENGTH_EXT-ArmConstants.ARM_BASE_LENGTH)));
     }
 
 

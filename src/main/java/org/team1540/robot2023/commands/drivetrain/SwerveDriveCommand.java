@@ -3,6 +3,7 @@ package org.team1540.robot2023.commands.drivetrain;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -55,6 +56,10 @@ public class SwerveDriveCommand extends CommandBase {
                 rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale),
                 true
         );
+        if (RobotState.isTeleop()) {
+            drivetrain.updateWithScoringApriltags();
+        }
+
     }
 
     @Override

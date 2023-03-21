@@ -2,7 +2,6 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,16 +13,11 @@ import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
-import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
-import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
-import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
-import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
-import org.team1540.robot2023.commands.grabber.*;
-import org.team1540.robot2023.utils.*;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -48,6 +42,7 @@ public class RobotContainer {
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
+    RevBlinkin.ColorPattern frontPattern = BlinkinPair.ColorPair.TELEOP.front;
 //    public final LogManager logManager = new LogManager(pdh);
 
 
@@ -78,7 +73,7 @@ public class RobotContainer {
         // coop:button(A, Zero Field Oriented [Press],pilot)
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
-        driver.y().and(driver.x()).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
+        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
         driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
@@ -86,8 +81,8 @@ public class RobotContainer {
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         // Copilot
         driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
 
        //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver));
@@ -132,9 +127,16 @@ public class RobotContainer {
        copilot.x().and(copilot.y()).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(PathPlanner.loadPath("MiddleGrid1PieceBalance", 1, 1).getInitialHolonomicPose())).withName("InstantZeroToStartOfPath"));
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
-                .onTrue(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_LAVA))
-                .onFalse(frontBlinken.commandSetPattern(RevBlinkin.ColorPattern.WAVES_PARTY))
-                .onFalse(rearBlinken.commandSetPattern(RevBlinkin.ColorPattern.WAVES_FOREST))
+                .onTrue(new InstantCommand(() -> {
+                    int closestTime= AutoDrive.getClosestTag(drivetrain);
+                    if (closestTime == 4 || closestTime == 5) {
+                        rearBlinken.setPattern(BlinkinPair.ColorPair.APRILTAG.rear);
+                    } else {
+                        blinkins.set(BlinkinPair.ColorPair.APRILTAG);
+                    }
+
+                }))
+                .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP))
         ;
 
         AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
