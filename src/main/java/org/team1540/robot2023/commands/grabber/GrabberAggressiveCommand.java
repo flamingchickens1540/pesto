@@ -16,7 +16,7 @@ public class GrabberAggressiveCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        wheeledGrabber.setCurrentLimit(40);
+        wheeledGrabber.setCurrentLimit(30);
     }
 
     @Override
@@ -31,5 +31,10 @@ public class GrabberAggressiveCommand extends CommandBase {
             wheeledGrabber.setSpeed(-0.3);
         }
         else count = 0;
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        wheeledGrabber.setCurrentLimit(15);
     }
 }

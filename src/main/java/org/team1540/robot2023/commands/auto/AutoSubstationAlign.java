@@ -13,6 +13,7 @@ import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.commands.grabber.GrabberAggressiveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.utils.ArmState;
@@ -38,14 +39,20 @@ public class AutoSubstationAlign extends SequentialCommandGroup {
                                         AutoDrive.driveToPoints(drivetrain, new PathPoint(endPoint.plus(new Translation2d(-Units.inchesToMeters(20), 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))).andThen(new PrintCommand("Done driving")),
                                         new SetArmPosition(arm, ArmState.fromRotationExtension(Constants.Auto.armHumanPlayer.getRotation2d(),arm.getArmState().getExtension()))
                                 ),
-                                new SetArmPosition(arm, Constants.Auto.armHumanPlayer).andThen(new PrintCommand("Done extending")),
-                                AutoDrive.driveToPoints(drivetrain, 0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
+                                Commands.parallel(
+                                        new SetArmPosition(arm, Constants.Auto.armHumanPlayer).andThen(new PrintCommand("Done extending")),
+                                        AutoDrive.driveToPoints(drivetrain, 0.5, 1, new PathPoint(endPoint, Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0)))
+                                ),
                                 new WaitUntilCommand(() -> intake.hasGamePiece() || controller.getLeftTriggerAxis() > 0.95),
                                 //                  new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95),
-                                new SetArmPosition(arm, Constants.Auto.armHumanPlayerRetreat).withTimeout(5),
+                                new SetArmPosition(arm, Constants.Auto.armHumanPlayerRetreat).withTimeout(5)
 //                                AutoDrive.driveToPoints(drivetrain,new PathPoint(endPoint.plus(new Translation2d(-0.381, 0)), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))),
-                        new ResetArmPositionCommand(arm)
+
                         )
+                ),
+                Commands.deadline(
+                        new ResetArmPositionCommand(arm),
+                        new GrabberAggressiveCommand(intake)
                 )
         );
     }

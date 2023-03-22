@@ -2,6 +2,7 @@ package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.AverageFilter;
 
@@ -41,6 +42,7 @@ public class PivotCommand extends CommandBase {
         average.clear();
         arm.setExtension(arm.getArmState().getExtension());
         endTime = (long) (0.9 * arm.timeToRotation(targetAngle) + System.currentTimeMillis() + 250);
+        arm.setPivotAccel(Constants.ArmConstants.PIVOT_MAX_ACCEL);
     }
 
     @Override
