@@ -3,6 +3,7 @@ package org.team1540.robot2023;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlanner;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -13,16 +14,11 @@ import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
-import org.team1540.robot2023.commands.grabber.DefaultGrabberCommand;
-import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
-import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
-import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -38,15 +34,16 @@ public class RobotContainer {
     // Subsystems
 
     Drivetrain drivetrain = new Drivetrain(gyro);
-    Arm arm = new Arm(gyro);
+    Arm arm = new Arm();
     WheeledGrabber intake = new WheeledGrabber();
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
-    public final LogManager logManager = new LogManager(pdh);
-
+    RevBlinkin.ColorPattern frontPattern = BlinkinPair.ColorPair.TELEOP.front;
+//    public final LogManager logManager = new LogManager(pdh);
+    boolean armIsBrakeMode = false;
 
     // Commands
 
@@ -55,6 +52,7 @@ public class RobotContainer {
     public RobotContainer() {
         pdh.clearStickyFaults();
         ph.clearStickyFaults();
+        setNeutralModes();
         if (ENABLE_PNEUMATICS) {
             ph.enableCompressorDigital();
         } else {
@@ -75,16 +73,16 @@ public class RobotContainer {
         // coop:button(A, Zero Field Oriented [Press],pilot)
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
-        driver.y().and(driver.x()).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
-        driver.rightTrigger().whileTrue(new FunctionalCommand(() -> intake.setCurrentLimit(30), () -> {}, (ignored) -> intake.setCurrentLimit(10), () -> false).withName("AgressiveMode"));
+        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual"));
+        driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         // Copilot
-
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CONE));
+        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
 
        //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoGridScore(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver));
@@ -106,11 +104,10 @@ public class RobotContainer {
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
         copilot.rightBumper().whileTrue(Commands.sequence(
-                new RetractAndPivotCommand(arm, Constants.Auto.armDown),
-                new SetArmPosition(arm, Constants.Auto.armDown),
-                new InstantCommand(new GrabberIntakeCommand(intake)::schedule)));
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
+                new SetArmPosition(arm, Constants.Auto.armDown)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
-        copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
+       copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm));
 
 
         // INSPECTION CODE
@@ -122,33 +119,39 @@ public class RobotContainer {
 
         //coop:button(X, Downed Cone Intake [ HOLD, copilot)
         copilot.x().whileTrue(Commands.sequence(
-            new RetractAndPivotCommand(arm, Constants.Auto.armDownBackwards).withTimeout(1),
-            new SetArmPosition(arm, Constants.Auto.armDownBackwards).withTimeout(1),
-            new InstantCommand(new GrabberIntakeCommand(intake)::schedule)
+                new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
+                new SetArmPosition(arm, Constants.Auto.armDownBackwards)
         ).withName("DownedConeIntake"));
 
         copilot.y().whileTrue(new ZeroArmPositionCommand(arm));
        copilot.x().and(copilot.y()).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(PathPlanner.loadPath("MiddleGrid1PieceBalance", 1, 1).getInitialHolonomicPose())).withName("InstantZeroToStartOfPath"));
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
-                .onTrue(blinkins.commandSet(RevBlinkin.ColorPattern.WAVES_LAVA))
-                .onFalse(frontBlinken.commandSetPattern(RevBlinkin.ColorPattern.WAVES_PARTY))
-                .onFalse(rearBlinken.commandSetPattern(RevBlinkin.ColorPattern.WAVES_FOREST))
+                .onTrue(new InstantCommand(() -> {
+                    int closestTime= AutoDrive.getClosestTag(drivetrain);
+                    if (closestTime == 4 || closestTime == 5) {
+                        rearBlinken.setPattern(BlinkinPair.ColorPair.APRILTAG.rear);
+                    } else {
+                        blinkins.set(BlinkinPair.ColorPair.APRILTAG);
+                    }
+
+                }))
+                .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP))
         ;
 
-        AtomicReference<NeutralMode> currentMode = new AtomicReference<>(NeutralMode.Brake);
-        new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(()->{
-            if (currentMode.get() == NeutralMode.Brake) {
-                currentMode.set(NeutralMode.Coast);
-            } else {
-                currentMode.set(NeutralMode.Brake);
-            }
-            DataLogManager.log("FPGA User Button: Setting pivot falcons to NeutralMode."+currentMode);
-            arm.setRotationNeutralMode(currentMode.get());
+        new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
+            armIsBrakeMode = !armIsBrakeMode;
+            setNeutralModes();
         }).withName("InstantToggleBreakMode").ignoringDisable(true));
 
         // SmartDashboard Commands
 
+    }
+
+    public void setNeutralModes() {
+        DataLogManager.log("FPGA User Button: Setting pivot falcons to Brake: "+armIsBrakeMode);
+        arm.setRotationNeutralMode(armIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+        arm.setExtensionNeutralMode(armIsBrakeMode ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
     }
 
     public void setTeleopDefaultCommands() {
@@ -181,14 +184,18 @@ public class RobotContainer {
     private void initAutos() {
         AutoManager manager = AutoManager.getInstance();
         manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
-//        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake,ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new Auto1PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
+        manager.addAuto(new AutoMiddleGrid1PieceBalance(drivetrain, arm, intake));
 //        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto(new Auto1PieceBalance(drivetrain, arm, intake, ScoringGridLocation.MIDDLE_GRID));
-        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new AutoTopGrid1PieceBalance(drivetrain, arm, intake));
+        manager.addAuto(new AutoBottomGrid1PieceBalance(drivetrain, arm, intake));
+
+        manager.addAuto(new Auto2PieceTaxiCone(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new AutoTopGrid2PieceTaxi(drivetrain, arm, intake));
+        manager.addAuto(new AutoBottomGrid2PieceTaxi(drivetrain, arm, intake));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
-        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
-        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
+//        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
+//        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);

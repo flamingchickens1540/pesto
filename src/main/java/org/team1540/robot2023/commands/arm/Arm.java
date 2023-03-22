@@ -5,18 +5,26 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
+import org.team1540.robot2023.utils.ChickEncoder;
 
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
+    private final ChickEncoder pivotEncoder = new ChickEncoder(
+            ArmConstants.PIVOT_ENCODER_CHANNEL_A,
+            ArmConstants.PIVOT_ENCODER_CHANNEL_B,
+            ArmConstants.PIVOT_ENCODER_PULSES_PER_REV,
+            true
+    );
+    private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(7);
 
     private final CANSparkMax telescope = new CANSparkMax(ArmConstants.TELESCOPE_ID,
             CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -25,10 +33,10 @@ public class Arm extends SubsystemBase {
     private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
     private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
-    private final AHRS navx;
 
-    public Arm(AHRS navx) {
-        this.navx = navx;
+    private double pivotAccel;
+
+    public Arm() {
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
@@ -70,6 +78,47 @@ public class Arm extends SubsystemBase {
         return getMaxExtension(getRotation2d());
     }
 
+    public double timeToRotation(Rotation2d rotation2d){
+        double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
+        double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
+        double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(pivotAccel);
+        boolean isAProfile = distance <=
+                timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
+        if(!isAProfile){
+            double value = (distance - (timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED * 10))
+                    / (ArmConstants.PIVOT_CRUISE_SPEED * 10) + (2 * timeToAccelerate);
+            SmartDashboard.putNumber("arm/timeToRotation", 1000* value);
+            return 1000* value;
+        }
+        else{
+            SmartDashboard.putNumber("arm/timeToRotation", 1000*(2*Math.sqrt(distance/(pivotAccel*10))));
+            return 1000*(2*Math.sqrt(distance/(pivotAccel*10)));
+        }
+    }
+
+    public double timeToExtension(double extension){
+        double setpoint = (extension - ArmConstants.ARM_BASE_LENGTH) * ArmConstants.EXT_GEAR_RATIO / ArmConstants.EXT_ROTS_TO_INCHES;
+        double distance = Math.abs(setpoint - telescopeEncoder.getPosition());
+        double timeToAccelerate = (ArmConstants.TELESCOPE_CRUISE_SPEED/60)/((ArmConstants.TELESCOPE_MAX_ACCEL/60));
+        boolean isAProfile = distance <=
+                timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED/60);
+        if(!isAProfile){
+            double value = 1000 * ((distance - timeToAccelerate * (ArmConstants.TELESCOPE_CRUISE_SPEED / 60))
+                    / (ArmConstants.TELESCOPE_CRUISE_SPEED / 60) + 2 * timeToAccelerate);
+            SmartDashboard.putNumber("arm/timeToExtension", value);
+            return value;
+        }
+        else{
+            double value = 1000 * 2 * Math.sqrt(distance / (ArmConstants.TELESCOPE_MAX_ACCEL / 60));
+            SmartDashboard.putNumber("arm/timeToExtension", value);
+            return value;
+        }
+    }
+
+    public double timeToState(ArmState state){
+        return Math.max(timeToRotation(state.getRotation2d()) , (timeToExtension(state.getExtension())));
+    }
+
     public double getMaxExtension(Rotation2d rotation) {
 //        double angle = Conversions.actualToCartesian(rotation).getRadians();
 //        if (angle == Math.PI / 2) return ArmConstants.MAX_LEGAL_HEIGHT;
@@ -95,7 +144,9 @@ public class Arm extends SubsystemBase {
 
     private Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(
-                Conversions.falconToDegrees(pivot1.getSelectedSensorPosition(), ArmConstants.PIVOT_GEAR_RATIO)
+                Conversions.falconToDegrees(
+                        (pivot1.getSelectedSensorPosition() + pivot2.getSelectedSensorPosition())/2,
+                        ArmConstants.PIVOT_GEAR_RATIO)
         );
     }
 
@@ -111,9 +162,14 @@ public class Arm extends SubsystemBase {
         return telescopeLimitSwitch.isPressed();
     }
 
-    public void setRotation(Rotation2d rotation) {
+    protected void setRotation(Rotation2d rotation) {
+        setRotation(rotation, true);
+    }
+
+    protected void setRotation(Rotation2d rotation, boolean resetEncoders) {
+        if (resetEncoders) resetToEncoder();
         double angle = rotation.getDegrees();
-         pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
+        pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
     }
 
     protected void setExtension(double extension) {
@@ -129,19 +185,41 @@ public class Arm extends SubsystemBase {
         telescope.set(0);
     }
 
-    public void resetAngle() {
+    public Rotation2d getGyroAngle() {
         short[] pigeonAccel = new short[3];
         pigeon2.getBiasedAccelerometer(pigeonAccel);
         double pigeonRoll;
         if (pigeonAccel[0] > 0) {
             pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
         } else pigeonRoll = pigeon2.getRoll();
-//        pigeonRoll += navx.getRoll();
+        return Rotation2d.fromDegrees(pigeonRoll + ArmConstants.PIGEON_OFFSET);
+    }
+
+    public void resetToGyro() {
+//        short[] pigeonAccel = new short[3];
+//        pigeon2.getBiasedAccelerometer(pigeonAccel);
+//        double pigeonRoll;
+//        if (pigeonAccel[0] > 0) {
+//            pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
+//        } else pigeonRoll = pigeon2.getRoll();
+//        pivot1.setSelectedSensorPosition(
+//                Conversions.degreesToFalcon(
+//                        pigeonRoll + ArmConstants.PIGEON_OFFSET,
+//                        ArmConstants.PIVOT_GEAR_RATIO
+//                )
+//        );
         pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(
-                        pigeonRoll + ArmConstants.PIGEON_OFFSET,
-                        ArmConstants.PIVOT_GEAR_RATIO
-                )
+                Conversions.degreesToFalcon(getGyroAngle().getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
+        pivotEncoder.setPosition(getGyroAngle());
+    }
+
+    public void resetToEncoder() {
+        pivot1.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
+        pivot2.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
         );
     }
 
@@ -150,16 +228,36 @@ public class Arm extends SubsystemBase {
         telescope.set(speed);
     }
 
-    public void setRotatingSpeed(double speed){
+    public double getExtendingSpeed() {
+        return telescopeEncoder.getVelocity();
+    }
+
+    public void setRotatingSpeed(double speed) {
         pivot1.set(ControlMode.PercentOutput, speed);
     }
+
+    public double getRotationSpeed() {
+        return Conversions.falconToRPM(
+                (pivot1.getSelectedSensorVelocity() + pivot2.getSelectedSensorVelocity()) / 2,
+                1
+        );
+    }
+
     public void setRotationNeutralMode(NeutralMode mode){
         pivot1.setNeutralMode(mode);
         pivot2.setNeutralMode(mode);
     }
+    public void setExtensionNeutralMode(CANSparkMax.IdleMode mode){
+        telescope.setIdleMode(mode);
+    }
 
     public void holdPivot() {
-        setRotation(getRotation2d());
+        setRotation(getRotation2d(), false);
+    }
+
+    public void setPivotAccel(double pivotAccel){
+        pivot1.configMotionAcceleration(pivotAccel);
+        this.pivotAccel = pivotAccel;
     }
 
     public void holdExtension() {
@@ -169,11 +267,12 @@ public class Arm extends SubsystemBase {
     private void smashDartboardInit() {
     }
 
+
     private void smashDartboard() {
-        SmartDashboard.putNumber("arm/pigeonRoll", pigeon2.getRoll());
+        SmartDashboard.putNumber("arm/pigeonRoll", getGyroAngle().getDegrees());
         SmartDashboard.putNumber("arm/pivotAngleDegrees", getRotation2d().getDegrees());
         SmartDashboard.putNumber("arm/extension", getExtension());
-        SmartDashboard.putNumber("arm/pivotEncoder", pivot1.getSelectedSensorPosition());
+        SmartDashboard.putNumber("arm/pivotEncoder", pivotEncoder.getDegrees());
         SmartDashboard.putBoolean("arm/limit", getLimitSwitch());
         SmartDashboard.putNumber("arm/Xpos", getArmState().getX());
         SmartDashboard.putNumber("arm/Ypos", getArmState().getY());
@@ -181,6 +280,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("arm/isLegal", getExtension() < getMaxExtension());
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
+        SmartDashboard.putNumber("arm/absoluteEncoder", absEncoder.getAbsolutePosition() * 360);
     }
 
     @Override

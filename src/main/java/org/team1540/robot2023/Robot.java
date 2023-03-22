@@ -5,6 +5,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import org.team1540.robot2023.utils.BlinkinPair;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
@@ -54,7 +56,7 @@ public class Robot extends TimedRobot {
 //        PathPlannerServer.startServer(5811);
         // ---------------
 
-        addPeriodic(robotContainer.logManager::execute, 0.25, 0.005);
+//        addPeriodic(robotContainer.logManager::execute, 0.25, 0.005);
         // Zero swerve modules 4 seconds after init
         new WaitCommand(5).andThen(() -> {
             robotContainer.drivetrain.resetAllToAbsolute();
@@ -91,6 +93,17 @@ public class Robot extends TimedRobot {
         AutoManager.getInstance().updateSelected();
 
     }
+
+    public void enabledInit() {
+        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
+        robotContainer.arm.setExtensionNeutralMode(CANSparkMax.IdleMode.kBrake);
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        hasEnabled = true;
+    }
+
+    public void enabledPeriodic() {
+
+    }
     /**
      * This function is called once each time the robot enters Disabled mode.
      */
@@ -111,17 +124,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
-        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        enabledInit();
+        robotContainer.blinkins.set(BlinkinPair.ColorPair.AUTO);
+
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
         robotContainer.drivetrain.updateWithApriltags();
         hasRunAuto = true;
-        hasEnabled = true;
+
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
-            robotContainer.arm.resetAngle();
+            robotContainer.arm.resetToGyro();
         }
     }
 
@@ -134,14 +148,15 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        hasEnabled = true;
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
-        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        enabledInit();
+        robotContainer.blinkins.set(BlinkinPair.ColorPair.TELEOP);
+
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
         if (!hasRunAuto) {
             robotContainer.drivetrain.zeroFieldOrientation();
+            robotContainer.arm.resetToGyro();
         }
         robotContainer.setTeleopDefaultCommands();
     }
@@ -151,6 +166,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+
     }
 
     @Override

@@ -163,6 +163,7 @@ public class RevBlinkin {
         DARK_GRAY(0.97),
         BLACK(0.99);
 
+
         final double setpoint;
 
         ColorPattern(double setpoint) {

@@ -1,5 +1,7 @@
 package org.team1540.robot2023.utils;
 
+import java.util.Objects;
+
 public class GridScoreData {
     public ArmState approach = null;
     public ArmState score = null;
@@ -57,5 +59,12 @@ public class GridScoreData {
         data.polePosition = this.polePosition;
         return data;
 
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() != GridScoreData.class) return false;
+        GridScoreData other = (GridScoreData) obj;
+        return Objects.equals(approach, other.approach) && Objects.equals(score, other.score) && Objects.equals(retreat, other.retreat) && additionalBackoff == other.additionalBackoff;
     }
 }
