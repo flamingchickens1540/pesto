@@ -5,6 +5,7 @@
 package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -92,6 +93,17 @@ public class Robot extends TimedRobot {
         AutoManager.getInstance().updateSelected();
 
     }
+
+    public void enabledInit() {
+        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
+        robotContainer.arm.setExtensionNeutralMode(CANSparkMax.IdleMode.kBrake);
+        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        hasEnabled = true;
+    }
+
+    public void enabledPeriodic() {
+
+    }
     /**
      * This function is called once each time the robot enters Disabled mode.
      */
@@ -112,14 +124,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        enabledInit();
         robotContainer.blinkins.set(BlinkinPair.ColorPair.AUTO);
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
-        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
         robotContainer.drivetrain.updateWithApriltags();
         hasRunAuto = true;
-        hasEnabled = true;
+
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
@@ -136,10 +148,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        enabledInit();
         robotContainer.blinkins.set(BlinkinPair.ColorPair.TELEOP);
-        hasEnabled = true;
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
-        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

@@ -22,6 +22,5 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("NO LONGER GRABBY");
     }
 }
