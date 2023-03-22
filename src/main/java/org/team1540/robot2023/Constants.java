@@ -160,7 +160,7 @@ public final class Constants {
 
         /* Back Left Module - Module 2 */
         public static final class Mod2 {
-            private static final int moduleID = 7;
+            private static final int moduleID = 8;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_LEFT);
         }
 
