@@ -37,6 +37,8 @@ public class Arm extends SubsystemBase {
     private double pivotAccel;
 
     public Arm() {
+        telescope.restoreFactoryDefaults();
+
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
