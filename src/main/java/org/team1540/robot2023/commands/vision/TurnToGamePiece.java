@@ -45,6 +45,7 @@ public class TurnToGamePiece extends CommandBase{
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         pid.enableContinuousInput(-180, 180);
         updatePID();
+        hasFoundTarget = false;
 
 //        System.out.println("PTT Initialized");
     }
