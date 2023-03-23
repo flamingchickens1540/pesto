@@ -2,7 +2,6 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.PathPlanner;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,12 +14,8 @@ import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
-import org.team1540.robot2023.commands.vision.TurnToCone;
-import org.team1540.robot2023.commands.vision.TurnToCube;
-import org.team1540.robot2023.utils.BlinkinPair;
-import org.team1540.robot2023.utils.ButtonPanel;
-import org.team1540.robot2023.utils.PolePosition;
-import org.team1540.robot2023.utils.ScoringGridLocation;
+import org.team1540.robot2023.commands.vision.TurnToGamePiece;
+import org.team1540.robot2023.utils.*;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -80,9 +75,9 @@ public class RobotContainer {
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         //Coop: button(B, Cone vision [HOLD], pilot)
-        driver.b().whileTrue(new TurnToCone(drivetrain,driver, gyro));
+        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, gyro, TurnToGamePiece.GamePiece.CONE));
         //Coop: button(X, Cone vision [HOLD], pilot)
-        driver.x().whileTrue(new TurnToCube(drivetrain, driver, gyro)); 
+        driver.x().whileTrue(new TurnToCube(drivetrain, driver, gyro));
         // Copilot
         driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
@@ -128,7 +123,7 @@ public class RobotContainer {
         ).withName("DownedConeIntake"));
 
         copilot.y().whileTrue(new ZeroArmPositionCommand(arm));
-       copilot.x().and(copilot.y()).onTrue(new InstantCommand(() -> drivetrain.resetOdometry(PathPlanner.loadPath("MiddleGrid1PieceBalance", 1, 1).getInitialHolonomicPose())).withName("InstantZeroToStartOfPath"));
+
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
                 .onTrue(new InstantCommand(() -> {
@@ -140,8 +135,7 @@ public class RobotContainer {
                     }
 
                 }))
-                .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP))
-        ;
+                .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP));
 
         new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
             armIsBrakeMode = !armIsBrakeMode;
@@ -202,7 +196,7 @@ public class RobotContainer {
 //        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
-        manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
+        manager.addDefaultAuto("DoNothing", new InstantCommand(), null, true);
     }
 
     public Command getAutonomousCommand() {

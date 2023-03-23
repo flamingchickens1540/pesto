@@ -10,40 +10,44 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.MathUtils;
 
-public class TurnToCone extends CommandBase{
+public class TurnToGamePiece extends CommandBase{
     Limelight limelight = LimelightManager.getInstance().frontLimelight;
     Drivetrain drivetrain;
     CommandXboxController controller; 
     AHRS gyro; 
     private final PIDController pid = new PIDController(1, 0, 0);
-    private double gyroAngle; 
-    private double angleXOffset; 
+    private boolean hasFoundTarget;
+    private final GamePiece gamepiece;
 
-    public TurnToCone(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro){
+    public enum GamePiece {
+        CONE("cone"),
+        CUBE("cube");
+
+        public final String identifier;
+        GamePiece(String identifier) {
+
+            this.identifier = identifier;
+        }
+    }
+
+    public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro, GamePiece gamepiece){
         this.drivetrain = drivetrain; 
         this.controller = controller;
-        this.gyro = gyro; 
+        this.gyro = gyro;
+        this.gamepiece = gamepiece;
     }
 
     @Override
     public void initialize() {
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
-        double p = SmartDashboard.getNumber("pointToTarget/kP", 0.02);
-        double i = SmartDashboard.getNumber("pointToTarget/kI", 0.0);
-        double d = SmartDashboard.getNumber("pointToTarget/kD", 0.0);
-        gyroAngle = gyro.getAngle(); 
-        if(limelight.getTa() != 0 && limelight.getTclass().equals("cone")){
-            angleXOffset = limelight.getTx() - limelight.getTa()*-0.9;
-        }
-        pid.setPID(p, i, d);
-        pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
-        SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
+        pid.enableContinuousInput(-180, 180);
+        updatePID();
+
 //        System.out.println("PTT Initialized");
     }
 
      /**
      * Executes turning to the target using the Limelight as the primary sensor to determine whether we have turned enough.
-     *
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelightToCone() {
@@ -55,22 +59,37 @@ public class TurnToCone extends CommandBase{
 //            System.out.println("cone angleXOffset" + angleXOffset);
 //            System.out.println(gyroAngle);
 
-            pid.enableContinuousInput(-180, 180); 
             double pidOutput = pid.calculate(gyro.getAngle()); 
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
-
             drivetrain.drive(MathUtils.deadzone(-controller.getLeftY(), 0.1), MathUtils.deadzone(-controller.getLeftX(),0.1),pidOutput, false);
         
     }
- 
-    @Override
-    public void execute() {
+
+    private void updatePID() {
         double p = SmartDashboard.getNumber("pointToTarget/kP", -0.03);//0.02
         double i = SmartDashboard.getNumber("pointToTarget/kI", 0);
         double d = SmartDashboard.getNumber("pointToTarget/kD", -0.002);//0.0015
-        
+
         pid.setPID(p, i, d);
-        turnWithLimelightToCone();
+    }
+    @Override
+    public void execute() {
+        updatePID();
+        if (hasFoundTarget) {
+            turnWithLimelightToCone();
+        } else {
+            if(limelight.getTa() != 0 && limelight.getTclass().equals(gamepiece.identifier)){
+
+                double angleXOffset = limelight.getTx() - limelight.getTa() * -0.9;
+                double gyroAngle = gyro.getAngle();
+                pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
+                SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
+                hasFoundTarget = true;
+            } else {
+                System.out.println("NO GAMEPIECE");
+            }
+        }
+
 //        System.out.println("tx = " + limelight.getTx());
 //        System.out.println("ty = " + limelight.getTy());
 //        System.out.println("ta = " + limelight.getTa());
