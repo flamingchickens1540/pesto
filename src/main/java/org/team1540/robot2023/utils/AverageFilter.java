@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 public class AverageFilter {
     private final LinkedList<Double> items = new LinkedList<>();
-    private int sum = 0;
+    private double sum = 0;
     private final int size;
 
     public AverageFilter(int size) {

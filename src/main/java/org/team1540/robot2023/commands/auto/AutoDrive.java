@@ -28,8 +28,8 @@ import static org.team1540.robot2023.Globals.aprilTagLayout;
 import static org.team1540.robot2023.Globals.field2d;
 
 public class AutoDrive {
-    public static PIDController alignmentTranslationPID = new PIDController(3,0,0.5);
-    public static PIDController alignmentRotationPID = new PIDController(1,0,0.2);
+    public static PIDController alignmentTranslationPID = new PIDController(5,0,0);
+    public static PIDController alignmentRotationPID = new PIDController(2,0,0);
 
     public static void postPIDs() {
         SmartDashboard.putData("align/rotationPID", alignmentRotationPID);
@@ -86,6 +86,6 @@ public class AutoDrive {
             field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
             PathPlannerServer.sendActivePath(trajectory.getStates());
             return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
-        });
+        }).withName("AutoDriveToPoints");
     }
 }

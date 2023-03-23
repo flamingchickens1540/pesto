@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.Constants;
@@ -94,12 +95,22 @@ public class Drivetrain extends SubsystemBase {
         modules[2].setDesiredState(states[2], true, isParkMode);
         modules[3].setDesiredState(states[3], true, isParkMode);
         poseEstimator.update(getYaw(), getModulePositions());
-        if (!isRunningPath && !isRunningAuto) {
-            LimelightManager.getInstance().applyEstimates(poseEstimator);
-        }
-
-
+//        if (!isRunningPath && !isRunningAuto) {
+//            LimelightManager.getInstance().applyEstimates(poseEstimator);
+//        }
         field2d.setRobotPose(poseEstimator.getEstimatedPosition());
+    }
+
+    public boolean updateWithApriltags() {
+        return LimelightManager.getInstance().zeroFromLimelights(poseEstimator, getYaw(), getModulePositions());
+    }
+
+    public void resetToPath(PathPlannerTrajectory rawTrajectory) {
+        PathPlannerTrajectory transformedTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(rawTrajectory, DriverStation.getAlliance());
+        resetOdometry(transformedTrajectory.getInitialHolonomicPose());
+    }
+    public boolean updateWithScoringApriltags() {
+        return LimelightManager.getInstance().applyFrontEstimates(poseEstimator, getYaw(), getModulePositions());
     }
 
 
@@ -164,7 +175,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Command getPathCommand(PathPlannerTrajectory trajectory, PIDController dummyTranslation, PIDController dummmyRotation) {
         return Commands.sequence(
-                new InstantCommand(() -> isRunningPath = true),
+                new InstantCommand(() -> isRunningPath = true).withName("StartBlockingTags"),
                 new PPSwerveControllerCommand(
                 trajectory,
                 this::getPose, // Pose supplier
@@ -175,13 +186,13 @@ public class Drivetrain extends SubsystemBase {
                 this::setChassisSpeeds, // Module states consumer
                 this // Requires this drive subsystem
             ),
-            new InstantCommand(() -> isRunningPath = false)
+            new InstantCommand(() -> isRunningPath = false).withName("StopBlockingTags")
         );
     }
 
     protected Command getResettingPathCommand(PathPlannerTrajectory trajectory) {
         return new SequentialCommandGroup(
-                new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())),
+                new InstantCommand(() -> resetOdometry(trajectory.getInitialHolonomicPose())).withName("ResetOdometry"),
                 getAutoPathCommand(trajectory)
         );
     }
@@ -193,6 +204,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public void zeroGyroscope() {
         gyro.zeroYaw();
+
     }
 
 //    public void zeroFieldOrientation() {
@@ -212,7 +224,7 @@ public class Drivetrain extends SubsystemBase {
             return Rotation2d.fromDegrees(gyro.getFusedHeading());
         }
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
-        return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
+        return Rotation2d.fromDegrees(360.0-gyro.getYaw());
     }
 
     public Rotation2d getPitch() {

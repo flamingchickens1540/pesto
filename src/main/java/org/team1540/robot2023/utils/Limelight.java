@@ -62,9 +62,9 @@ public class Limelight {
 
 
     public Pose2d getBotPose() {
-        if (data.length == 0 || Arrays.equals(data, new double[6])) {
-            return null;
-        }
+        if (data == null) return null;
+        if (data.length == 0) return null;
+        if (Arrays.equals(data, new double[data.length])) return null;
         return new Pose2d(data[0], data[1], new Rotation2d(Math.toRadians(data[5])));
     }
 

@@ -12,7 +12,6 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-//        wheeledGrabber.setCurrentLimit(40);
         wheeledGrabber.setSpeed(1);
     }
 
@@ -23,6 +22,6 @@ public class GrabberIntakeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("NO LONGER GRABBY");
+
     }
 }

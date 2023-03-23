@@ -37,14 +37,14 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (controller.getXButton()) {
-            xyscale = 0.25;
-            rotscale = 0.25;
-        }
-        if (controller.getBButton()) {
-            xyscale = 1;
-            rotscale = 1;
-        }
+//        if (controller.getXButton()) {
+//            xyscale = 0.25;
+//            rotscale = 0.25;
+//        }
+//        if (controller.getBButton()) {
+//            xyscale = 1;
+//            rotscale = 1;
+//        }
 
         xyscaleLog.append(xyscale);
         rotscaleLog.append(rotscale);

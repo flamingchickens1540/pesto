@@ -41,6 +41,11 @@
           "visible": true
         }
       },
+      "/SmartDashboard/balancy": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/drivetrain/rotationPID": {
         "window": {
           "visible": true
