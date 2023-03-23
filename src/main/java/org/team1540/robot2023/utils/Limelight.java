@@ -11,10 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.Arrays;
 
+import com.kauailabs.navx.frc.AHRS;
+
 public class Limelight {
     private double tv, tx, ty, ta;
     private final NetworkTable table;
-    //public final String name;
+    //private final AHRS navx; 
+    public final String name;
     private double[] data;
     private final PoseZeroFilter zeroFilter = new PoseZeroFilter(50, 48);
     private final PoseMedianFilter medianFilter = new PoseMedianFilter(10);
@@ -22,14 +25,14 @@ public class Limelight {
     private static  double HORIZONTAL_FOV = Math.toRadians(63.3);
     private static  double VERTICAL_FOV = Math.toRadians(49.7);
 
-    public Limelight() {
-        table = NetworkTableInstance.getDefault().getTable("limelight-rear");
+    public Limelight(){
+        this("limelight");
     }
 
-    // public Limelight(String tablename) {
-    //     name = tablename;
-    //     table = NetworkTableInstance.getDefault().getTable(tablename);
-    // }
+    public Limelight(String tablename) {
+        name = tablename;
+        table = NetworkTableInstance.getDefault().getTable(name);
+    }
 
     public void periodic() {
         String key = DriverStation.getAlliance() == DriverStation.Alliance.Red ? "botpose_wpired" : "botpose_wpiblue";
@@ -116,8 +119,8 @@ public class Limelight {
         return latency;
     }
 
-    public NetworkTable getNetworkTable() {
-        return table;
+    public String getNetworkTable() {
+        return table.toString();
     }
 
     //Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
@@ -154,9 +157,9 @@ public class Limelight {
     }
 
     //	Class ID of primary neural detector result
-    public double getTclass(){
-        double classID = table.getEntry("tclass").getDouble(0.0);
-        SmartDashboard.putNumber("LimelightClassID", classID);
+    public String getTclass(){
+        String classID = table.getEntry("tclass").getString("nothing");
+        SmartDashboard.putString("LimelightClassID", classID);
         return classID;
     }
     public Translation2d getTargetAngles() {
@@ -173,6 +176,10 @@ public class Limelight {
     public boolean isTargetAligned() {
         double distance = Math.abs(getTargetAngles().getX());
         return distance > 0 && distance < 8;
+    }
+
+    public void setPipeline(int pipeline){
+        table.getEntry("pipeline").setNumber(pipeline);
     }
 
     public double getHorizontalFov() {

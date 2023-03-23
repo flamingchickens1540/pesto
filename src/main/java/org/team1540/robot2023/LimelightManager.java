@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
 import org.team1540.robot2023.utils.Limelight;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import java.util.LinkedList;
 
 import static org.team1540.robot2023.Globals.field2d;

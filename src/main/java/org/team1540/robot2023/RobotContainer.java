@@ -20,6 +20,7 @@ import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.commands.vision.TurnToCone;
+import org.team1540.robot2023.commands.vision.TurnToCube;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.Limelight;
@@ -86,7 +87,8 @@ public class RobotContainer {
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         
-        driver.b().whileTrue(new TurnToCone(limelight,drivetrain,driver));
+        driver.b().whileTrue(new TurnToCone(drivetrain,driver, gyro));
+        driver.x().whileTrue(new TurnToCube(drivetrain, driver, gyro)); 
         // Copilot
 
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSet(BlinkinPair.ColorPair.CUBE));

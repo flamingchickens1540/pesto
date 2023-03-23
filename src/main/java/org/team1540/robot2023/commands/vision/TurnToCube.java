@@ -12,7 +12,7 @@ import org.team1540.robot2023.utils.MathUtils;
 
 import com.kauailabs.navx.frc.AHRS;
 
-public class TurnToCone extends CommandBase{
+public class TurnToCube extends CommandBase{
     Limelight limelight = new Limelight("limelight-front"); 
     Drivetrain drivetrain;
     CommandXboxController controller; 
@@ -21,7 +21,7 @@ public class TurnToCone extends CommandBase{
     private double gyroAngle; 
     private double angleXOffset; 
 
-    public TurnToCone(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro){
+    public TurnToCube(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro){
         this.drivetrain = drivetrain; 
         this.controller = controller;
         this.gyro = gyro; 
@@ -34,7 +34,7 @@ public class TurnToCone extends CommandBase{
         double i = SmartDashboard.getNumber("pointToTarget/kI", 0.0);
         double d = SmartDashboard.getNumber("pointToTarget/kD", 0.0);
         gyroAngle = gyro.getAngle(); 
-        if(limelight.getTa() != 0 && limelight.getTclass().equals("cone")){
+        if(limelight.getTa() != 0 && limelight.getTclass().equals("cube")){
             angleXOffset = limelight.getTx() - limelight.getTa()*-0.9;
         }
         pid.setPID(p, i, d);
@@ -48,13 +48,13 @@ public class TurnToCone extends CommandBase{
      *
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
-    private void turnWithLimelightToCone() {
+    private void turnWithLimelightToCube() {
          //&& limelight.getTclass() == 0){ // check if class id = 0
             System.out.println("table" + limelight.getNetworkTable()); 
             System.out.println("table = " + limelight.getNetworkTable());
-            System.out.println("cone being detected "); 
+            System.out.println("cube being detected "); 
             System.out.println("class ID" + limelight.getTclass()); 
-            System.out.println("cone angleXOffset" + angleXOffset);
+            System.out.println("cube angleXOffset" + angleXOffset);
             System.out.println(gyroAngle);
 
             pid.enableContinuousInput(-180, 180); 
@@ -72,7 +72,7 @@ public class TurnToCone extends CommandBase{
         double d = SmartDashboard.getNumber("pointToTarget/kD", -0.002);//0.0015
         
         pid.setPID(p, i, d);
-        turnWithLimelightToCone();
+        turnWithLimelightToCube();
         System.out.println("tx = " + limelight.getTx());
         System.out.println("ty = " + limelight.getTy());
         System.out.println("ta = " + limelight.getTa()); 

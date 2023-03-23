@@ -6,22 +6,31 @@
       }
     },
     "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
       "Shuffleboard": {
         "open": true
       },
       "SmartDashboard": {
-        "arm": {
+        "balancy": {
           "open": true
         },
         "intake": {
           "open": true
         },
-        "open": true
+        "open": true,
+        "vision": {
+          "open": true
+        }
       }
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/align/rotationPID": "PIDController",
+      "/SmartDashboard/align/translationPID": "PIDController",
       "/SmartDashboard/autoChooser": "String Chooser",
+      "/SmartDashboard/balancy": "PIDController",
       "/SmartDashboard/drivetrain/rotationPID": "PIDController",
       "/SmartDashboard/drivetrain/translationPID": "PIDController",
       "/SmartDashboard/field": "Field2d"
