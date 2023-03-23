@@ -36,7 +36,7 @@ public class ManualArm extends CommandBase {
         if (startedManualPivot) {
             if (Math.abs(pivotInput) <= deadzone && !isHoldingRotation) {
                 isHoldingRotation = true;
-                arm.setRotation(arm.getArmState().getRotation2d());
+                arm.holdPivot();
             } else if (Math.abs(pivotInput) >= deadzone) {
                 isHoldingRotation = false;
                 arm.setRotatingSpeed(Math.pow(pivotInput, 3) * (1 + ((-1 / ArmConstants.TELESCOPE_FORWARD_LIMIT) * pivotInput))); // TODO: 2/11/2023 Check angles here
