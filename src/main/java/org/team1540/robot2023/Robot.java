@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.utils.BlinkinManager;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         enabledInit();
-        robotContainer.blinkins.set(BlinkinPair.ColorPair.AUTO);
+        robotContainer.blinkins.set(BlinkinManager.ColorPair.AUTO);
 
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
@@ -149,7 +149,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         enabledInit();
-        robotContainer.blinkins.set(BlinkinPair.ColorPair.TELEOP);
+        robotContainer.blinkins.set(BlinkinManager.ColorPair.TELEOP);
 
         if (autonomousCommand != null) {
             autonomousCommand.cancel();

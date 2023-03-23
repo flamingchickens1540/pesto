@@ -5,8 +5,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
+import org.team1540.robot2023.utils.BlinkinManager;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.MathUtils;
 
@@ -20,12 +22,13 @@ public class TurnToGamePiece extends CommandBase{
     private final GamePiece gamepiece;
 
     public enum GamePiece {
-        CONE("cone"),
-        CUBE("cube");
+        CONE("cone", RevBlinkin.ColorPattern.YELLOW),
+        CUBE("cube", RevBlinkin.ColorPattern.VIOLET);
 
         public final String identifier;
-        GamePiece(String identifier) {
-
+        public final RevBlinkin.ColorPattern pattern;
+        GamePiece(String identifier, RevBlinkin.ColorPattern pattern) {
+            this.pattern = pattern;
             this.identifier = identifier;
         }
     }
@@ -76,6 +79,7 @@ public class TurnToGamePiece extends CommandBase{
     public void execute() {
         updatePID();
         if (hasFoundTarget) {
+            BlinkinManager.setBoth(gamepiece.pattern);
             turnWithLimelightToCone();
         } else {
             if(limelight.getTa() != 0 && limelight.getTclass().equals(gamepiece.identifier)){
@@ -85,6 +89,7 @@ public class TurnToGamePiece extends CommandBase{
                 pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
                 SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
                 hasFoundTarget = true;
+
             } else {
                 System.out.println("NO GAMEPIECE");
             }
@@ -98,6 +103,7 @@ public class TurnToGamePiece extends CommandBase{
 
     @Override
     public void end(boolean isInterrupted) {
+        BlinkinManager.getInstance().set(BlinkinManager.ColorPair.TELEOP);
         limelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
     }
 }

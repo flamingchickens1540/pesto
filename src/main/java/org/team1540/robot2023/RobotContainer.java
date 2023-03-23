@@ -15,7 +15,7 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
-import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.utils.BlinkinManager;
 import org.team1540.robot2023.utils.ButtonPanel;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
@@ -26,9 +26,10 @@ public class RobotContainer {
     // Hardware
 
     AHRS gyro = new AHRS(SPI.Port.kMXP);
-    RevBlinkin frontBlinken = new RevBlinkin(1, RevBlinkin.ColorPattern.WAVES_PARTY);
-    RevBlinkin rearBlinken = new RevBlinkin(0, RevBlinkin.ColorPattern.WAVES_FOREST);
-    BlinkinPair blinkins = new BlinkinPair(frontBlinken, rearBlinken);
+    BlinkinManager blinkins = BlinkinManager.getInstance();
+    RevBlinkin frontBlinken = blinkins.frontBlinkin;
+    RevBlinkin rearBlinken = blinkins.rearBlinkin;
+
     public final PneumaticHub ph = new PneumaticHub(Constants.PNEUMATIC_HUB);
     public final PowerDistribution pdh = new PowerDistribution(Constants.PDH, PowerDistribution.ModuleType.kRev);
     // Subsystems
@@ -42,7 +43,7 @@ public class RobotContainer {
     CommandXboxController copilot = new CommandXboxController(1);
     ButtonPanel controlPanel = new ButtonPanel(2);
 
-    RevBlinkin.ColorPattern frontPattern = BlinkinPair.ColorPair.TELEOP.front;
+    RevBlinkin.ColorPattern frontPattern = BlinkinManager.ColorPair.TELEOP.front;
     boolean armIsBrakeMode = false;
 
     // Commands
@@ -132,13 +133,13 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(() -> {
                     int closestTime= AutoDrive.getClosestTag(drivetrain);
                     if (closestTime == 4 || closestTime == 5) {
-                        rearBlinken.setPattern(BlinkinPair.ColorPair.APRILTAG.rear);
+                        rearBlinken.setPattern(BlinkinManager.ColorPair.APRILTAG.rear);
                     } else {
-                        blinkins.set(BlinkinPair.ColorPair.APRILTAG);
+                        blinkins.set(BlinkinManager.ColorPair.APRILTAG);
                     }
 
                 }))
-                .onFalse(blinkins.commandSet(BlinkinPair.ColorPair.TELEOP));
+                .onFalse(blinkins.commandSet(BlinkinManager.ColorPair.TELEOP));
 
         new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
             armIsBrakeMode = !armIsBrakeMode;
