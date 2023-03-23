@@ -85,8 +85,9 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
-        
+        //Coop: button(B, Cone vision [HOLD], pilot)
         driver.b().whileTrue(new TurnToCone(drivetrain,driver, gyro));
+        //Coop: button(X, Cone vision [HOLD], pilot)
         driver.x().whileTrue(new TurnToCube(drivetrain, driver, gyro)); 
         // Copilot
         driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
