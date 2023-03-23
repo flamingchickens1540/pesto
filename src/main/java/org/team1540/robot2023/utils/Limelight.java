@@ -50,6 +50,7 @@ public class Limelight {
 
     public Pose2d getFilteredBotPose() {
         // check if data is zero or empty
+        if (data == null) return null;
         if (data.length == 0) return null;
         if (Arrays.equals(data, new double[data.length])) return null;
         if (!zeroFilter.isNonZero()) return null;
