@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.Arrays;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class Limelight {
     private double tv, tx, ty, ta;
     private final NetworkTable table;
@@ -138,28 +136,28 @@ public class Limelight {
     //Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
     public double getTy(){
          ty = table.getEntry("ty").getDouble(0.0);
-        SmartDashboard.putNumber("LimelightY", ty);
+        SmartDashboard.putNumber("vision/LimelightY", ty);
         return ty;
     }
 
     //Target Area (0% of image to 100% of image)
     public double getTa(){
          ta = table.getEntry("ta").getDouble(0.0);
-        SmartDashboard.putNumber("LimelightArea", ta);
+        SmartDashboard.putNumber("vision/LimelightArea", ta);
         return ta;
     }
 
     //Whether the limelight has any valid targets (0 or 1)
     public double getTv() {
         tv = table.getEntry("tv").getDouble(0.0);
-        SmartDashboard.putNumber("LimelightTargets", tv);
+        SmartDashboard.putNumber("vision/LimelightTargets", tv);
         return tv;
     }
 
     //	Class ID of primary neural detector result
     public String getTclass(){
         String classID = table.getEntry("tclass").getString("nothing");
-        SmartDashboard.putString("LimelightClassID", classID);
+        SmartDashboard.putString("vision/LimelightClassID", classID);
         return classID;
     }
     public Translation2d getTargetAngles() {
@@ -178,9 +176,6 @@ public class Limelight {
         return distance > 0 && distance < 8;
     }
 
-    public void setPipeline(int pipeline){
-        table.getEntry("pipeline").setNumber(pipeline);
-    }
 
     public double getHorizontalFov() {
         return HORIZONTAL_FOV;

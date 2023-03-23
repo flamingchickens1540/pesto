@@ -1,19 +1,17 @@
 package org.team1540.robot2023.commands.vision;
 
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
-//import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.MathUtils;
 
-import com.kauailabs.navx.frc.AHRS;
-
 public class TurnToCube extends CommandBase{
-    Limelight limelight = new Limelight("limelight-front"); 
+    Limelight limelight = LimelightManager.getInstance().frontLimelight;
     Drivetrain drivetrain;
     CommandXboxController controller; 
     AHRS gyro; 
@@ -29,7 +27,7 @@ public class TurnToCube extends CommandBase{
 
     @Override
     public void initialize() {
-        limelight.setPipeline(1);
+        limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         double p = SmartDashboard.getNumber("pointToTarget/kP", 0.02);
         double i = SmartDashboard.getNumber("pointToTarget/kI", 0.0);
         double d = SmartDashboard.getNumber("pointToTarget/kD", 0.0);
@@ -40,7 +38,7 @@ public class TurnToCube extends CommandBase{
         pid.setPID(p, i, d);
         pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
         SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
-        System.out.println("PTT Initialized"); 
+//        System.out.println("PTT Initialized");
     }
 
      /**
@@ -50,12 +48,12 @@ public class TurnToCube extends CommandBase{
      */
     private void turnWithLimelightToCube() {
          //&& limelight.getTclass() == 0){ // check if class id = 0
-            System.out.println("table" + limelight.getNetworkTable()); 
-            System.out.println("table = " + limelight.getNetworkTable());
-            System.out.println("cube being detected "); 
-            System.out.println("class ID" + limelight.getTclass()); 
-            System.out.println("cube angleXOffset" + angleXOffset);
-            System.out.println(gyroAngle);
+//            System.out.println("table" + limelight.getNetworkTable());
+//            System.out.println("table = " + limelight.getNetworkTable());
+//            System.out.println("cube being detected ");
+//            System.out.println("class ID" + limelight.getTclass());
+//            System.out.println("cube angleXOffset" + angleXOffset);
+//            System.out.println(gyroAngle);
 
             pid.enableContinuousInput(-180, 180); 
             double pidOutput = pid.calculate(gyro.getAngle()); 
@@ -73,9 +71,14 @@ public class TurnToCube extends CommandBase{
         
         pid.setPID(p, i, d);
         turnWithLimelightToCube();
-        System.out.println("tx = " + limelight.getTx());
-        System.out.println("ty = " + limelight.getTy());
-        System.out.println("ta = " + limelight.getTa()); 
-        System.out.print("class ID = " + limelight.getTclass());
+//        System.out.println("tx = " + limelight.getTx());
+//        System.out.println("ty = " + limelight.getTy());
+//        System.out.println("ta = " + limelight.getTa());
+//        System.out.print("class ID = " + limelight.getTclass());
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+        limelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
     }
 }

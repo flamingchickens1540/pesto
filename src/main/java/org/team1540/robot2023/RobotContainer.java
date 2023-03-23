@@ -14,13 +14,11 @@ import org.team1540.robot2023.commands.arm.*;
 import org.team1540.robot2023.commands.auto.*;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
-
+import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.commands.vision.TurnToCone;
 import org.team1540.robot2023.commands.vision.TurnToCube;
-import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.utils.BlinkinPair;
 import org.team1540.robot2023.utils.ButtonPanel;
-import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
 
@@ -40,7 +38,6 @@ public class RobotContainer {
     Drivetrain drivetrain = new Drivetrain(gyro);
     Arm arm = new Arm();
     WheeledGrabber intake = new WheeledGrabber();
-    Limelight limelight = new Limelight(); 
 
     // Controllers
     CommandXboxController driver = new CommandXboxController(0);
@@ -48,7 +45,6 @@ public class RobotContainer {
     ButtonPanel controlPanel = new ButtonPanel(2);
 
     RevBlinkin.ColorPattern frontPattern = BlinkinPair.ColorPair.TELEOP.front;
-//    public final LogManager logManager = new LogManager(pdh);
     boolean armIsBrakeMode = false;
 
     // Commands
@@ -68,8 +64,6 @@ public class RobotContainer {
         initAutos();
         configureButtonBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
-        LimelightManager.getInstance().addLimelight("limelight-front");
-        LimelightManager.getInstance().addLimelight("limelight-rear");
         AutoDrive.postPIDs();
     }
 
