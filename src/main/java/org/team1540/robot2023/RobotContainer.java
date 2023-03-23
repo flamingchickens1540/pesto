@@ -15,7 +15,10 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
-import org.team1540.robot2023.utils.*;
+import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.utils.ButtonPanel;
+import org.team1540.robot2023.utils.PolePosition;
+import org.team1540.robot2023.utils.ScoringGridLocation;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -76,8 +79,8 @@ public class RobotContainer {
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         //Coop: button(B, Cone vision [HOLD], pilot)
         driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, gyro, TurnToGamePiece.GamePiece.CONE));
-        //Coop: button(X, Cone vision [HOLD], pilot)
-        driver.x().whileTrue(new TurnToCube(drivetrain, driver, gyro));
+        //Coop: button(X, Cube vision [HOLD], pilot)
+        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, gyro, TurnToGamePiece.GamePiece.CUBE));
         // Copilot
         driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
@@ -196,7 +199,7 @@ public class RobotContainer {
 //        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
         manager.addAuto("ScoreHighCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addAuto("ScoreMidCube", new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
-        manager.addDefaultAuto("DoNothing", new InstantCommand(), null, true);
+        manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
 
     public Command getAutonomousCommand() {
