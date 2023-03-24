@@ -16,7 +16,7 @@ public class AutoMiddleGrid1PieceBalance extends AutoCommand {
         addCommands(
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
-                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-45)),
+                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(45)),
                 getPathPlannerDriveCommand(drivetrain, "MiddleGrid1PieceBalance", new PathConstraints(1, 1), false),
                 new AutoBalanceCommand(drivetrain)
         );

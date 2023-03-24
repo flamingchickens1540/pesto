@@ -18,7 +18,7 @@ public class AutoTopGrid1PieceBalance extends AutoCommand {
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
                 Commands.parallel(
-                        new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(45)),
+                        new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-45)),
                         getPathPlannerDriveCommand(drivetrain, "TopGrid1PieceBalance", new PathConstraints(4, 2), false)
                 ),
                 new AutoBalanceCommand(drivetrain)
