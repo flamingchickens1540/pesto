@@ -170,6 +170,11 @@ public final class Constants {
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }
+    public static final class Vision {
+        public static final double kP = -0.03;
+        public static final double kI = 0;
+        public static final double kD = -0.002;
+    }
 
     public static final class ArmConstants {
         public static final int PIVOT1_ID = 10;

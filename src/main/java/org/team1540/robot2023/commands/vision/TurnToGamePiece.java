@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.lib.RevBlinkin;
+import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.utils.BlinkinManager;
@@ -17,7 +18,7 @@ public class TurnToGamePiece extends CommandBase{
     Drivetrain drivetrain;
     CommandXboxController controller; 
     AHRS gyro; 
-    private final PIDController pid = new PIDController(1, 0, 0);
+    private final PIDController pid = new PIDController(Constants.Vision.kP, Constants.Vision.kI, Constants.Vision.kD);
     private boolean hasFoundTarget;
     private final GamePiece gamepiece;
 
@@ -44,10 +45,8 @@ public class TurnToGamePiece extends CommandBase{
     public void initialize() {
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         pid.enableContinuousInput(-180, 180);
-        updatePID();
+//        updatePID();
         hasFoundTarget = false;
-
-//        System.out.println("PTT Initialized");
     }
 
      /**
@@ -55,30 +54,21 @@ public class TurnToGamePiece extends CommandBase{
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelightToCone() {
-         //&& limelight.getTclass() == 0){ // check if class id = 0
-//            System.out.println("table" + limelight.getNetworkTable());
-//            System.out.println("table = " + limelight.getNetworkTable());
-//            System.out.println("cone being detected ");
-//            System.out.println("class ID" + limelight.getTclass());
-//            System.out.println("cone angleXOffset" + angleXOffset);
-//            System.out.println(gyroAngle);
-
             double pidOutput = pid.calculate(gyro.getAngle()); 
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
             drivetrain.drive(MathUtils.deadzone(-controller.getLeftY(), 0.1), MathUtils.deadzone(-controller.getLeftX(),0.1),pidOutput, false);
-        
     }
 
     private void updatePID() {
-        double p = SmartDashboard.getNumber("pointToTarget/kP", -0.03);//0.02
-        double i = SmartDashboard.getNumber("pointToTarget/kI", 0);
-        double d = SmartDashboard.getNumber("pointToTarget/kD", -0.002);//0.0015
+        double p = SmartDashboard.getNumber("pointToTarget/kP", Constants.Vision.kP);//0.02
+        double i = SmartDashboard.getNumber("pointToTarget/kI", Constants.Vision.kI);
+        double d = SmartDashboard.getNumber("pointToTarget/kD", Constants.Vision.kD);//0.0015
 
         pid.setPID(p, i, d);
     }
     @Override
     public void execute() {
-        updatePID();
+//        updatePID();
         if (hasFoundTarget) {
             BlinkinManager.setBoth(gamepiece.pattern);
             turnWithLimelightToCone();
@@ -96,10 +86,6 @@ public class TurnToGamePiece extends CommandBase{
             }
         }
 
-//        System.out.println("tx = " + limelight.getTx());
-//        System.out.println("ty = " + limelight.getTy());
-//        System.out.println("ta = " + limelight.getTa());
-//        System.out.print("class ID = " + limelight.getTclass());
     }
 
     @Override
