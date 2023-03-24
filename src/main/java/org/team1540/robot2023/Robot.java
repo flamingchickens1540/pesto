@@ -131,11 +131,11 @@ public class Robot extends TimedRobot {
         autonomousCommand = robotContainer.getAutonomousCommand();
         robotContainer.drivetrain.updateWithApriltags();
         hasRunAuto = true;
+        robotContainer.arm.resetToGyro();
 
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
-            robotContainer.arm.resetToGyro();
         }
     }
 
