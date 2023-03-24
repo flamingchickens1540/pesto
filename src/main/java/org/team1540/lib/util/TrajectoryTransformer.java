@@ -13,6 +13,15 @@ import java.util.List;
 
 public class TrajectoryTransformer {
     private static final double FIELD_WIDTH_METERS = 8.02;
+
+    public static Pose2d transformPoseForAlliance(Pose2d rawPose, DriverStation.Alliance alliance) {
+        if (alliance== DriverStation.Alliance.Blue) {return rawPose;}
+
+        Translation2d transformedTranslation = new Translation2d(rawPose.getX(), FIELD_WIDTH_METERS - rawPose.getY());
+        Rotation2d transformedHeading = rawPose.getRotation().times(-1);
+        return new Pose2d(transformedTranslation, transformedHeading);
+
+    }
     public static Trajectory.State transformStateForAlliance(
             Trajectory.State state, DriverStation.Alliance alliance) {
         if (alliance == DriverStation.Alliance.Red) {

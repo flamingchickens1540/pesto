@@ -18,6 +18,7 @@ import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.GridScoreData;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 public class AutoGridScore extends SequentialCommandGroup {
 
@@ -28,6 +29,12 @@ public class AutoGridScore extends SequentialCommandGroup {
         this(drivetrain, arm, positions, intake, controller, true);
     }
     public AutoGridScore(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller, boolean shouldAlign){
+        BooleanSupplier shouldRun;
+        if (shouldAlign) {
+            shouldRun = drivetrain::updateWithScoringApriltags;
+        } else {
+            shouldRun = () -> true;
+        }
         addCommands(
             new ConditionalCommand(
                     Commands.sequence(
@@ -77,7 +84,7 @@ public class AutoGridScore extends SequentialCommandGroup {
                     )
             ),
             new InstantCommand(),
-            () -> drivetrain.updateWithScoringApriltags() || !shouldAlign
+            shouldRun
             )
         );
     }

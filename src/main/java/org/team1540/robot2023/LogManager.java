@@ -25,9 +25,6 @@ public class LogManager {
         CommandScheduler.getInstance().onCommandInitialize((command -> commandLog.append("Initializing: "+command.getName())));
         CommandScheduler.getInstance().onCommandFinish((command -> commandLog.append("Ending: "+command.getName())));
         CommandScheduler.getInstance().onCommandInterrupt((command -> commandLog.append("Interrupting: "+command.getName())));
-
-
-
     }
 
     public void execute() {

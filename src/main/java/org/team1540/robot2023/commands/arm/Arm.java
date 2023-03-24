@@ -37,7 +37,7 @@ public class Arm extends SubsystemBase {
     private double pivotAccel;
 
     public Arm() {
-        telescope.restoreFactoryDefaults();
+//        telescope.restoreFactoryDefaults();
 
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
@@ -67,6 +67,7 @@ public class Arm extends SubsystemBase {
         telescopePID.setP(ArmConstants.TELESCOPE_KP);
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
+        telescopePID.setFF(ArmConstants.TELESCOPE_KF);
         telescopePID.setSmartMotionMaxAccel(ArmConstants.TELESCOPE_MAX_ACCEL, 0);
         telescopePID.setSmartMotionMaxVelocity(ArmConstants.TELESCOPE_CRUISE_SPEED, 0);
         telescopePID.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);

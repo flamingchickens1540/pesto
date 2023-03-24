@@ -6,6 +6,7 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -118,7 +119,18 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         if (!hasEnabled) {
-            robotContainer.drivetrain.updateWithApriltags();
+            if (AutoManager.getInstance().getSelectedShouldReset()) {
+                Pose2d initialPose = AutoManager.getInstance().getSelectedInitialPose();
+                if (initialPose == null) {
+                    DriverStation.reportError("DO NOT RUN THIS AUTO PLEASE KTHXBYE", false);
+                } else {
+                    robotContainer.drivetrain.resetToPose(AutoManager.getInstance().getSelectedInitialPose());
+                }
+
+            } else {
+                robotContainer.drivetrain.updateWithApriltags();
+            }
+
         }
     }
 
@@ -129,7 +141,9 @@ public class Robot extends TimedRobot {
 
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
-        robotContainer.drivetrain.updateWithApriltags();
+        if (!AutoManager.getInstance().getSelectedShouldReset()) {
+            robotContainer.drivetrain.updateWithApriltags();
+        }
         hasRunAuto = true;
         robotContainer.arm.resetToGyro();
 

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import org.team1540.lib.util.TrajectoryTransformer;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
@@ -108,6 +109,11 @@ public class Drivetrain extends SubsystemBase {
     public void resetToPath(PathPlannerTrajectory rawTrajectory) {
         PathPlannerTrajectory transformedTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(rawTrajectory, DriverStation.getAlliance());
         resetOdometry(transformedTrajectory.getInitialHolonomicPose());
+    }
+
+    public void resetToPose(Pose2d rawState) {
+        Pose2d transformedTrajectory = TrajectoryTransformer.transformPoseForAlliance(rawState, DriverStation.getAlliance());
+        resetOdometry(transformedTrajectory);
     }
     public boolean updateWithScoringApriltags() {
         return LimelightManager.getInstance().applyFrontEstimates(poseEstimator, getYaw(), getModulePositions());

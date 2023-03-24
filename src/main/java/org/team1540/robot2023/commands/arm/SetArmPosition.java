@@ -18,8 +18,8 @@ public class SetArmPosition extends CommandBase {
     private boolean isExtending;
     private long extensionStartTime;
     private long extensionFinishTime;
-    private double extensionDelay;
-    private boolean shouldZero;
+    private final double extensionDelay;
+    private final boolean shouldZero;
 
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
