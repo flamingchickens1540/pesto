@@ -3,6 +3,7 @@ package org.team1540.robot2023;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,10 +19,7 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
-import org.team1540.robot2023.utils.BlinkinManager;
-import org.team1540.robot2023.utils.ButtonPanel;
-import org.team1540.robot2023.utils.PolePosition;
-import org.team1540.robot2023.utils.ScoringGridLocation;
+import org.team1540.robot2023.utils.*;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
@@ -129,7 +127,7 @@ public class RobotContainer {
                 new SetArmPosition(arm, Constants.Auto.armDownBackwards)
         ).withName("DownedConeIntake"));
 
-        copilot.y().whileTrue(new ZeroArmPositionCommand(arm));
+       copilot.y().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).andThen(new ZeroArmPositionCommand(arm)));
 
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)

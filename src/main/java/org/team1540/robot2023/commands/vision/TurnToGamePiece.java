@@ -13,11 +13,13 @@ import org.team1540.robot2023.utils.BlinkinManager;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.MathUtils;
 
+import java.util.function.DoubleSupplier;
+
 public class TurnToGamePiece extends CommandBase{
     Limelight limelight = LimelightManager.getInstance().frontLimelight;
     Drivetrain drivetrain;
     CommandXboxController controller; 
-    AHRS gyro; 
+    DoubleSupplier angleSupplier;
     private final PIDController pid = new PIDController(Constants.Vision.kP, Constants.Vision.kI, Constants.Vision.kD);
     private boolean hasFoundTarget;
     private final GamePiece gamepiece;
@@ -37,7 +39,13 @@ public class TurnToGamePiece extends CommandBase{
     public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro, GamePiece gamepiece){
         this.drivetrain = drivetrain; 
         this.controller = controller;
-        this.gyro = gyro;
+        this.angleSupplier = gyro::getAngle;
+        this.gamepiece = gamepiece;
+    }
+    public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, DoubleSupplier angleSupplier, GamePiece gamepiece){
+        this.drivetrain = drivetrain;
+        this.controller = controller;
+        this.angleSupplier = angleSupplier;
         this.gamepiece = gamepiece;
     }
 
@@ -54,9 +62,9 @@ public class TurnToGamePiece extends CommandBase{
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelightToCone() {
-            double pidOutput = pid.calculate(gyro.getAngle()); 
+            double pidOutput = pid.calculate(angleSupplier.getAsDouble());
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
-            drivetrain.drive(MathUtils.deadzone(-controller.getLeftY(), 0.1), MathUtils.deadzone(-controller.getLeftX(),0.1),pidOutput, false);
+            drivetrain.drive(MathUtils.deadzone(-controller.getLeftY(), 0.1), 0,pidOutput, false);
     }
 
     private void updatePID() {
@@ -76,7 +84,7 @@ public class TurnToGamePiece extends CommandBase{
             if(limelight.getTa() != 0 && limelight.getTclass().equals(gamepiece.identifier)){
 
                 double angleXOffset = limelight.getTx() - limelight.getTa() * -0.9;
-                double gyroAngle = gyro.getAngle();
+                double gyroAngle = angleSupplier.getAsDouble();
                 pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
                 SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
                 hasFoundTarget = true;
