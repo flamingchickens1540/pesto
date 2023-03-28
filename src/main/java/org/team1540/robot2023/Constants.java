@@ -34,7 +34,7 @@ public final class Constants {
 
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.5),37.8);
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60.75),55);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60.25),55);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),55);
 
         public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 35.18));
@@ -177,8 +177,8 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final int PIVOT1_ID = 10;
-        public static final int PIVOT2_ID = 11;
+        public static final int PIVOT1_ID = 11;
+        public static final int PIVOT2_ID = 10;
         public static final int PIVOT_ENCODER_CHANNEL_A = 8;
         public static final int PIVOT_ENCODER_CHANNEL_B = 9;
         public static final int PIVOT_ENCODER_PULSES_PER_REV = 2048;

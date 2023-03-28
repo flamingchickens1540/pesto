@@ -47,11 +47,12 @@ public class Arm extends SubsystemBase {
         pivot2.setNeutralMode(NeutralMode.Brake);
         telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        pivot1.setInverted(true);
+        pivot1.setInverted(false);
         pivot1.configForwardSoftLimitThreshold(ArmConstants.PIVOT_FORWARD_LIMIT);
         pivot1.configForwardSoftLimitEnable(true);
         pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
         pivot1.configReverseSoftLimitEnable(true);
+        pivot2.setInverted(true);
         pivot2.follow(pivot1);
 
         telescope.setInverted(true);
