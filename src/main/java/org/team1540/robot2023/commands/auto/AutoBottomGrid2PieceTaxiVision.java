@@ -12,6 +12,7 @@ import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
 import org.team1540.robot2023.utils.PolePosition;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
     public AutoBottomGrid2PieceTaxiVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
-        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2PieceVision", new PathConstraints[]{
+        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2PieceTaxi", new PathConstraints[]{
                 new PathConstraints(2,1),
                 new PathConstraints(4,2)
         }, false);
@@ -37,13 +38,17 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
                                             new PivotCommand(arm, Constants.Auto.armDownBackwards)
                                     )
                                 ),
-                                new TurnToGamePiece(drivetrain, null, () -> drivetrain.getYaw().getDegrees(), TurnToGamePiece.GamePiece.CUBE ),
+                                Commands.sequence(
+                                        new TurnToGamePiece(drivetrain, null, () -> drivetrain.getYaw().getDegrees(), TurnToGamePiece.GamePiece.CUBE ),
+                                        new DriveToGamePiece(drivetrain)
+                                )
+                        ), 
                                 Commands.parallel(
-                                    new SetArmPosition(arm, Constants.Auto.midCube.approach),
+                                        new SetArmPosition(arm, Constants.Auto.midCube.approach),
                                     pathCommands.get(2)
                                 )
-                        )
-                ),
+                        ), 
+              
                 new GrabberOuttakeCommand(intake,1),
                 new ResetArmPositionCommand(arm)
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake, null, false)
@@ -53,3 +58,4 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
 
 
 }
+                                
