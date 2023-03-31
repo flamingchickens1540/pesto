@@ -88,4 +88,23 @@ public class AutoDrive {
             return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
         }).withName("AutoDriveToPoints");
     }
+
+
+    public static Command smoothDriveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, double time, Supplier<List<PathPoint>> points) {
+        return new ProxyCommand(() -> {
+            List<PathPoint> pointList = new LinkedList<>();
+
+
+//            pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
+            pointList.addAll(points.get());
+            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                    new PathConstraints(5, 3),
+                    pointList
+            );
+            field2d.getObject("gridDrivePath").setTrajectory(trajectory);
+            field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
+            PathPlannerServer.sendActivePath(trajectory.getStates());
+            return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
+        }).withName("SmoothAutoDriveToPoints");
+    }
 }

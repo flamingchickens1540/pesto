@@ -47,6 +47,7 @@ public class Drivetrain extends SubsystemBase {
     // Odometry
     private final SwerveDrivePoseEstimator poseEstimator;
 
+
     public Drivetrain(AHRS gyro) {
         this.gyro = gyro;
         poseEstimator = new SwerveDrivePoseEstimator(Swerve.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
@@ -254,6 +255,9 @@ public class Drivetrain extends SubsystemBase {
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
+    public ChassisSpeeds getChassisSpeeds(){
+        return Swerve.swerveKinematics.toChassisSpeeds(states);
+    }
 
 
     public SwerveModulePosition[] getModulePositions(){

@@ -36,5 +36,7 @@ public class GrabberAggressiveCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         wheeledGrabber.setCurrentLimit(10);
+        wheeledGrabber.setSpeed(0.1);
+        System.out.println("Done being agressive");
     }
 }

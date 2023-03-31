@@ -212,10 +212,10 @@ public class Arm extends SubsystemBase {
 //                        ArmConstants.PIVOT_GEAR_RATIO
 //                )
 //        );
-        pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(getGyroAngle().getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
-        );
         pivotEncoder.setPosition(getGyroAngle());
+        pivot1.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
     }
 
     public void resetToEncoder() {
