@@ -16,9 +16,10 @@ import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.List;
 
-public class AutoTopGrid3PieceTaxi extends AutoCommand {
-    public AutoTopGrid3PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
+public class AutoTopGrid2_5PieceTaxi extends AutoCommand {
+    public AutoTopGrid2_5PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, "TopGrid3PieceTaxi");
+        setName("TopGrid2.5PieceTaxi");
         addCommands(
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
                 Commands.parallel(
@@ -48,14 +49,7 @@ public class AutoTopGrid3PieceTaxi extends AutoCommand {
                                 new PivotCommand(arm, Constants.Auto.armDownBackwards)
                         ),
                         pathCommands.get(2)
-                ),
-                Commands.parallel(
-                                new SetArmPosition(arm, Constants.Auto.hybridNode.approach),
-                        pathCommands.get(3)
-                ),
-                new GrabberOuttakeCommand(intake,1)
-//                new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake, null, false)
-
+                )
         );
     }
 
