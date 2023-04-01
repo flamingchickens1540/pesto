@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Auto2PieceTaxiConeVision extends AutoCommand {
     public Auto2PieceTaxiConeVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
-        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxiCone"), new PathConstraints(4, 2), true);
+        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxiConeVision"), new PathConstraints(4, 2), true);
         addCommands(
 
                 new AutoGridScore(drivetrain, arm, Constants.Auto.highCone.withPolePosition(PolePosition.LEFT), intake, null, false),
@@ -37,7 +37,7 @@ public class Auto2PieceTaxiConeVision extends AutoCommand {
                                 ),
                                 Commands.sequence(
                                         new TurnToGamePiece(drivetrain, null, () -> drivetrain.getYaw().getDegrees(), TurnToGamePiece.GamePiece.CUBE ),
-                                        new DriveToGamePiece(drivetrain, () -> Constants.Auto.hypotenuse)          
+                                        new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)        
                                 ),
                                 Commands.parallel(
                                         new RetractAndPivotCommand(arm, Constants.Auto.highCube.approach),

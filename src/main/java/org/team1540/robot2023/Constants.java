@@ -27,7 +27,7 @@ public final class Constants {
         public static final double hpOffsetX = Units.inchesToMeters(35);
         public static final double hpOffsetY = -Units.inchesToMeters(29); 
 
-        public static final double hypotenuse = 3; 
+        public static final double autoDriveDistance = 1; //in meters
 
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);

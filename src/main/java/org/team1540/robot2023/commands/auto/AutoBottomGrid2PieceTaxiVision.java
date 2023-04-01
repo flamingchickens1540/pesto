@@ -22,7 +22,7 @@ import java.util.List;
 
 public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
     public AutoBottomGrid2PieceTaxiVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
-        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2PieceTaxi", new PathConstraints[]{
+        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2PieceTaxiVision", new PathConstraints[]{
                 new PathConstraints(2,1),
                 new PathConstraints(4,2)
         }, false);
@@ -41,7 +41,7 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
                                 ),
                                 Commands.sequence(
                                         new TurnToGamePiece(drivetrain, null, () -> drivetrain.getYaw().getDegrees(), TurnToGamePiece.GamePiece.CUBE ),
-                                        new DriveToGamePiece(drivetrain, () -> Constants.Auto.hypotenuse)
+                                        new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)
                                         
                                 )
                         ), 
