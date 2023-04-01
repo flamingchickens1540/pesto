@@ -20,7 +20,7 @@ public class AutoMiddleGrid1PieceTaxiBalance extends AutoCommand {
         List<Command> commands = getPathPlannerDriveCommandGroup(drivetrain, "MiddleGrid1PieceTaxiBalance", new PathConstraints(1, 1), false);
         addCommands(
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
                 new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(45)),
                 commands.get(0),
                 Commands.parallel(

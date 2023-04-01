@@ -24,7 +24,7 @@ public class Auto2PieceTaxiConeVision extends AutoCommand {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxiConeVision"), new PathConstraints(4, 2), true);
         addCommands(
 
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCone.withPolePosition(PolePosition.LEFT), intake, null, false),
+                new AutoCone(drivetrain, arm, Constants.Auto.highCone.withPolePosition(PolePosition.LEFT), intake, null, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(
@@ -45,7 +45,7 @@ public class Auto2PieceTaxiConeVision extends AutoCommand {
                                 )
                         )
                 ),
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, true)
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, true)
 
         );
     }

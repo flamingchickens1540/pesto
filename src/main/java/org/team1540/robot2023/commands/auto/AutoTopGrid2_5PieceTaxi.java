@@ -21,7 +21,7 @@ public class AutoTopGrid2_5PieceTaxi extends AutoCommand {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, "TopGrid3PieceTaxi");
         setName("TopGrid2.5PieceTaxi");
         addCommands(
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(

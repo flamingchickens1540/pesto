@@ -20,7 +20,7 @@ public class AutoTopGrid3PieceTaxi extends AutoCommand {
     public AutoTopGrid3PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, "TopGrid3PieceTaxi");
         addCommands(
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(
