@@ -198,6 +198,7 @@ public class RobotContainer {
         manager.addAuto(new AutoTopGrid2PieceTaxi(drivetrain, arm, intake));
         manager.addAuto(new AutoTopGrid3PieceTaxi(drivetrain, arm, intake));
         manager.addAuto(new AutoBottomGrid2PieceTaxi(drivetrain, arm, intake));
+        manager.addAuto(new AutoBottomGrid2_5PieceTaxi(drivetrain, arm, intake));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
 //        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
 //        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
