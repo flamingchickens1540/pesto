@@ -93,9 +93,18 @@ public class AutoDrive {
     public static Command smoothDriveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, double time, Supplier<List<PathPoint>> points) {
         return new ProxyCommand(() -> {
             List<PathPoint> pointList = new LinkedList<>();
+            Translation2d position = drivetrain.getPose().getTranslation().plus(
+                    new Translation2d(drivetrain.getChassisSpeeds().vxMetersPerSecond * time,
+                            drivetrain.getChassisSpeeds().vyMetersPerSecond * time).rotateBy(drivetrain.getPose().getRotation())
+            );
 
-
-//            pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
+            pointList.add(new PathPoint(
+                    position,
+                    position.getAngle(),
+                    Rotation2d.fromRadians(drivetrain.getPose().getRotation().getRadians() + drivetrain.getChassisSpeeds().omegaRadiansPerSecond*time),
+                    Math.hypot(drivetrain.getChassisSpeeds().vxMetersPerSecond, drivetrain.getChassisSpeeds().vyMetersPerSecond)
+                    )
+            );
             pointList.addAll(points.get());
             PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                     new PathConstraints(5, 3),
