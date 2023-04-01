@@ -11,7 +11,7 @@ import org.team1540.robot2023.utils.ScoringGridLocation;
 public class Auto1PieceTaxi extends AutoCommand {
     public Auto1PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
         addCommands(
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, true),
                 getPathPlannerDriveCommand(drivetrain, grid.getPathName("1PieceTaxi"))
         );
     }

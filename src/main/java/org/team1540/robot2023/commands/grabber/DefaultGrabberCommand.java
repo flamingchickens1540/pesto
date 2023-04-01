@@ -14,6 +14,7 @@ public class DefaultGrabberCommand extends CommandBase {
     public void initialize() {
         wheeledGrabber.setSpeed(0.1);
         wheeledGrabber.setCurrentLimit(10);
+        System.out.println("Stafting defewkuk gerp");
     }
 
 }

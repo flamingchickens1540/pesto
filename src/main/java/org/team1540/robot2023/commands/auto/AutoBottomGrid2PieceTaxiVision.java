@@ -27,7 +27,7 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
                 new PathConstraints(4,2)
         }, false);
         addCommands(
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(
