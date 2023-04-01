@@ -3,9 +3,7 @@ package org.team1540.robot2023.commands.vision;
 import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import java.util.function.DoubleSupplier;
-
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 
 public class DriveToGamePiece extends CommandBase{
