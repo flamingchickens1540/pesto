@@ -67,7 +67,6 @@ public abstract class AutoCommand extends SequentialCommandGroup {
 
     public void setName(String name) {
         this.name = name;
-        this.fullTrajectory = new Trajectory();
     }
     public Trajectory getFullTrajectory() {
         return fullTrajectory;
