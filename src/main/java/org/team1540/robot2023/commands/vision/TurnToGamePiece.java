@@ -48,10 +48,19 @@ public class TurnToGamePiece extends CommandBase{
         this.angleSupplier = angleSupplier;
         this.gamepiece = gamepiece;
     }
-
+    long time; 
     @Override
     public void initialize() {
-        limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
+        limelight.setLedState(Limelight.LEDMode.OFF);
+        long start = System.currentTimeMillis();
+        //limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
+        limelight.setPipelineBad();
+        limelight.setLedState(Limelight.LEDMode.ON);
+        while(limelight.getLedState() == 1){
+            System.out.println("switching pipeline"); 
+        }
+        long end = System.currentTimeMillis(); 
+        time = end - start; 
         pid.enableContinuousInput(-180, 180);
 //        updatePID();
         hasFoundTarget = false;
@@ -76,7 +85,9 @@ public class TurnToGamePiece extends CommandBase{
     }
     @Override
     public void execute() {
+        System.out.println("time for pipeline to switch = " + time);
 //        updatePID();
+        //drivetrain.updateWithApriltags(); 
         if (hasFoundTarget) {
             BlinkinManager.setBoth(gamepiece.pattern);
             turnWithLimelightToCone();

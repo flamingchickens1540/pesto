@@ -91,6 +91,9 @@ public class Limelight {
     public void setLedState(LEDMode mode) {
         table.getEntry("ledMode").setNumber(mode.value);
     }
+    public double getLedState(){
+        return table.getEntry("ledMode").getDouble(0); 
+    }
     public void setDriverMode(boolean isDriverMode) {
         table.getEntry("camMode").setNumber(isDriverMode ? 1 : 0);
     }
@@ -106,6 +109,14 @@ public class Limelight {
             }
         }
         return Pipeline.APRIL_TAGS;
+    }
+
+    public void setPipelineBad(){
+       table.getEntry("pipeline").setDouble(1); 
+    }
+
+    public double getPipelineBad(){
+        return  table.getEntry("pipeline").getDouble(3);  
     }
 
     /**
