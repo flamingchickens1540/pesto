@@ -13,7 +13,7 @@ public class ModuleMagnetOffset {
             239.766, // Module 5
             32.08,  // Module 6
             27.861, // Module 7
-            202.061  // Module 8
+            105.011  // Module 8
     };
 
     /**
