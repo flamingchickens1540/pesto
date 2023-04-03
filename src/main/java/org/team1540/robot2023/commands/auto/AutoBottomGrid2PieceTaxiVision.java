@@ -40,7 +40,7 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
                                     )
                                 ),
                                 Commands.sequence(
-                                        new TurnToGamePiece(drivetrain, null, () -> drivetrain.getYaw().getDegrees(), TurnToGamePiece.GamePiece.CUBE ),
+                                        new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE ),
                                         new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)
                                         
                                 )
