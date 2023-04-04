@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.Constants;
@@ -16,8 +17,10 @@ import org.team1540.robot2023.utils.MathUtils;
 
 import java.util.function.DoubleSupplier;
 
+import javax.management.modelmbean.RequiredModelMBean;
+
 public class TurnToGamePiece extends CommandBase{
-    Limelight limelight = LimelightManager.getInstance().rearLimelight;
+    
     Drivetrain drivetrain;
     CommandXboxController controller; 
     DoubleSupplier angleSupplier;
@@ -26,6 +29,14 @@ public class TurnToGamePiece extends CommandBase{
     private final GamePiece gamepiece;
     private double angleXOffset; 
     private AverageFilter averageFilter = new AverageFilter(10); 
+    private double startTime; 
+    // if(controller != null){
+    //     Limelight limelight = LimelightManager.getInstance().frontLimelight; 
+    // }
+    // else{
+        Limelight limelight = LimelightManager.getInstance().rearLimelight;
+
+    //}
 
     public enum GamePiece {
         CONE("cone", RevBlinkin.ColorPattern.YELLOW),
@@ -44,16 +55,24 @@ public class TurnToGamePiece extends CommandBase{
         this.controller = controller;
         this.angleSupplier = gyro::getAngle;
         this.gamepiece = gamepiece;
+        if(controller != null){
+            addRequirements(drivetrain);
+        }
     }
     public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, GamePiece gamepiece){
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.angleSupplier = drivetrain::getRawGyroAngle;
         this.gamepiece = gamepiece;
+        if(controller != null){
+            addRequirements(drivetrain);
+        }
+
     }
 
     @Override
     public void initialize() {
+        startTime = System.currentTimeMillis(); 
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         pid.enableContinuousInput(-180, 180);
 //        updatePID();
@@ -65,6 +84,7 @@ public class TurnToGamePiece extends CommandBase{
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelightToCone() {
+        if((System.currentTimeMillis() - startTime) == 500 && controller != null){
             double pidOutput = pid.calculate(angleSupplier.getAsDouble());
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
             if (controller != null) {
@@ -72,7 +92,8 @@ public class TurnToGamePiece extends CommandBase{
             } else {
                 drivetrain.drive(0, 0,pidOutput, false);
             }
-            averageFilter.add(pid.getPositionError());
+            averageFilter.add(Math.abs(pid.getPositionError()));
+        }
     }
 
     private void updatePID() {
@@ -85,12 +106,13 @@ public class TurnToGamePiece extends CommandBase{
     @Override
     public void execute() {
 //        updatePID();
+    
         if (hasFoundTarget) {
             BlinkinManager.setBoth(gamepiece.pattern);
             turnWithLimelightToCone();
         } else {
             if(limelight.getTa() != 0 && limelight.getTclass().equals(gamepiece.identifier)){
-
+                System.out.println("SEEING GAME PIECE "); 
                 angleXOffset = limelight.getTx() - limelight.getTa() * -0.9;
                 double gyroAngle = angleSupplier.getAsDouble();
                 pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
@@ -114,6 +136,7 @@ public class TurnToGamePiece extends CommandBase{
     
     @Override
     public boolean isFinished(){
-        return (averageFilter.getAverage() < 0.2 && hasFoundTarget);
+        System.out.println("average" + averageFilter.getAverage()); 
+        return (averageFilter.getAverage() < 2 && hasFoundTarget);
     }
 }

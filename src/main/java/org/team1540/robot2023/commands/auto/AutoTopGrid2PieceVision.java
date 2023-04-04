@@ -44,7 +44,7 @@ public class AutoTopGrid2PieceVision extends AutoCommand {
                                 ),
                                 // Commands.sequence(/
                                 new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE), 
-                                new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance),
+                                new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance), 
                                 // ),
                                 Commands.parallel(
                                     Commands.sequence(
@@ -53,6 +53,7 @@ public class AutoTopGrid2PieceVision extends AutoCommand {
                                     ),
                                     pathCommands.get(1)
                                 )
+                                
                         )
                 ),
                 new GrabberOuttakeCommand(intake,1),
