@@ -205,6 +205,7 @@ public class RobotContainer {
         manager.addAuto(new AutoBottomGrid2_5PieceTaxi(drivetrain, arm, intake));
 
         manager.addAuto(new AutoTopGrid2PieceVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight));
+        manager.addAuto(new AutoBottomGrid2PieceTaxiVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight));
 
         //manager.addAuto(new Auto2PieceTaxiConeVision(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));

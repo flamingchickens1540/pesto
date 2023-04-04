@@ -14,14 +14,16 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
+import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.PolePosition;
 import org.team1540.robot2023.utils.ScoringGridLocation;
 
 import java.util.List;
 
 public class Auto2PieceTaxiConeVision extends AutoCommand {
-    public Auto2PieceTaxiConeVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid) {
+    public Auto2PieceTaxiConeVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, ScoringGridLocation.OuterGrid grid, Limelight limelight) {
         List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, grid.getPathName("2PieceTaxiConeVision"), new PathConstraints(4, 2), true);
+        limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         addCommands(
 
                 new AutoCone(drivetrain, arm, Constants.Auto.highCone.withPolePosition(PolePosition.LEFT), intake, null, false),
