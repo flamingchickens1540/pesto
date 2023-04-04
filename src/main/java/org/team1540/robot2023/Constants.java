@@ -37,6 +37,7 @@ public final class Constants {
 
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.5),37.8);
+        public static final ArmState reverseCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(120),0);
         public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60.25),55);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),55);
 
@@ -55,7 +56,7 @@ public final class Constants {
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-58),67) // High Cone Retreat
         );
 
-        public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).withAdditionalBackoff(Units.inchesToMeters(0));
+        public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-15), 0)).withAdditionalBackoff(Units.inchesToMeters(0));
         public static final GridScoreData middleHybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30),0)).withAdditionalBackoff(Units.inchesToMeters(0));
 
 

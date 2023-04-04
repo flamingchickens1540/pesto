@@ -8,7 +8,7 @@ public class ArmState {
     private final double extension;
     private final Rotation2d angle;
 
-    private ArmState(double extension, Rotation2d rotation) {
+    public ArmState(double extension, Rotation2d rotation) {
         this.extension = extension;
         this.angle = rotation;
     }
