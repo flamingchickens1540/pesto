@@ -45,14 +45,13 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
                                         new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE ),
                                         new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)
                                         
-                                )
-                        ), 
+                                ),
                                 Commands.parallel(
                                         new SetArmPosition(arm, Constants.Auto.midCube.approach),
-                                        new SetArmPosition(arm, Constants.Auto.midCube.approach),
-                                    pathCommands.get(2)
+                                        pathCommands.get(2)
                                 )
-                        ), 
+                        )
+                ),
               
                         
               

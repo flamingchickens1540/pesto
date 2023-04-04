@@ -53,8 +53,15 @@ public class AutoBottomGrid2_5PieceTaxiVision extends AutoCommand {
                 ),
                 new GrabberOuttakeCommand(intake,1),
                 Commands.parallel(
-                new ResetArmPositionCommand(arm),
+                        new ResetArmPositionCommand(arm),
                         pathCommands.get(3)
+                ),
+                Commands.parallel(
+                        new GrabberIntakeCommand(intake),
+                        Commands.parallel(
+                                new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE ),
+                                new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)
+                        )
                 )
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake, null, false)
 
