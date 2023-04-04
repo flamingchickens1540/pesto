@@ -30,13 +30,14 @@ public class TurnToGamePiece extends CommandBase{
     private double angleXOffset; 
     private AverageFilter averageFilter = new AverageFilter(10); 
     private double startTime; 
-    // if(controller != null){
-    //     Limelight limelight = LimelightManager.getInstance().frontLimelight; 
-    // }
-    // else{
-        Limelight limelight = LimelightManager.getInstance().rearLimelight;
 
+    //  if(controller != null){
+        Limelight limelight = LimelightManager.getInstance().rearLimelight; 
     //}
+    // else{
+        //Limelight limelight = LimelightManager.getInstance().rearLimelight;
+
+    ///}
 
     public enum GamePiece {
         CONE("cone", RevBlinkin.ColorPattern.YELLOW),
@@ -55,24 +56,24 @@ public class TurnToGamePiece extends CommandBase{
         this.controller = controller;
         this.angleSupplier = gyro::getAngle;
         this.gamepiece = gamepiece;
-        if(controller != null){
-            addRequirements(drivetrain);
-        }
+        // if(controller != null){
+        //     addRequirements(drivetrain);
+        // }
     }
     public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, GamePiece gamepiece){
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.angleSupplier = drivetrain::getRawGyroAngle;
         this.gamepiece = gamepiece;
-        if(controller != null){
-            addRequirements(drivetrain);
-        }
+        // if(controller != null){
+        //     addRequirements(drivetrain);
+        // }
 
     }
 
     @Override
     public void initialize() {
-        startTime = System.currentTimeMillis(); 
+        //startTime = System.currentTimeMillis(); 
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         pid.enableContinuousInput(-180, 180);
 //        updatePID();
@@ -84,7 +85,7 @@ public class TurnToGamePiece extends CommandBase{
      * angleXOffset the offset in degrees we still need to turn to reach the target
      */
     private void turnWithLimelightToCone() {
-        if((System.currentTimeMillis() - startTime) == 500 && controller != null){
+        //if((System.currentTimeMillis() - startTime) == 500 && controller != null){
             double pidOutput = pid.calculate(angleSupplier.getAsDouble());
             SmartDashboard.putNumber("pointToTarget/pidOutput", pidOutput);
             if (controller != null) {
@@ -93,7 +94,7 @@ public class TurnToGamePiece extends CommandBase{
                 drivetrain.drive(0, 0,pidOutput, false);
             }
             averageFilter.add(Math.abs(pid.getPositionError()));
-        }
+        //}
     }
 
     private void updatePID() {
@@ -117,7 +118,7 @@ public class TurnToGamePiece extends CommandBase{
                 double gyroAngle = angleSupplier.getAsDouble();
                 pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
                 SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);
-                hasFoundTarget = true;
+                hasFoundTarget = true; //was not there
 
             } else {
                 System.out.println("NO GAMEPIECE");
@@ -136,7 +137,8 @@ public class TurnToGamePiece extends CommandBase{
     
     @Override
     public boolean isFinished(){
+        averageFilter.add(Math.abs(pid.getPositionError()));
         System.out.println("average" + averageFilter.getAverage()); 
-        return (averageFilter.getAverage() < 2 && hasFoundTarget);
+        return (Math.abs(averageFilter.getAverage()) < 2 && hasFoundTarget); // was 0.2 
     }
 }
