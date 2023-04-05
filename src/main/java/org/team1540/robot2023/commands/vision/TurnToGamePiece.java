@@ -70,10 +70,22 @@ public class TurnToGamePiece extends CommandBase{
         // }
 
     }
+    public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, GamePiece gamepiece, Limelight limelight){
+        this.drivetrain = drivetrain;
+        this.controller = controller;
+        this.angleSupplier = drivetrain::getRawGyroAngle;
+        this.gamepiece = gamepiece;
+        this.limelight = limelight; 
+        // if(controller != null){
+        //     addRequirements(drivetrain);
+        // }
+
+    }
+    
 
     @Override
     public void initialize() {
-        //startTime = System.currentTimeMillis(); 
+        startTime = System.currentTimeMillis(); 
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         pid.enableContinuousInput(-180, 180);
 //        updatePID();

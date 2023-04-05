@@ -35,7 +35,7 @@ public class AutoBottomGrid2_5PieceTaxiVision extends AutoCommand {
                         new SetArmPosition(arm, Constants.Auto.highCube.approach),
                         Commands.sequence(
                                 new ProxyCommand(() -> new WaitCommand((arm.timeToState(Constants.Auto.highCube.approach)-150)/1000)),
-                                new GrabberOuttakeCommand(intake, 0.5)
+                                new GrabberOuttakeCommand(intake)
                         )
                 ),
                 Commands.parallel(
