@@ -57,10 +57,17 @@ public class AutoBottomGrid2_5PieceTaxiConeVision extends AutoCommand {
                     )
                 ),   
                 Commands.parallel(
-                        new SetArmPosition(arm, Constants.Auto.midCube.approach),
+                        new PivotCommand(arm, Constants.Auto.highCube.approach),
                         pathCommands.get(1)
                 ),
-                new GrabberOuttakeCommand(intake,1).withTimeout(0.1),
+                Commands.deadline(
+                        new SetArmPosition(arm, Constants.Auto.highCube.approach),
+                        Commands.sequence(
+                                new ProxyCommand(() -> new WaitCommand((arm.timeToState(Constants.Auto.highCube.approach)-150)/1000)),
+                                new GrabberOuttakeCommand(intake)
+
+                        )
+                ),
                 new InstantCommand(drivetrain::updateWithScoringApriltags),  
                 Commands.parallel(
                         new InstantCommand(()-> frontLimelight.setPipeline(Limelight.Pipeline.GAME_PIECE)), 
