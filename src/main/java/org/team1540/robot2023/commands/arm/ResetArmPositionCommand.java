@@ -36,7 +36,7 @@ public class ResetArmPositionCommand extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
-//        System.out.println("command start");
+       System.out.println("command start");
 //        System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
         endTime = (long) (System.currentTimeMillis() + 0.9*arm.timeToExtension(setpoint.getExtension()));
@@ -79,5 +79,6 @@ public class ResetArmPositionCommand extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
+        System.out.println("Command end");
     }
 }

@@ -76,12 +76,14 @@ public class AutoDrive {
     public static Command driveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, Supplier<List<PathPoint>> points) {
         return new ProxyCommand(() -> {
             List<PathPoint> pointList = new LinkedList<>();
+            long time = System.currentTimeMillis();
             pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
             pointList.addAll(points.get());
             PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                     new PathConstraints(5, 3),
                     pointList
             );
+            System.out.println("Time to generate path in ms: " + (System.currentTimeMillis() - time));
             field2d.getObject("gridDrivePath").setTrajectory(trajectory);
             field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
             PathPlannerServer.sendActivePath(trajectory.getStates());

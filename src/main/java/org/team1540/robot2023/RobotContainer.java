@@ -23,6 +23,8 @@ import org.team1540.robot2023.utils.*;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
 
+import javax.swing.plaf.metal.OceanTheme;
+
 public class RobotContainer {
     // Hardware
 
@@ -80,9 +82,11 @@ public class RobotContainer {
        // coop:button(RBumper, Substation Right [HOLD],pilot)
         driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         //Coop: button(B, Cone vision [HOLD], pilot)
-        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, gyro, TurnToGamePiece.GamePiece.CONE));
+        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
         //Coop: button(X, Cube vision [HOLD], pilot)
-        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, gyro, TurnToGamePiece.GamePiece.CUBE));
+        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
+
+
         // Copilot
 //        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
@@ -200,8 +204,14 @@ public class RobotContainer {
         manager.addAuto(new AutoTopGrid3PieceTaxi(drivetrain, arm, intake));
         manager.addAuto(new AutoTopGrid3PieceTaxiCone(drivetrain, arm, intake));
         manager.addAuto(new AutoBottomGrid2PieceTaxi(drivetrain, arm, intake));
-        manager.addAuto(new AutoBottomGrid2_5PieceTaxi(drivetrain, arm, intake));
-//        manager.addAuto(new Auto2PieceTaxiConeVision(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+        manager.addAuto(new AutoBottomGrid2_5PieceTaxi(drivetrain, arm, intake)); 
+
+        manager.addAuto(new AutoTopGrid2PieceVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight));
+        manager.addAuto(new AutoBottomGrid2PieceTaxiVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight));
+        manager.addAuto(new AutoBottomGrid2_5PieceTaxiVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight));
+        manager.addAuto(new AutoBottomGrid2_5PieceTaxiConeVision(drivetrain, arm, intake, LimelightManager.getInstance().rearLimelight, LimelightManager.getInstance().frontLimelight));
+        //manager.addAuto(new Auto2PieceTaxiConeVision(drivetrain, arm, intake, ScoringGridLocation.TOP_GRID));
+
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
 //        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
 //        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
