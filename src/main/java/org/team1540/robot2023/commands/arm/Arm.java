@@ -285,6 +285,9 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
         SmartDashboard.putNumber("arm/absoluteEncoder", absEncoder.getAbsolutePosition() * 360);
+        short[] pigeonAccel = new short[3];
+        pigeon2.getBiasedAccelerometer(pigeonAccel);
+        SmartDashboard.putNumber("arm/pigeonAccelX", pigeonAccel[0]);
     }
 
     @Override

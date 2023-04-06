@@ -31,7 +31,6 @@ public class AutoCone extends SequentialCommandGroup {
                                         new SetArmPosition(arm, positions.approach),
                                         new GrabberAggressiveCommand(intake)
                                 ),
-                                new PrintCommand("Done with the group"),
                                 new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null),
                                 new SetArmPosition(arm, AutoHybrid.catchNull(positions.score)).unless(() -> positions.score == null),
                                 Commands.deadline(
