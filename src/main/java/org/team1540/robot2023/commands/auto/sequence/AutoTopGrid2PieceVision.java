@@ -1,24 +1,32 @@
-package org.team1540.robot2023.commands.auto;
+package org.team1540.robot2023.commands.auto.sequence;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
 import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.auto.AutoCube;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+import org.team1540.robot2023.commands.vision.DriveToGamePiece;
+
+import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
+import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.List;
 
-public class AutoTopGrid2PieceTaxi extends AutoCommand {
-    public AutoTopGrid2PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
-        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, "TopGrid2PieceTaxi");
+public class AutoTopGrid2PieceVision extends AutoCommand {
+    public AutoTopGrid2PieceVision(Drivetrain drivetrain, Arm arm, WheeledGrabber intake, Limelight limelight) {
+        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain, "TopGrid2PieceVision");
+        limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         addCommands(
 
                 new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
@@ -26,12 +34,19 @@ public class AutoTopGrid2PieceTaxi extends AutoCommand {
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(
                                 Commands.parallel(
-                            pathCommands.get(0),
-                                    Commands.sequence(
+                                        pathCommands.get(0),
+                                        Commands.sequence(
+                                            new PrintCommand("Check 1"),
                                             new ResetArmPositionCommand(arm),
-                                            new PivotCommand(arm, Constants.Auto.armDownBackwards)
+                                            new PrintCommand("Check 2"),
+                                            new PivotCommand(arm, Constants.Auto.armDownBackwards),
+                                            new PrintCommand("Check 3")
                                     )
                                 ),
+                                // Commands.sequence(/
+                                new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE), 
+                                new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance), 
+                                // ),
                                 Commands.parallel(
                                     Commands.sequence(
 //                                        new ResetArmPositionCommand(arm),
@@ -39,6 +54,7 @@ public class AutoTopGrid2PieceTaxi extends AutoCommand {
                                     ),
                                     pathCommands.get(1)
                                 )
+                                
                         )
                 ),
                 new GrabberOuttakeCommand(intake,1),

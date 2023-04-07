@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands.auto;
+package org.team1540.robot2023.commands.auto.sequence;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -7,6 +7,7 @@ import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
 import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.auto.AutoCube;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;

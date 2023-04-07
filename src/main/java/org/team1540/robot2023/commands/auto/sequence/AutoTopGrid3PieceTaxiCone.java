@@ -1,10 +1,11 @@
-package org.team1540.robot2023.commands.auto;
+package org.team1540.robot2023.commands.auto.sequence;
 
 import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.*;
+import org.team1540.robot2023.commands.auto.AutoHybrid;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberAggressiveCommand;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
