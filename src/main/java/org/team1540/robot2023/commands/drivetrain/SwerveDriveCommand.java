@@ -10,6 +10,8 @@ import static org.team1540.robot2023.utils.MathUtils.deadzone;
 
 import java.util.function.BooleanSupplier;
 
+import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final XboxController controller;
@@ -24,11 +26,13 @@ public class SwerveDriveCommand extends CommandBase {
     private final DoubleLogEntry xyscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:xyscale" );
     private final DoubleLogEntry rotscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:rotscale");
     private final BooleanSupplier forwardOnlySupplier;
+    private final WheeledGrabber intake;
 
-    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier) {
+    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.forwardOnlySupplier = forwardOnlySupplier;
+        this.intake = intake;
         addRequirements(drivetrain);
     }
 
@@ -54,9 +58,9 @@ public class SwerveDriveCommand extends CommandBase {
         rotscaleLog.append(rotscale);
         if (forwardOnlySupplier.getAsBoolean()) {
             drivetrain.drive(
-                    xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone)*0.25),
+                    xLimiter.calculate(Math.min(deadzone(-controller.getLeftY(), deadzone), intake.hasGamePiece()?0:1)*0.25),
                     0,
-                    rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale),
+                    rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale*0.25),
                     false
             );
         } else {

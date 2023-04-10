@@ -9,8 +9,8 @@ import org.team1540.robot2023.Constants.GrabberConstants;
 import org.team1540.robot2023.utils.AverageFilter;
 
 public class WheeledGrabber extends SubsystemBase {
-    private final CANSparkMax motor1 = new CANSparkMax(GrabberConstants.INTAKE_1_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
-    private final CANSparkMax motor2 = new CANSparkMax(GrabberConstants.INTAKE_2_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final CANSparkMax motor1 = new CANSparkMax(GrabberConstants.INTAKE_2_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
+    private final CANSparkMax motor2 = new CANSparkMax(GrabberConstants.INTAKE_1_ID, CANSparkMaxLowLevel.MotorType.kBrushless);
     private final RelativeEncoder encoder1 = motor1.getEncoder();
     private final RelativeEncoder encoder2 = motor2.getEncoder();
     private final AverageFilter averageFilter = new AverageFilter(5);
@@ -25,7 +25,7 @@ public class WheeledGrabber extends SubsystemBase {
         motor2.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         motor2.follow(motor1, true);
-        motor1.setInverted(true);
+        motor1.setInverted(false);
 
         motor1.set(0);
 

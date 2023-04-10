@@ -47,8 +47,8 @@ public final class Constants {
         public static final GridScoreData reverseHighCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(55),59));
 
         public static final GridScoreData midCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),46.0), // Mid Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-70.7),46.0) // Mid Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),47.0), // Mid Cone Approach (46.0 originally)
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-70.7),47.0) // Mid Cone Score (46.0 originally)
         );
         public static final GridScoreData highCone = new GridScoreData(
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),67), // High Cone Approach
