@@ -32,7 +32,7 @@ public class COTSFalconSwerveConstants {
     
     /** Swerve Drive Specialties - MK3 Module*/
     public static COTSFalconSwerveConstants SDSMK3(double driveGearRatio){
-        double wheelDiameter = Units.inchesToMeters(4.0);
+        double wheelDiameter = Units.inchesToMeters(4.0*0.6);
  
         /** 12.8 : 1 */
         double angleGearRatio = (12.8 / 1.0);
