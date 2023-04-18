@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands.auto.sequence;
+package org.team1540.robot2023.commands.auto.sequence.top;
 
 import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;

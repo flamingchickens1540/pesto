@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands.auto.sequence;
+package org.team1540.robot2023.commands.auto.sequence.bottom;
 
 import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,13 +18,12 @@ import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.List;
 
-public class AutoBottomGrid2_5PieceTaxi extends AutoCommand {
-    public AutoBottomGrid2_5PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
-        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2_5PieceTaxi", new PathConstraints[]{
+public class AutoBottomGrid2PieceTaxi extends AutoCommand {
+    public AutoBottomGrid2PieceTaxi(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
+        List<Command> pathCommands = getPathPlannerDriveCommandGroup(drivetrain,"BottomGrid2PieceTaxi", new PathConstraints[]{
                 new PathConstraints(2,1),
                 new PathConstraints(4,2)
         }, false);
-        setName("BottomGrid2.5PieceTaxi");
         addCommands(
                 new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
                 Commands.parallel(
@@ -45,10 +44,7 @@ public class AutoBottomGrid2_5PieceTaxi extends AutoCommand {
                         )
                 ),
                 new GrabberOuttakeCommand(intake,1),
-                Commands.parallel(
-                new ResetArmPositionCommand(arm),
-                        pathCommands.get(3)
-                )
+                new ResetArmPositionCommand(arm)
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.midCube.withPolePosition(PolePosition.CENTER), intake, null, false)
 
         );

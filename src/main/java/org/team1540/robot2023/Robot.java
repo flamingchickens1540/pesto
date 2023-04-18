@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import org.team1540.robot2023.utils.BlinkinManager;
+import org.team1540.robot2023.utils.Limelight;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
@@ -164,7 +165,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         enabledInit();
         robotContainer.blinkins.set(BlinkinManager.ColorPair.TELEOP);
-
+        LimelightManager.getInstance().frontLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
+        LimelightManager.getInstance().rearLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

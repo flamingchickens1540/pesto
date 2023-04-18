@@ -14,22 +14,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.commands.arm.*;
-import org.team1540.robot2023.commands.auto.*;
+import org.team1540.robot2023.commands.auto.AutoCone;
+import org.team1540.robot2023.commands.auto.AutoCube;
+import org.team1540.robot2023.commands.auto.AutoDrive;
+import org.team1540.robot2023.commands.auto.AutoHybrid;
 import org.team1540.robot2023.commands.auto.sequence.Auto1PieceTaxi;
-import org.team1540.robot2023.commands.auto.sequence.Auto2PieceTaxiCone;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid1PieceBalance;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid2PieceTaxi;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid2PieceTaxiVision;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid2_5PieceTaxi;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid2_5PieceTaxiConeVision;
-import org.team1540.robot2023.commands.auto.sequence.AutoBottomGrid2_5PieceTaxiVision;
 import org.team1540.robot2023.commands.auto.sequence.AutoMiddleGrid1PieceBalance;
 import org.team1540.robot2023.commands.auto.sequence.AutoMiddleGrid1PieceTaxiBalance;
-import org.team1540.robot2023.commands.auto.sequence.AutoTopGrid1PieceBalance;
-import org.team1540.robot2023.commands.auto.sequence.AutoTopGrid2PieceTaxi;
-import org.team1540.robot2023.commands.auto.sequence.AutoTopGrid2PieceVision;
-import org.team1540.robot2023.commands.auto.sequence.AutoTopGrid3PieceTaxi;
-import org.team1540.robot2023.commands.auto.sequence.AutoTopGrid3PieceTaxiCone;
+import org.team1540.robot2023.commands.auto.sequence.bottom.AutoBottomGrid1PieceBalance;
+import org.team1540.robot2023.commands.auto.sequence.bottom.AutoBottomGrid2PieceTaxiVision;
+import org.team1540.robot2023.commands.auto.sequence.bottom.AutoBottomGrid2_5PieceTaxiVision;
+import org.team1540.robot2023.commands.auto.sequence.top.AutoTopGrid1PieceBalance;
+import org.team1540.robot2023.commands.auto.sequence.top.AutoTopGrid3PieceTaxi;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
@@ -37,8 +33,6 @@ import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.*;
 
 import static org.team1540.robot2023.Constants.ENABLE_PNEUMATICS;
-
-import javax.swing.plaf.metal.OceanTheme;
 
 public class RobotContainer {
     // Hardware

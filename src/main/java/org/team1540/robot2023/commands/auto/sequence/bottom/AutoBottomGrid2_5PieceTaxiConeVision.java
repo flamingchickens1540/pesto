@@ -1,11 +1,7 @@
-package org.team1540.robot2023.commands.auto.sequence;
+package org.team1540.robot2023.commands.auto.sequence.bottom;
 
 import com.pathplanner.lib.PathConstraints;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
@@ -21,7 +17,6 @@ import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
 import org.team1540.robot2023.utils.Limelight;
-import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.List;
 
