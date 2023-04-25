@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import org.team1540.robot2023.Robot;
+import org.team1540.robot2023.utils.MusicPlayer;
 
 import static org.team1540.robot2023.Constants.Swerve.canbus;
 
@@ -47,6 +48,8 @@ public class SwerveModule {
         configDriveMotor();
 
         lastAngle = getState().angle;
+
+        MusicPlayer.addInstruments(mAngleMotor, mDriveMotor);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean isParkMode){
