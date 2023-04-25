@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import org.team1540.robot2023.Robot;
-import org.team1540.robot2023.utils.MusicPlayer;
+import org.team1540.robot2023.commands.music.MusicPlayer;
 
 import static org.team1540.robot2023.Constants.Swerve.canbus;
 

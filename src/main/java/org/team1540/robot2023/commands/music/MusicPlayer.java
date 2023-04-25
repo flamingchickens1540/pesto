@@ -1,4 +1,4 @@
-package org.team1540.robot2023.utils;
+package org.team1540.robot2023.commands.music;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -21,8 +21,8 @@ public class MusicPlayer {
         return orchestra.clearInstruments();
     }
 
-    public static ErrorCode loadMusic(String filePath) {
-        return orchestra.loadMusic(filePath);
+    public static ErrorCode loadMusic(String songTitle) {
+        return orchestra.loadMusic(songTitle + ".chrp");
     }
 
     public static ErrorCode play() {
@@ -35,5 +35,9 @@ public class MusicPlayer {
 
     public static ErrorCode pause() {
         return orchestra.pause();
+    }
+
+    public static boolean isPlaying() {
+        return orchestra.isPlaying();
     }
 }

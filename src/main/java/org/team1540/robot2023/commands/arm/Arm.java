@@ -14,7 +14,7 @@ import org.team1540.lib.math.Conversions;
 import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.ChickEncoder;
-import org.team1540.robot2023.utils.MusicPlayer;
+import org.team1540.robot2023.commands.music.MusicPlayer;
 
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
