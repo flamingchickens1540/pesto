@@ -25,7 +25,10 @@ public final class Constants {
         public static final double gridPoleOffsetMeters = Units.inchesToMeters(22);
         public static final double gridBackoffOffsetMeters = Units.inchesToMeters(32);
         public static final double hpOffsetX = Units.inchesToMeters(35);
-        public static final double hpOffsetY = -Units.inchesToMeters(29);
+        public static final double hpOffsetY = -Units.inchesToMeters(29); 
+
+        public static final double autoDriveDistance = 1; //in meters
+
 
         public static final ArmState armUp = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0),0);
 
@@ -34,16 +37,18 @@ public final class Constants {
 
         public static final ArmState armDown = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-120),0);
         public static final ArmState armDownBackwards = ArmState.fromRotationExtension(Rotation2d.fromDegrees(121.5),37.8);
-        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60.75),55);
+        public static final ArmState reverseCube = ArmState.fromRotationExtension(Rotation2d.fromDegrees(120),0);
+        public static final ArmState armHumanPlayer = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-60),55);
         public static final ArmState armHumanPlayerRetreat = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),55);
+
 
         public static final GridScoreData midCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-65), 35.18));
         public static final GridScoreData highCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-55),59));
         public static final GridScoreData reverseHighCube = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(55),59));
 
         public static final GridScoreData midCone = new GridScoreData(
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),46.0), // Mid Cone Approach
-                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-70.7),46.0) // Mid Cone Score
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-50),47.0), // Mid Cone Approach (46.0 originally)
+                ArmState.fromRotationExtension(Rotation2d.fromDegrees(-70.7),47.0) // Mid Cone Score (46.0 originally)
         );
         public static final GridScoreData highCone = new GridScoreData(
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-53),67), // High Cone Approach
@@ -51,7 +56,7 @@ public final class Constants {
                 ArmState.fromRotationExtension(Rotation2d.fromDegrees(-58),67) // High Cone Retreat
         );
 
-        public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).withAdditionalBackoff(Units.inchesToMeters(0));
+        public static final GridScoreData hybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-15), 0)).withAdditionalBackoff(Units.inchesToMeters(0));
         public static final GridScoreData middleHybridNode = new GridScoreData(ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30),0)).withAdditionalBackoff(Units.inchesToMeters(0));
 
 
@@ -170,10 +175,15 @@ public final class Constants {
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(moduleID, ModuleCorner.REAR_RIGHT);
         }
     }
+    public static final class Vision {
+        public static final double kP = -0.04;
+        public static final double kI = 0;
+        public static final double kD = -0.002;
+    }
 
     public static final class ArmConstants {
-        public static final int PIVOT1_ID = 10;
-        public static final int PIVOT2_ID = 11;
+        public static final int PIVOT1_ID = 11;
+        public static final int PIVOT2_ID = 10;
         public static final int PIVOT_ENCODER_CHANNEL_A = 8;
         public static final int PIVOT_ENCODER_CHANNEL_B = 9;
         public static final int PIVOT_ENCODER_PULSES_PER_REV = 2048;

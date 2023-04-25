@@ -1,17 +1,17 @@
 {
   "Docking": {
     "Data": [
-      "DockSpace ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1440,828 CentralNode=1"
+      "DockSpace ID=0x8B93E3BD Window=0xA787BDB4 Pos=0,19 Size=1512,897 CentralNode=1"
     ]
   },
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "847",
+      "height": "916",
       "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "1440",
+      "width": "1512",
       "xpos": "0",
       "ypos": "34"
     }
@@ -60,7 +60,7 @@
     "DockSpaceViewport_11111111": {
       "Collapsed": "0",
       "Pos": "0,19",
-      "Size": "1440,828"
+      "Size": "1512,897"
     }
   }
 }

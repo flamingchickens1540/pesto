@@ -1,4 +1,4 @@
-package org.team1540.robot2023.commands.auto;
+package org.team1540.robot2023.commands.auto.sequence;
 
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.drivetrain.AutoSideBalanceCommand;

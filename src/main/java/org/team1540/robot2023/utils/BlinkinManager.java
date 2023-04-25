@@ -5,13 +5,31 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import org.team1540.lib.RevBlinkin;
 import org.team1540.lib.RevBlinkin.ColorPattern;
 
-public class BlinkinPair {
-    private final RevBlinkin frontBlinkin;
-    private final RevBlinkin rearBlinkin;
+public class BlinkinManager {
+    public final RevBlinkin frontBlinkin;
+    public final RevBlinkin rearBlinkin;
     private ColorPattern gamePieceStyle = null;
-    public BlinkinPair(RevBlinkin front, RevBlinkin rear) {
+    private static BlinkinManager instance;
+    private BlinkinManager(RevBlinkin front, RevBlinkin rear) {
         this.frontBlinkin = front;
         this.rearBlinkin = rear;
+    }
+
+    public static BlinkinManager getInstance() {
+        if (instance == null) {
+            instance = new BlinkinManager(new RevBlinkin(1), new RevBlinkin(2));
+        }
+        return instance;
+    }
+
+    public static void setFront(ColorPattern pattern) {
+        getInstance().frontBlinkin.setPattern(pattern);
+    }
+    public static void setRear(ColorPattern pattern) {
+        getInstance().rearBlinkin.setPattern(pattern);
+    }
+    public static void setBoth(ColorPattern pattern) {
+        getInstance().set(pattern);
     }
 
     public Command commandSet(ColorPair pattern) {
@@ -31,7 +49,7 @@ public class BlinkinPair {
         set(ColorPair.TELEOP);
     }
     public InstantCommand commandSetGamepiece(boolean isCone) {
-        return new InstantCommand(() -> {setGamepiece(isCone);});
+        return new InstantCommand(() -> setGamepiece(isCone));
     }
 
     public Command commandSet(ColorPattern pattern) {

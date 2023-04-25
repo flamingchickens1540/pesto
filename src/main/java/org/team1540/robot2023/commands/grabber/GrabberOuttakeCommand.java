@@ -7,7 +7,7 @@ public class GrabberOuttakeCommand extends CommandBase {
     private final double speed;
 
     public GrabberOuttakeCommand(WheeledGrabber wheeledGrabber){
-        this(wheeledGrabber, 0.3);
+        this(wheeledGrabber, 0.3); //0.3
     }
 
     public GrabberOuttakeCommand(WheeledGrabber wheeledGrabber, double speed){

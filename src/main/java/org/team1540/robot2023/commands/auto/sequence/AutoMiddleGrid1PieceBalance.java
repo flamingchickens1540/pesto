@@ -1,10 +1,11 @@
-package org.team1540.robot2023.commands.auto;
+package org.team1540.robot2023.commands.auto.sequence;
 
 import com.pathplanner.lib.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.RetractAndPivotCommand;
+import org.team1540.robot2023.commands.auto.AutoCube;
 import org.team1540.robot2023.commands.drivetrain.AutoBalanceCommand;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.WheeledGrabber;
@@ -15,8 +16,8 @@ public class AutoMiddleGrid1PieceBalance extends AutoCommand {
     public AutoMiddleGrid1PieceBalance(Drivetrain drivetrain, Arm arm, WheeledGrabber intake) {
         addCommands(
 //                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake),
-                new AutoGridScore(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
-                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(-45)),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
+                new RetractAndPivotCommand(arm, Rotation2d.fromDegrees(45)),
                 getPathPlannerDriveCommand(drivetrain, "MiddleGrid1PieceBalance", new PathConstraints(1, 1), false),
                 new AutoBalanceCommand(drivetrain)
         );

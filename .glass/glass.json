@@ -6,17 +6,23 @@
       }
     },
     "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
       "Shuffleboard": {
         "open": true
       },
       "SmartDashboard": {
-        "arm": {
+        "balancy": {
           "open": true
         },
         "intake": {
           "open": true
         },
-        "open": true
+        "open": true,
+        "vision": {
+          "open": true
+        }
       }
     },
     "types": {

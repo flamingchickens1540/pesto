@@ -27,7 +27,7 @@ public class ResetArmPositionCommand extends CommandBase {
     public ResetArmPositionCommand(Arm arm, boolean shouldZero) {
         this.arm = arm;
         this.shouldZero = shouldZero;
-        this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(0), Constants.ArmConstants.ARM_BASE_LENGTH);
+        this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), Constants.ArmConstants.ARM_BASE_LENGTH);
         addRequirements(arm);
     }
 
@@ -36,7 +36,7 @@ public class ResetArmPositionCommand extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
-//        System.out.println("command start");
+       System.out.println("command start");
 //        System.out.println(arm.timeToExtension(Constants.ArmConstants.ARM_BASE_LENGTH));
         pivotStartTime = (long) (System.currentTimeMillis() + arm.timeToExtension(setpoint.getExtension())/5);
         endTime = (long) (System.currentTimeMillis() + 0.9*arm.timeToExtension(setpoint.getExtension()));
@@ -79,5 +79,6 @@ public class ResetArmPositionCommand extends CommandBase {
         if (shouldZero) {
             arm.resetToEncoder();
         }
+        System.out.println("Command end");
     }
 }

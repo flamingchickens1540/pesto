@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
+import org.team1540.lib.util.TrajectoryTransformer;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.utils.swerve.SwerveModule;
@@ -45,6 +46,7 @@ public class Drivetrain extends SubsystemBase {
 
     // Odometry
     private final SwerveDrivePoseEstimator poseEstimator;
+
 
     public Drivetrain(AHRS gyro) {
         this.gyro = gyro;
@@ -108,6 +110,11 @@ public class Drivetrain extends SubsystemBase {
     public void resetToPath(PathPlannerTrajectory rawTrajectory) {
         PathPlannerTrajectory transformedTrajectory = PathPlannerTrajectory.transformTrajectoryForAlliance(rawTrajectory, DriverStation.getAlliance());
         resetOdometry(transformedTrajectory.getInitialHolonomicPose());
+    }
+
+    public void resetToPose(Pose2d rawState) {
+        Pose2d transformedTrajectory = TrajectoryTransformer.transformPoseForAlliance(rawState, DriverStation.getAlliance());
+        resetOdometry(transformedTrajectory);
     }
     public boolean updateWithScoringApriltags() {
         return LimelightManager.getInstance().applyFrontEstimates(poseEstimator, getYaw(), getModulePositions());
@@ -226,6 +233,11 @@ public class Drivetrain extends SubsystemBase {
         // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
         return Rotation2d.fromDegrees(360.0-gyro.getYaw());
     }
+    
+    public double getRawGyroAngle() {
+        return gyro.getAngle();
+    }
+
 
     public Rotation2d getPitch() {
         return Rotation2d.fromDegrees(gyro.getPitch());
@@ -248,6 +260,9 @@ public class Drivetrain extends SubsystemBase {
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
+    public ChassisSpeeds getChassisSpeeds(){
+        return Swerve.swerveKinematics.toChassisSpeeds(states);
+    }
 
 
     public SwerveModulePosition[] getModulePositions(){

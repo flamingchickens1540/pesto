@@ -38,7 +38,7 @@ public class Arm extends SubsystemBase {
     private double pivotAccel;
 
     public Arm() {
-        telescope.restoreFactoryDefaults();
+//        telescope.restoreFactoryDefaults();
 
         pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
@@ -48,11 +48,12 @@ public class Arm extends SubsystemBase {
         pivot2.setNeutralMode(NeutralMode.Brake);
         telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-        pivot1.setInverted(true);
+        pivot1.setInverted(false);
         pivot1.configForwardSoftLimitThreshold(ArmConstants.PIVOT_FORWARD_LIMIT);
         pivot1.configForwardSoftLimitEnable(true);
         pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
         pivot1.configReverseSoftLimitEnable(true);
+        pivot2.setInverted(true);
         pivot2.follow(pivot1);
 
         telescope.setInverted(true);
@@ -68,6 +69,7 @@ public class Arm extends SubsystemBase {
         telescopePID.setP(ArmConstants.TELESCOPE_KP);
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
         telescopePID.setD(ArmConstants.TELESCOPE_KD);
+        telescopePID.setFF(ArmConstants.TELESCOPE_KF);
         telescopePID.setSmartMotionMaxAccel(ArmConstants.TELESCOPE_MAX_ACCEL, 0);
         telescopePID.setSmartMotionMaxVelocity(ArmConstants.TELESCOPE_CRUISE_SPEED, 0);
         telescopePID.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
@@ -213,10 +215,10 @@ public class Arm extends SubsystemBase {
 //                        ArmConstants.PIVOT_GEAR_RATIO
 //                )
 //        );
-        pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(getGyroAngle().getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
-        );
         pivotEncoder.setPosition(getGyroAngle());
+        pivot1.setSelectedSensorPosition(
+                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
+        );
     }
 
     public void resetToEncoder() {
@@ -286,6 +288,9 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
         SmartDashboard.putNumber("arm/absoluteEncoder", absEncoder.getAbsolutePosition() * 360);
+        short[] pigeonAccel = new short[3];
+        pigeon2.getBiasedAccelerometer(pigeonAccel);
+        SmartDashboard.putNumber("arm/pigeonAccelX", pigeonAccel[0]);
     }
 
     @Override

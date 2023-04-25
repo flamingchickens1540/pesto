@@ -1,5 +1,6 @@
 package org.team1540.robot2023;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,22 +27,22 @@ public class AutoManager {
     }
 
     public void addAuto(AutoCommand command) {
-        addAuto(command.getName(), command, command.getFullTrajectory());
+        chooser.addOption(command.getName(), new AutoCommandData(command, command.getName(), command.getFullTrajectory(), command.getInitialPose(), command.getIsResetting()));
     }
     public void addAuto(String name, AutoCommand command) {
         addAuto(name, command, command.getFullTrajectory());
     }
     public void addAuto(String name, Command command) {
-        chooser.addOption(name, new AutoCommandData(command, name, null));
+        chooser.addOption(name, new AutoCommandData(command, name, null, false));
     }
     public void addAuto(String name, Command command, Trajectory trajectory) {
-        if (trajectory != null) {
-            field2d.getObject("trajectory/" + name).setTrajectory(trajectory);
-        }
-        chooser.addOption(name, new AutoCommandData(command, name, trajectory));
+        addAuto(name, command, trajectory, false);
+    }
+    public void addAuto(String name, Command command, Trajectory trajectory, boolean resetting) {
+        chooser.addOption(name, new AutoCommandData(command, name, trajectory, resetting));
     }
     public void addDefaultAuto(String name, Command command, Trajectory trajectory) {
-        chooser.setDefaultOption(name, new AutoCommandData(command, name, trajectory));
+        chooser.setDefaultOption(name, new AutoCommandData(command, name, trajectory, false));
     }
 
     public void updateSelected() {
@@ -58,8 +59,18 @@ public class AutoManager {
     public Command getSelected() {
         return chooser.getSelected().command;
     }
+    public String getSelectedName() {
+        return chooser.getSelected().name;
+    }
 
     public Trajectory getSelectedTrajectory() {
         return chooser.getSelected().trajectory;
+    }
+
+    public boolean getSelectedShouldReset() {
+        return chooser.getSelected().resetting;
+    }
+    public Pose2d getSelectedInitialPose() {
+        return chooser.getSelected().initialPose;
     }
 }

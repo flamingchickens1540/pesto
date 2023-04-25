@@ -76,7 +76,37 @@ public class AutoDrive {
     public static Command driveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, Supplier<List<PathPoint>> points) {
         return new ProxyCommand(() -> {
             List<PathPoint> pointList = new LinkedList<>();
+            long time = System.currentTimeMillis();
             pointList.add(new PathPoint(drivetrain.getPose().getTranslation(), Rotation2d.fromDegrees(0), drivetrain.getPose().getRotation()));
+            pointList.addAll(points.get());
+            PathPlannerTrajectory trajectory = PathPlanner.generatePath(
+                    new PathConstraints(5, 3),
+                    pointList
+            );
+            System.out.println("Time to generate path in ms: " + (System.currentTimeMillis() - time));
+            field2d.getObject("gridDrivePath").setTrajectory(trajectory);
+            field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
+            PathPlannerServer.sendActivePath(trajectory.getStates());
+            return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
+        }).withName("AutoDriveToPoints");
+    }
+
+
+    public static Command smoothDriveToPoints(Drivetrain drivetrain, double maxVelocity, double maxAcceleration, double time, Supplier<List<PathPoint>> points) {
+        return new ProxyCommand(() -> {
+            List<PathPoint> pointList = new LinkedList<>();
+            Translation2d position = drivetrain.getPose().getTranslation().plus(
+                    new Translation2d(drivetrain.getChassisSpeeds().vxMetersPerSecond * time,
+                            drivetrain.getChassisSpeeds().vyMetersPerSecond * time).rotateBy(drivetrain.getPose().getRotation())
+            );
+
+            pointList.add(new PathPoint(
+                    position,
+                    position.getAngle(),
+                    Rotation2d.fromRadians(drivetrain.getPose().getRotation().getRadians() + drivetrain.getChassisSpeeds().omegaRadiansPerSecond*time),
+                    Math.hypot(drivetrain.getChassisSpeeds().vxMetersPerSecond, drivetrain.getChassisSpeeds().vyMetersPerSecond)
+                    )
+            );
             pointList.addAll(points.get());
             PathPlannerTrajectory trajectory = PathPlanner.generatePath(
                     new PathConstraints(5, 3),
@@ -86,6 +116,6 @@ public class AutoDrive {
             field2d.getObject("endPose").setPose(trajectory.getEndState().poseMeters);
             PathPlannerServer.sendActivePath(trajectory.getStates());
             return drivetrain.getPathCommand(trajectory, alignmentTranslationPID, alignmentRotationPID);
-        }).withName("AutoDriveToPoints");
+        }).withName("SmoothAutoDriveToPoints");
     }
 }

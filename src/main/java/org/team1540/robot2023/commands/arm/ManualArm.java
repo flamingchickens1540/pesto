@@ -31,7 +31,8 @@ public class ManualArm extends CommandBase {
 
     @Override
     public void execute() {
-        double pivotInput = -controller.getLeftY();
+        double extensionPercent = (arm.getArmState().getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH);
+        double pivotInput = (-controller.getLeftY()) * (1 - 0.75 * extensionPercent);
         if (!startedManualPivot && Math.abs(pivotInput) >= deadzone) startedManualPivot = true;
         if (startedManualPivot) {
             if (Math.abs(pivotInput) <= deadzone && !isHoldingRotation) {

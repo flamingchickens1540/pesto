@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static org.team1540.robot2023.utils.MathUtils.deadzone;
 
+import java.util.function.BooleanSupplier;
+
+import org.team1540.robot2023.commands.grabber.WheeledGrabber;
+
 public class SwerveDriveCommand extends CommandBase {
     private final Drivetrain drivetrain;
     private final XboxController controller;
@@ -21,11 +25,15 @@ public class SwerveDriveCommand extends CommandBase {
     private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
     private final DoubleLogEntry xyscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:xyscale" );
     private final DoubleLogEntry rotscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:rotscale");
-    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller) {
+    private final BooleanSupplier forwardOnlySupplier;
+    private final WheeledGrabber intake;
+
+    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake) {
         this.drivetrain = drivetrain;
         this.controller = controller;
+        this.forwardOnlySupplier = forwardOnlySupplier;
+        this.intake = intake;
         addRequirements(drivetrain);
-
     }
 
     @Override
@@ -48,13 +56,21 @@ public class SwerveDriveCommand extends CommandBase {
 
         xyscaleLog.append(xyscale);
         rotscaleLog.append(rotscale);
-
-        drivetrain.drive(
-                xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone)*xyscale),
-                yLimiter.calculate(deadzone(-controller.getLeftX(), deadzone)*xyscale),
-                rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale),
-                true
-        );
+        if (forwardOnlySupplier.getAsBoolean()) {
+            drivetrain.drive(
+                    xLimiter.calculate(Math.min(deadzone(-controller.getLeftY(), deadzone), intake.hasGamePiece()?0:1)*0.25),
+                    0,
+                    rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale*0.25),
+                    false
+            );
+        } else {
+            drivetrain.drive(
+                    xLimiter.calculate(deadzone(-controller.getLeftY(), deadzone)*xyscale),
+                    yLimiter.calculate(deadzone(-controller.getLeftX(), deadzone)*xyscale),
+                    rotLimiter.calculate(-deadzone(controller.getRightX(), deadzone)*rotscale),
+                    true
+            );
+        }
     }
 
     @Override

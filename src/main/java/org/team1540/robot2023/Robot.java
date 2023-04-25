@@ -6,6 +6,7 @@ package org.team1540.robot2023;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -14,7 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import org.team1540.robot2023.utils.BlinkinPair;
+import org.team1540.robot2023.utils.BlinkinManager;
+import org.team1540.robot2023.utils.Limelight;
 
 import static org.team1540.robot2023.Globals.aprilTagLayout;
 
@@ -118,24 +120,37 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         if (!hasEnabled) {
-            robotContainer.drivetrain.updateWithApriltags();
+            if (AutoManager.getInstance().getSelectedShouldReset()) {
+                Pose2d initialPose = AutoManager.getInstance().getSelectedInitialPose();
+                if (initialPose == null) {
+                    DriverStation.reportError("DO NOT RUN THIS AUTO PLEASE KTHXBYE", false);
+                } else {
+                    robotContainer.drivetrain.resetToPose(AutoManager.getInstance().getSelectedInitialPose());
+                }
+
+            } else {
+                robotContainer.drivetrain.updateWithApriltags();
+            }
+
         }
     }
 
     @Override
     public void autonomousInit() {
         enabledInit();
-        robotContainer.blinkins.set(BlinkinPair.ColorPair.AUTO);
+        robotContainer.blinkins.set(BlinkinManager.ColorPair.AUTO);
 
         robotContainer.setAutoDefaultCommands();
         autonomousCommand = robotContainer.getAutonomousCommand();
-        robotContainer.drivetrain.updateWithApriltags();
+        if (!AutoManager.getInstance().getSelectedShouldReset()) {
+            robotContainer.drivetrain.updateWithApriltags();
+        }
         hasRunAuto = true;
+        robotContainer.arm.resetToGyro();
 
         robotContainer.drivetrain.zeroFieldOrientation();
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
-            robotContainer.arm.resetToGyro();
         }
     }
 
@@ -149,8 +164,9 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         enabledInit();
-        robotContainer.blinkins.set(BlinkinPair.ColorPair.TELEOP);
-
+        robotContainer.blinkins.set(BlinkinManager.ColorPair.TELEOP);
+        LimelightManager.getInstance().frontLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
+        LimelightManager.getInstance().rearLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
