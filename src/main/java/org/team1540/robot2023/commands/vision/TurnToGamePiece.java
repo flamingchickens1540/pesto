@@ -127,6 +127,7 @@ public class TurnToGamePiece extends CommandBase{
             if(limelight.getTa() != 0 && limelight.getTclass().equals(gamepiece.identifier)){
                 System.out.println("SEEING GAME PIECE "); 
                 angleXOffset = limelight.getTx() - limelight.getTa() * -0.9;
+                
                 double gyroAngle = angleSupplier.getAsDouble();
                 pid.setSetpoint(gyroAngle + angleXOffset);//*-0.698-2.99);  //16 (very sketchy constant) + angleOffset for back camera
                 SmartDashboard.putBoolean("pointToTarget/turningWithLimelight", true);

@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
  * Represents a corner of the robot. Used for calculating encoder offsets
  */
 public enum ModuleCorner {
-    FRONT_LEFT(0, "Front Left"),
+    FRONT_LEFT(90, "Front Left"),
     FRONT_RIGHT(90, "Front Right"),
     REAR_LEFT(180, "Rear Left"),
-    REAR_RIGHT(270, "Rear Right");
+    REAR_RIGHT(90, "Rear Right");
     private final double offset;
     public final String label;
     ModuleCorner(double offset, String label) {
