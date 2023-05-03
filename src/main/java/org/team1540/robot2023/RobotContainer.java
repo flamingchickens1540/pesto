@@ -75,7 +75,12 @@ public class RobotContainer {
         }
         initSmartDashboard();
         initAutos();
-        configureButtonBindings();
+        if (SmartDashboard.getBoolean("demoMode", false)) {
+            configureDemoButtonBindings();
+        }
+        else{
+            configureButtonBindings();
+        }
         DriverStation.silenceJoystickConnectionWarning(true);
         AutoDrive.postPIDs();
     }
@@ -166,6 +171,23 @@ public class RobotContainer {
 
     }
 
+   private void configureDemoButtonBindings(){
+       driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual")).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
+       //Coop: button(B, Cone vision [HOLD], pilot)
+       driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
+       //Coop: button(X, Cube vision [HOLD], pilot)
+       driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
+       driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
+
+       controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
+       controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
+
+       // coop:button(A, Run Intake [PRESS],copilot)
+       copilot.a().toggleOnTrue(intakeCommand);
+       // coop:button(B,Run Outtake [HOLD],copilot)
+       copilot.b().whileTrue(new GrabberOuttakeCommand(intake, 0.6));
+   }
+
     public void setNeutralModes() {
         DataLogManager.log("FPGA User Button: Setting pivot falcons to Brake: "+armIsBrakeMode);
         arm.setRotationNeutralMode(armIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
@@ -197,6 +219,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("arm/targetY", 0);
         SmartDashboard.putNumber("arm/targetAngle", 0);
         SmartDashboard.putNumber("arm/targetExtension", 22);
+        SmartDashboard.putBoolean("demoMode", false);
     }
 
     private void initAutos() {

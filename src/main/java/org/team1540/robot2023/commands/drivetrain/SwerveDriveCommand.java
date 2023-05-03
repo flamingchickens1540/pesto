@@ -4,6 +4,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static org.team1540.robot2023.utils.MathUtils.deadzone;
@@ -45,14 +46,14 @@ public class SwerveDriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-//        if (controller.getXButton()) {
-//            xyscale = 0.25;
-//            rotscale = 0.25;
-//        }
-//        if (controller.getBButton()) {
-//            xyscale = 1;
-//            rotscale = 1;
-//        }
+        if (SmartDashboard.getBoolean("demoMode", false)) {
+            xyscale = 0.25;
+            rotscale = 0.25;
+        }
+        else{
+            xyscale = 1;
+            rotscale = 1;
+        }
 
         xyscaleLog.append(xyscale);
         rotscaleLog.append(rotscale);

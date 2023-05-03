@@ -1,9 +1,11 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.Constants.ArmConstants;
+import org.team1540.robot2023.RobotContainer;
 
 public class ManualArm extends CommandBase {
     private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1,-1,0);
@@ -14,6 +16,9 @@ public class ManualArm extends CommandBase {
     private boolean isHoldingExtension;
     private boolean startedManualExtension;
     private boolean startedManualPivot;
+
+    private double pivotScale = 1;
+    private double extensionScale = 1;
 
     public ManualArm(Arm arm, CommandXboxController controller){
         this.arm = arm;
@@ -31,8 +36,18 @@ public class ManualArm extends CommandBase {
 
     @Override
     public void execute() {
+        if(SmartDashboard.getBoolean("demoMode", false)){
+            pivotScale = 0.1;
+            extensionScale = 0;
+        }
+        else {
+            pivotScale = 1;
+            extensionScale = 1;
+        }
+
+
         double extensionPercent = (arm.getArmState().getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH);
-        double pivotInput = (-controller.getLeftY()) * (1 - 0.75 * extensionPercent);
+        double pivotInput = pivotScale * (-controller.getLeftY()) * (1 - 0.75 * extensionPercent);
         if (!startedManualPivot && Math.abs(pivotInput) >= deadzone) startedManualPivot = true;
         if (startedManualPivot) {
             if (Math.abs(pivotInput) <= deadzone && !isHoldingRotation) {
@@ -48,8 +63,8 @@ public class ManualArm extends CommandBase {
         double extensionInput =
                 Math.abs(controller.getLeftTriggerAxis() - controller.getRightTriggerAxis()) < deadzone ? 0
                 : controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
-        double limitedExtensionInput = slewRateLimiter.calculate(extensionInput);
-        if (!startedManualExtension && Math.abs(extensionInput) >= deadzone) startedManualExtension = true;
+        double limitedExtensionInput = extensionScale * slewRateLimiter.calculate(extensionInput);
+        if (!startedManualExtension && Math.abs(limitedExtensionInput) >= deadzone) startedManualExtension = true;
         if (startedManualExtension) {
             if (Math.abs(limitedExtensionInput) <= deadzone && !isHoldingExtension) {
                 isHoldingExtension = true;
