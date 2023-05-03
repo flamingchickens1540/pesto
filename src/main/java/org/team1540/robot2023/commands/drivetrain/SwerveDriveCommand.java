@@ -28,12 +28,14 @@ public class SwerveDriveCommand extends CommandBase {
     private final DoubleLogEntry rotscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:rotscale");
     private final BooleanSupplier forwardOnlySupplier;
     private final WheeledGrabber intake;
+    private final boolean demoMode;
 
-    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake) {
+    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake, boolean demoMode) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.forwardOnlySupplier = forwardOnlySupplier;
         this.intake = intake;
+        this.demoMode = demoMode;
         addRequirements(drivetrain);
     }
 
@@ -42,11 +44,7 @@ public class SwerveDriveCommand extends CommandBase {
         xLimiter.reset(0);
         yLimiter.reset(0);
         rotLimiter.reset(0);
-    }
-
-    @Override
-    public void execute() {
-        if (SmartDashboard.getBoolean("demoMode", false)) {
+        if (demoMode) {
             xyscale = 0.25;
             rotscale = 0.25;
         }
@@ -54,7 +52,10 @@ public class SwerveDriveCommand extends CommandBase {
             xyscale = 1;
             rotscale = 1;
         }
+    }
 
+    @Override
+    public void execute() {
         xyscaleLog.append(xyscale);
         rotscaleLog.append(rotscale);
         if (forwardOnlySupplier.getAsBoolean()) {

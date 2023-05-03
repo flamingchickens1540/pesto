@@ -36,6 +36,7 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private boolean hasRunAuto;
     private boolean hasEnabled;
+
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -175,6 +176,7 @@ public class Robot extends TimedRobot {
             robotContainer.arm.resetToGyro();
         }
         robotContainer.setTeleopDefaultCommands();
+        robotContainer.configureButtonBindings(robotContainer.demoMode);
     }
 
     /**
@@ -187,9 +189,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        hasEnabled = true;
-        System.out.println("Test enabled");
-        LiveWindow.setEnabled(false);
+//        hasEnabled = true;
+//        System.out.println("Test enabled");
+//        LiveWindow.setEnabled(false);
+        robotContainer.demoMode = true;
+        teleopInit();
     }
 
     /**
@@ -198,7 +202,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         // Post PDH data during test mode
-        SmartDashboard.putData(robotContainer.pdh);
+//        SmartDashboard.putData(robotContainer.pdh);
     }
 
 

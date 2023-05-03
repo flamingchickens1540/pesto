@@ -60,6 +60,8 @@ public class RobotContainer {
 
     private Command intakeCommand = new GrabberIntakeCommand(intake);
     private boolean isCarefulDrivingMode = false;
+
+    public boolean demoMode;
     // Commands
 
 
@@ -75,17 +77,18 @@ public class RobotContainer {
         }
         initSmartDashboard();
         initAutos();
-        if (SmartDashboard.getBoolean("demoMode", false)) {
-            configureDemoButtonBindings();
-        }
-        else{
-            configureButtonBindings();
-        }
         DriverStation.silenceJoystickConnectionWarning(true);
         AutoDrive.postPIDs();
     }
 
+   public void configureButtonBindings(boolean demoMode){
+        if(demoMode) configureDemoButtonBindings();
+        else configureButtonBindings();
+   }
    private void configureButtonBindings() {
+
+
+
         // Driver
 
         // coop:button(A, Zero Field Oriented [Press],pilot)
@@ -199,11 +202,11 @@ public class RobotContainer {
         // coop:button(RJoystick, Rotate swerve [LEFTRIGHT],pilot)
         // coop:button(X, Slow drive [PRESS])
         // coop:button(B, Fast Drive [PRESS])
-        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID(), () -> isCarefulDrivingMode, intake));
+        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID(), () -> isCarefulDrivingMode, intake, demoMode));
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
         // coop:button(LTrigger, Extend telescope [HOLD],copilot)
         // coop:button(RTrigger, Retract telescope [HOLD],copilot)
-        arm.setDefaultCommand(new ManualArm(arm, copilot));
+        arm.setDefaultCommand(new ManualArm(arm, copilot, demoMode));
         intake.setDefaultCommand(new DefaultGrabberCommand(intake));
     }
 

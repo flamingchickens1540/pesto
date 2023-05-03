@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.RobotContainer;
 
+import java.awt.*;
+
 public class ManualArm extends CommandBase {
     private final SlewRateLimiter slewRateLimiter = new SlewRateLimiter(1,-1,0);
     private final Arm arm;
@@ -20,9 +22,12 @@ public class ManualArm extends CommandBase {
     private double pivotScale = 1;
     private double extensionScale = 1;
 
-    public ManualArm(Arm arm, CommandXboxController controller){
+    private final boolean demoMode;
+
+    public ManualArm(Arm arm, CommandXboxController controller, boolean demoMode){
         this.arm = arm;
         this.controller = controller;
+        this.demoMode = demoMode;
         addRequirements(arm);
     }
 
@@ -32,11 +37,7 @@ public class ManualArm extends CommandBase {
         isHoldingExtension = false;
         startedManualExtension = false;
         startedManualPivot = false;
-    }
-
-    @Override
-    public void execute() {
-        if(SmartDashboard.getBoolean("demoMode", false)){
+        if(demoMode){
             pivotScale = 0.1;
             extensionScale = 0;
         }
@@ -44,8 +45,10 @@ public class ManualArm extends CommandBase {
             pivotScale = 1;
             extensionScale = 1;
         }
+    }
 
-
+    @Override
+    public void execute() {
         double extensionPercent = (arm.getArmState().getExtension() - ArmConstants.ARM_BASE_LENGTH) / (ArmConstants.ARM_LENGTH_EXT - ArmConstants.ARM_BASE_LENGTH);
         double pivotInput = pivotScale * (-controller.getLeftY()) * (1 - 0.75 * extensionPercent);
         if (!startedManualPivot && Math.abs(pivotInput) >= deadzone) startedManualPivot = true;
