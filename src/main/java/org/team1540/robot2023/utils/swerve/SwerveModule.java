@@ -49,7 +49,7 @@ public class SwerveModule {
 
         lastAngle = getState().angle;
 
-        MusicPlayer.addInstruments(mAngleMotor, mDriveMotor);
+        MusicPlayer.getInstance().addInstruments(mAngleMotor, mDriveMotor);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop, boolean isParkMode){

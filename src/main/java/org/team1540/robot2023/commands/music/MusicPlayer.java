@@ -5,9 +5,19 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 public class MusicPlayer {
-    private static final Orchestra orchestra = new Orchestra();
+    private static MusicPlayer instance;
+    private final Orchestra orchestra;
 
-    public static ErrorCode addInstruments(TalonFX... instruments) {
+    private MusicPlayer() {
+        orchestra = new Orchestra();
+    }
+
+    public static MusicPlayer getInstance() {
+        if (instance == null) instance = new MusicPlayer();
+        return instance;
+    }
+
+    public ErrorCode addInstruments(TalonFX... instruments) {
         ErrorCode errorCode = ErrorCode.OK;
         for (TalonFX inst : instruments) {
             ErrorCode currentCode;
@@ -17,27 +27,27 @@ public class MusicPlayer {
         return errorCode;
     }
 
-    public static ErrorCode clearInstruments() {
+    public ErrorCode clearInstruments() {
         return orchestra.clearInstruments();
     }
 
-    public static ErrorCode loadMusic(String songTitle) {
-        return orchestra.loadMusic(songTitle + ".chrp");
+    public ErrorCode loadMusic(String songTitle) {
+        return orchestra.loadMusic("music/" + songTitle + ".chrp");
     }
 
-    public static ErrorCode play() {
+    public ErrorCode play() {
         return orchestra.play();
     }
 
-    public static ErrorCode stop() {
+    public ErrorCode stop() {
         return orchestra.stop();
     }
 
-    public static ErrorCode pause() {
+    public ErrorCode pause() {
         return orchestra.pause();
     }
 
-    public static boolean isPlaying() {
+    public boolean isPlaying() {
         return orchestra.isPlaying();
     }
 }

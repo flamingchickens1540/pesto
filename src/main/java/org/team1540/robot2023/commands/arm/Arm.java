@@ -78,7 +78,7 @@ public class Arm extends SubsystemBase {
 
         smashDartboardInit();
 
-        MusicPlayer.addInstruments(pivot1, pivot2);
+        MusicPlayer.getInstance().addInstruments(pivot1, pivot2);
     }
 
     public double getMaxExtension() {

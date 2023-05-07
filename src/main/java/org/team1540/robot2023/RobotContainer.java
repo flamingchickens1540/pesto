@@ -29,6 +29,7 @@ import org.team1540.robot2023.commands.auto.sequence.top.AutoTopGrid3PieceTaxi;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.drivetrain.SwerveDriveCommand;
 import org.team1540.robot2023.commands.grabber.*;
+import org.team1540.robot2023.commands.music.MusicPlayer;
 import org.team1540.robot2023.commands.music.PlayMusicCommand;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.*;
@@ -230,7 +231,7 @@ public class RobotContainer {
         manager.addAuto("ScoreHighCube", new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, true));
         manager.addAuto("ScoreMidCube", new AutoHybrid(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
 
-        manager.addAuto("LoveStoryTaylorSwift", new PlayMusicCommand("LoveStory", arm, drivetrain));
+        manager.addAuto("LoveStoryTaylorSwift", new PlayMusicCommand("LoveStory", MusicPlayer.getInstance(), arm, drivetrain));
 
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
