@@ -86,9 +86,6 @@ public class RobotContainer {
         else configureButtonBindings();
    }
    private void configureButtonBindings() {
-
-
-
         // Driver
 
         // coop:button(A, Zero Field Oriented [Press],pilot)
@@ -175,6 +172,72 @@ public class RobotContainer {
     }
 
    private void configureDemoButtonBindings(){
+
+
+
+
+       // coop:button(LBumper, Substation Left [HOLD],pilot)
+       //     driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
+       driver.leftBumper().whileTrue(new InstantCommand());
+       driver.rightBumper().whileTrue(new InstantCommand());
+       //    // coop:button(RBumper, Substation Right [HOLD],pilot)
+       //     driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
+       //Coop: button(B, Cone vision [HOLD], pilot)
+
+
+
+       // Copilot
+//        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
+
+
+       //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
+       controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new InstantCommand());
+       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new InstantCommand());
+
+       // coop:button(A, Run Intake [PRESS],copilot)
+
+
+       //coop:button(RBumper, Floor pickup [HOLD], copilot)
+       copilot.rightBumper().whileTrue(new InstantCommand());
+       //coop:button(LBumper, Set arm upright [HOLD], copilot)
+       copilot.leftBumper().whileTrue(new InstantCommand());
+
+
+       // INSPECTION CODE
+//        copilot.y().whileTrue(Commands.sequence(
+//                new RetractAndPivotCommand(arm, Constants.Auto.highCone.score.getRotation2d()),
+//                new ExtensionCommand(arm, Constants.Auto.highCone.score)
+//        ));
+
+
+       //coop:button(X, Downed Cone Intake [ HOLD, copilot)
+       copilot.x().whileTrue(new InstantCommand());
+
+       copilot.y().whileTrue(new InstantCommand());
+
+
+       new Trigger(LimelightManager.getInstance()::canSeeTargets)
+               .onTrue(new InstantCommand(() -> {
+                   int closestTime= AutoDrive.getClosestTag(drivetrain);
+                   if (!(closestTime == 4 || closestTime == 5)) {
+                       blinkins.set(BlinkinManager.ColorPair.APRILTAG);
+                   }
+               }))
+               .onFalse(blinkins.commandSet(BlinkinManager.ColorPair.TELEOP));
+
+       new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
+           armIsBrakeMode = !armIsBrakeMode;
+           setNeutralModes();
+       }).withName("InstantToggleBreakMode").ignoringDisable(true));
+
+
        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual")).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
        //Coop: button(B, Cone vision [HOLD], pilot)
        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));

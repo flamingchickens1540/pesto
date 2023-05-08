@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -176,7 +177,7 @@ public class Robot extends TimedRobot {
             robotContainer.arm.resetToGyro();
         }
         robotContainer.setTeleopDefaultCommands();
-        robotContainer.configureButtonBindings(robotContainer.demoMode);
+        robotContainer.configureButtonBindings(false);
     }
 
     /**
@@ -191,9 +192,22 @@ public class Robot extends TimedRobot {
     public void testInit() {
 //        hasEnabled = true;
 //        System.out.println("Test enabled");
-//        LiveWindow.setEnabled(false);
+        LiveWindow.setEnabled(false);
         robotContainer.demoMode = true;
-        teleopInit();
+        enabledInit();
+        robotContainer.blinkins.set(BlinkinManager.ColorPair.TELEOP);
+        LimelightManager.getInstance().frontLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
+        LimelightManager.getInstance().rearLimelight.setPipeline(Limelight.Pipeline.APRIL_TAGS);
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+        if (!hasRunAuto) {
+            robotContainer.drivetrain.zeroFieldOrientation();
+            robotContainer.arm.resetToGyro();
+        }
+        robotContainer.setTeleopDefaultCommands();
+        robotContainer.configureButtonBindings(true);
+//        robotContainer.configureButtonBindings(RobotState.isTest());
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.team1540.robot2023.commands.arm;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,8 +38,8 @@ public class ManualArm extends CommandBase {
         isHoldingExtension = false;
         startedManualExtension = false;
         startedManualPivot = false;
-        if(demoMode){
-            pivotScale = 0.1;
+        if(RobotState.isTest()){
+            pivotScale = 1;
             extensionScale = 0;
         }
         else {

@@ -3,6 +3,7 @@ package org.team1540.robot2023.commands.drivetrain;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -44,7 +45,7 @@ public class SwerveDriveCommand extends CommandBase {
         xLimiter.reset(0);
         yLimiter.reset(0);
         rotLimiter.reset(0);
-        if (demoMode) {
+        if (RobotState.isTest()) {
             xyscale = 0.25;
             rotscale = 0.25;
         }
