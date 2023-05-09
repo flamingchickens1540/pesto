@@ -91,21 +91,21 @@ public class RobotContainer {
         // coop:button(A, Zero Field Oriented [Press],pilot)
 //        driver.a().onTrue(new InstantCommand(drivetrain::zeroFieldOrientation).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientation"));
        // coop:button(Y, Zero to current Rotation [Press],pilot)
-        driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual")).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
-        driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
+        driver.y().and(RobotState::isTeleop).onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual")).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
+        driver.rightTrigger().and(RobotState::isTeleop).whileTrue(new GrabberAggressiveCommand(intake));
        // coop:button(LBumper, Substation Left [HOLD],pilot)
     //     driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
-        driver.leftBumper().whileTrue(new SetArmPosition(arm, Constants.Auto.armHumanPlayer)).onTrue(intakeCommand).onTrue(new InstantCommand(() -> isCarefulDrivingMode = true));
-        driver.rightBumper().whileTrue(Commands.sequence(
+        driver.leftBumper().and(RobotState::isTeleop).whileTrue(new SetArmPosition(arm, Constants.Auto.armHumanPlayer)).onTrue(intakeCommand).onTrue(new InstantCommand(() -> isCarefulDrivingMode = true));
+        driver.rightBumper().and(RobotState::isTeleop).whileTrue(Commands.sequence(
             new SetArmPosition(arm, Constants.Auto.armHumanPlayerRetreat),
             new ResetArmPositionCommand(arm)
         )).onTrue(new InstantCommand(intakeCommand::cancel)).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
     //    // coop:button(RBumper, Substation Right [HOLD],pilot)
     //     driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         //Coop: button(B, Cone vision [HOLD], pilot)
-        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
+        driver.b().and(RobotState::isTeleop).whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
         //Coop: button(X, Cube vision [HOLD], pilot)
-        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
+        driver.x().and(RobotState::isTeleop).whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
 
 
         // Copilot
@@ -114,27 +114,27 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
 
        //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake, driver));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).and(RobotState::isTeleop).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).and(RobotState::isTeleop).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).and(RobotState::isTeleop).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake, driver, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).and(RobotState::isTeleop).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake, driver, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).and(RobotState::isTeleop).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).and(RobotState::isTeleop).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake, driver, true));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).and(RobotState::isTeleop).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake, driver));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).and(RobotState::isTeleop).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).and(RobotState::isTeleop).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver));
 
         // coop:button(A, Run Intake [PRESS],copilot)
-        copilot.a().toggleOnTrue(intakeCommand);
+        copilot.a().and(RobotState::isTeleop).toggleOnTrue(intakeCommand);
         // coop:button(B,Run Outtake [HOLD],copilot)
-        copilot.b().whileTrue(new GrabberOuttakeCommand(intake, 0.6));
+        copilot.b().and(RobotState::isTeleop).whileTrue(new GrabberOuttakeCommand(intake, 0.6));
 
         //coop:button(RBumper, Floor pickup [HOLD], copilot)
-        copilot.rightBumper().whileTrue(Commands.sequence(
+        copilot.rightBumper().and(RobotState::isTeleop).whileTrue(Commands.sequence(
                 new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
                 new SetArmPosition(arm, Constants.Auto.armDown)));
         //coop:button(LBumper, Set arm upright [HOLD], copilot)
-       copilot.leftBumper().whileTrue(new ResetArmPositionCommand(arm)).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
+       copilot.leftBumper().and(RobotState::isTeleop).whileTrue(new ResetArmPositionCommand(arm)).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
 
 
         // INSPECTION CODE
@@ -145,12 +145,12 @@ public class RobotContainer {
 
 
         //coop:button(X, Downed Cone Intake [ HOLD, copilot)
-        copilot.x().whileTrue(Commands.sequence(
+        copilot.x().and(RobotState::isTeleop).whileTrue(Commands.sequence(
                 new InstantCommand(new GrabberIntakeCommand(intake)::schedule),
                 new SetArmPosition(arm, Constants.Auto.armDownBackwards)
         ).withName("DownedConeIntake"));
 
-       copilot.y().whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).andThen(new ZeroArmPositionCommand(arm)));
+       copilot.y().and(RobotState::isTeleop).whileTrue(new SetArmPosition(arm, ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), 0)).andThen(new ZeroArmPositionCommand(arm)));
 
 
         new Trigger(LimelightManager.getInstance()::canSeeTargets)
@@ -173,85 +173,6 @@ public class RobotContainer {
 
    private void configureDemoButtonBindings(){
 
-
-
-
-       // coop:button(LBumper, Substation Left [HOLD],pilot)
-       //     driver.leftBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, -Constants.Auto.hpOffsetY));
-       driver.leftBumper().whileTrue(new InstantCommand());
-       driver.rightBumper().whileTrue(new InstantCommand());
-       //    // coop:button(RBumper, Substation Right [HOLD],pilot)
-       //     driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
-       //Coop: button(B, Cone vision [HOLD], pilot)
-
-
-
-       // Copilot
-//        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
-
-
-       //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
-       controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new InstantCommand());
-       controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new InstantCommand());
-
-       // coop:button(A, Run Intake [PRESS],copilot)
-
-
-       //coop:button(RBumper, Floor pickup [HOLD], copilot)
-       copilot.rightBumper().whileTrue(new InstantCommand());
-       //coop:button(LBumper, Set arm upright [HOLD], copilot)
-       copilot.leftBumper().whileTrue(new InstantCommand());
-
-
-       // INSPECTION CODE
-//        copilot.y().whileTrue(Commands.sequence(
-//                new RetractAndPivotCommand(arm, Constants.Auto.highCone.score.getRotation2d()),
-//                new ExtensionCommand(arm, Constants.Auto.highCone.score)
-//        ));
-
-
-       //coop:button(X, Downed Cone Intake [ HOLD, copilot)
-       copilot.x().whileTrue(new InstantCommand());
-
-       copilot.y().whileTrue(new InstantCommand());
-
-
-       new Trigger(LimelightManager.getInstance()::canSeeTargets)
-               .onTrue(new InstantCommand(() -> {
-                   int closestTime= AutoDrive.getClosestTag(drivetrain);
-                   if (!(closestTime == 4 || closestTime == 5)) {
-                       blinkins.set(BlinkinManager.ColorPair.APRILTAG);
-                   }
-               }))
-               .onFalse(blinkins.commandSet(BlinkinManager.ColorPair.TELEOP));
-
-       new Trigger(RobotController::getUserButton).onTrue(new InstantCommand(() -> {
-           armIsBrakeMode = !armIsBrakeMode;
-           setNeutralModes();
-       }).withName("InstantToggleBreakMode").ignoringDisable(true));
-
-
-       driver.y().onTrue(new InstantCommand(drivetrain::zeroFieldOrientationManual).andThen(drivetrain::resetAllToAbsolute).withName("ZeroFieldOrientationManual")).onTrue(new InstantCommand(() -> isCarefulDrivingMode = false));
-       //Coop: button(B, Cone vision [HOLD], pilot)
-       driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
-       //Coop: button(X, Cube vision [HOLD], pilot)
-       driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
-       driver.rightTrigger().whileTrue(new GrabberAggressiveCommand(intake));
-
-       controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
-       controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
-
-       // coop:button(A, Run Intake [PRESS],copilot)
-       copilot.a().toggleOnTrue(intakeCommand);
-       // coop:button(B,Run Outtake [HOLD],copilot)
-       copilot.b().whileTrue(new GrabberOuttakeCommand(intake, 0.6));
    }
 
     public void setNeutralModes() {
