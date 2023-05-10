@@ -190,7 +190,7 @@ public class RobotContainer {
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
         // coop:button(LTrigger, Extend telescope [HOLD],copilot)
         // coop:button(RTrigger, Retract telescope [HOLD],copilot)
-        arm.setDefaultCommand(new ManualArm(arm, copilot, demoMode));
+        arm.setDefaultCommand(new ManualArm(arm, copilot));
         intake.setDefaultCommand(new DefaultGrabberCommand(intake));
     }
 
