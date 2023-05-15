@@ -186,7 +186,7 @@ public class RobotContainer {
         // coop:button(RJoystick, Rotate swerve [LEFTRIGHT],pilot)
         // coop:button(X, Slow drive [PRESS])
         // coop:button(B, Fast Drive [PRESS])
-        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID(), () -> isCarefulDrivingMode, intake, demoMode));
+        drivetrain.setDefaultCommand(new SwerveDriveCommand(drivetrain, driver.getHID(), () -> isCarefulDrivingMode, intake));
         // coop:button(LJoystick, Adjust arm angle [UPDOWN],copilot)
         // coop:button(LTrigger, Extend telescope [HOLD],copilot)
         // coop:button(RTrigger, Retract telescope [HOLD],copilot)

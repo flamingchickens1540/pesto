@@ -29,14 +29,12 @@ public class SwerveDriveCommand extends CommandBase {
     private final DoubleLogEntry rotscaleLog = new DoubleLogEntry(DataLogManager.getLog(),"CUSTOM:rotscale");
     private final BooleanSupplier forwardOnlySupplier;
     private final WheeledGrabber intake;
-    private final boolean demoMode;
 
-    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake, boolean demoMode) {
+    public SwerveDriveCommand(Drivetrain drivetrain, XboxController controller, BooleanSupplier forwardOnlySupplier, WheeledGrabber intake) {
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.forwardOnlySupplier = forwardOnlySupplier;
         this.intake = intake;
-        this.demoMode = demoMode;
         addRequirements(drivetrain);
     }
 

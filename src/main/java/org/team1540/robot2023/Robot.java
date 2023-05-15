@@ -9,10 +9,8 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -202,7 +200,7 @@ public class Robot extends TimedRobot {
             autonomousCommand.cancel();
         }
         if (!hasRunAuto) {
-            robotContainer.drivetrain.zeroFieldOrientation();
+//            robotContainer.drivetrain.zeroFieldOrientation();
             robotContainer.arm.resetToGyro();
         }
         robotContainer.setTeleopDefaultCommands();
