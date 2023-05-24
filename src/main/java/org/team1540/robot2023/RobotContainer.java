@@ -1,6 +1,6 @@
 package org.team1540.robot2023;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -58,7 +58,7 @@ public class RobotContainer {
     RevBlinkin.ColorPattern frontPattern = BlinkinManager.ColorPair.TELEOP.front;
     boolean armIsBrakeMode = false;
 
-    private Command intakeCommand = new GrabberIntakeCommand(intake);
+    private final Command intakeCommand = new GrabberIntakeCommand(intake);
     private boolean isCarefulDrivingMode = false;
 
     public boolean demoMode;
@@ -177,7 +177,7 @@ public class RobotContainer {
 
     public void setNeutralModes() {
         DataLogManager.log("FPGA User Button: Setting pivot falcons to Brake: "+armIsBrakeMode);
-        arm.setRotationNeutralMode(armIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+        arm.setRotationNeutralMode(armIsBrakeMode ? NeutralModeValue.Brake : NeutralModeValue.Coast);
         arm.setExtensionNeutralMode(armIsBrakeMode ? CANSparkMax.IdleMode.kBrake : CANSparkMax.IdleMode.kCoast);
     }
 

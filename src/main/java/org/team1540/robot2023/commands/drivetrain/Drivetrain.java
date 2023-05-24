@@ -1,6 +1,6 @@
 package org.team1540.robot2023.commands.drivetrain;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -243,7 +243,7 @@ public class Drivetrain extends SubsystemBase {
         return Rotation2d.fromDegrees(gyro.getPitch());
     }
 
-    public void setNeutralMode(NeutralMode neutralMode) {
+    public void setNeutralMode(NeutralModeValue neutralMode) {
         for (SwerveModule module : modules) {
             module.setNeutralMode(neutralMode);
         }

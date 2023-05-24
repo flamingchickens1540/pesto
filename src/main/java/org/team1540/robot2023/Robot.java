@@ -4,7 +4,7 @@
 
 package org.team1540.robot2023;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
         // Zero swerve modules 4 seconds after init
         new WaitCommand(5).andThen(() -> {
             robotContainer.drivetrain.resetAllToAbsolute();
-            robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast);
+            robotContainer.drivetrain.setNeutralMode(NeutralModeValue.Coast);
         }, robotContainer.drivetrain).ignoringDisable(true).withName("ResetModuleCommand").schedule();
 
         // OK so this one is really stupid and really shouldn't have to be here, but it does, just deal with it.
@@ -97,9 +97,9 @@ public class Robot extends TimedRobot {
     }
 
     public void enabledInit() {
-        robotContainer.arm.setRotationNeutralMode(NeutralMode.Brake);
+        robotContainer.arm.setRotationNeutralMode(NeutralModeValue.Brake);
         robotContainer.arm.setExtensionNeutralMode(CANSparkMax.IdleMode.kBrake);
-        robotContainer.drivetrain.setNeutralMode(NeutralMode.Brake);
+        robotContainer.drivetrain.setNeutralMode(NeutralModeValue.Brake);
         hasEnabled = true;
     }
 
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         new WaitCommand(5)
-                .andThen(() -> robotContainer.drivetrain.setNeutralMode(NeutralMode.Coast))
+                .andThen(() -> robotContainer.drivetrain.setNeutralMode(NeutralModeValue.Coast))
                 .ignoringDisable(true)
                 .schedule();
     }
