@@ -23,7 +23,7 @@ public class SetArmPosition extends CommandBase {
 
 
     public SetArmPosition(Arm arm, ArmState setpoint) {
-        this(arm, setpoint, 0, true, 20000*(1+((ArmConstants.ARM_LENGTH_EXT-ArmConstants.ARM_BASE_LENGTH)-(setpoint.getExtension()-ArmConstants.ARM_BASE_LENGTH))/(ArmConstants.ARM_LENGTH_EXT-ArmConstants.ARM_BASE_LENGTH)));
+        this(arm, setpoint, 0, true, 20000*(ArmConstants.ARM_LENGTH_EXT-setpoint.getExtension()+1)/(ArmConstants.ARM_LENGTH_EXT-ArmConstants.ARM_BASE_LENGTH));
     }
 
 

@@ -1,10 +1,11 @@
 package org.team1540.robot2023.commands.arm;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.*;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.*;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -15,9 +16,14 @@ import org.team1540.robot2023.Constants.ArmConstants;
 import org.team1540.robot2023.utils.ArmState;
 import org.team1540.robot2023.utils.ChickEncoder;
 
+
+
 public class Arm extends SubsystemBase {
     private final TalonFX pivot1 = new TalonFX(ArmConstants.PIVOT1_ID);
     private final TalonFX pivot2 = new TalonFX(ArmConstants.PIVOT2_ID);
+    private final MotionMagicDutyCycle positionControl = new MotionMagicDutyCycle(0);
+    private final DutyCycleOut percentControl = new DutyCycleOut(0);
+
     private final ChickEncoder pivotEncoder = new ChickEncoder(
             ArmConstants.PIVOT_ENCODER_CHANNEL_A,
             ArmConstants.PIVOT_ENCODER_CHANNEL_B,
@@ -32,38 +38,68 @@ public class Arm extends SubsystemBase {
     private final SparkMaxPIDController telescopePID = telescope.getPIDController();
     private final SparkMaxLimitSwitch telescopeLimitSwitch = telescope.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
 
-    private final WPI_Pigeon2 pigeon2 = new WPI_Pigeon2(ArmConstants.PIGEON_ID);
+    private final Pigeon2 pigeon2 = new Pigeon2(ArmConstants.PIGEON_ID);
 
     private double pivotAccel;
 
+    private static double armToFalcon(Rotation2d distance) {
+        return distance.getRotations() * ArmConstants.PIVOT_GEAR_RATIO;
+    }
+    private static double armDegreesToFalcon(double distance) {
+        return (distance/360) * ArmConstants.PIVOT_GEAR_RATIO;
+    }
+
+    private static double falconToArmDegrees(double rotations) {
+        return rotations*360/ArmConstants.PIVOT_GEAR_RATIO;
+    }
+
+    private TalonFXConfiguration getTalonConfig() {
+        TalonFXConfiguration configs = new TalonFXConfiguration();
+        configs.CurrentLimits.StatorCurrentLimit = 60;
+        configs.CurrentLimits.StatorCurrentLimitEnable = true;
+
+        configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+
+        configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.PIVOT_FORWARD_LIMIT;
+        configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.PIVOT_REVERSE_LIMIT;
+        configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        configs.Slot0.kP = ArmConstants.PIVOT_KP;
+        configs.Slot0.kI = ArmConstants.PIVOT_KI;
+        configs.Slot0.kD = ArmConstants.PIVOT_KD;
+        configs.MotionMagic.MotionMagicCruiseVelocity = ArmConstants.PIVOT_CRUISE_SPEED;
+        configs.MotionMagic.MotionMagicAcceleration = ArmConstants.PIVOT_MAX_ACCEL;
+        return configs;
+    }
+
+    private Pigeon2Configuration getPigeonConfig() {
+        Pigeon2Configuration configs = new Pigeon2Configuration();
+        configs.MountPose.MountPosePitch = ArmConstants.PIGEON_MNT_PITCH;
+        configs.MountPose.MountPoseRoll = ArmConstants.PIGEON_MNT_ROLL;
+        configs.MountPose.MountPoseYaw = ArmConstants.PIGEON_MNT_YAW;
+        return configs;
+    }
     public Arm() {
 //        telescope.restoreFactoryDefaults();
+        TalonFXConfiguration configs = getTalonConfig();
+        pivot2.getConfigurator().apply(configs);
+        pivot1.getConfigurator().apply(configs);
+        pigeon2.getConfigurator().apply(getPigeonConfig());
 
-        pivot1.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
-        pivot2.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0));
         telescope.setSmartCurrentLimit(40);
 
-        pivot1.setNeutralMode(NeutralMode.Brake);
-        pivot2.setNeutralMode(NeutralMode.Brake);
+
         telescope.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         pivot1.setInverted(false);
-        pivot1.configForwardSoftLimitThreshold(ArmConstants.PIVOT_FORWARD_LIMIT);
-        pivot1.configForwardSoftLimitEnable(true);
-        pivot1.configReverseSoftLimitThreshold(ArmConstants.PIVOT_REVERSE_LIMIT);
-        pivot1.configReverseSoftLimitEnable(true);
-        pivot2.setInverted(true);
-        pivot2.follow(pivot1);
+        pivot2.setControl(new Follower(pivot1.getDeviceID(), true));
 
         telescope.setInverted(true);
         telescope.setSoftLimit(CANSparkMax.SoftLimitDirection.kForward, ArmConstants.TELESCOPE_FORWARD_LIMIT);
         telescope.enableSoftLimit(CANSparkMax.SoftLimitDirection.kForward, true);
 
-        pivot1.config_kP(0, ArmConstants.PIVOT_KP);
-        pivot1.config_kI(0, ArmConstants.PIVOT_KI);
-        pivot1.config_kD(0, ArmConstants.PIVOT_KD);
-        pivot1.configMotionCruiseVelocity(ArmConstants.PIVOT_CRUISE_SPEED);
-        pivot1.configMotionAcceleration(ArmConstants.PIVOT_MAX_ACCEL);
 
         telescopePID.setP(ArmConstants.TELESCOPE_KP);
         telescopePID.setI(ArmConstants.TELESCOPE_KI);
@@ -73,7 +109,7 @@ public class Arm extends SubsystemBase {
         telescopePID.setSmartMotionMaxVelocity(ArmConstants.TELESCOPE_CRUISE_SPEED, 0);
         telescopePID.setSmartMotionAccelStrategy(SparkMaxPIDController.AccelStrategy.kTrapezoidal, 0);
 
-        pigeon2.configMountPose(ArmConstants.PIGEON_MNT_YAW, ArmConstants.PIGEON_MNT_PITCH, ArmConstants.PIGEON_MNT_ROLL);
+
 
         smashDartboardInit();
     }
@@ -83,8 +119,8 @@ public class Arm extends SubsystemBase {
     }
 
     public double timeToRotation(Rotation2d rotation2d){
-        double setpoint = Conversions.degreesToFalcon(rotation2d.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO);
-        double distance = Math.abs(setpoint - pivot1.getSelectedSensorPosition());
+        double setpoint = armToFalcon(rotation2d);
+        double distance = Math.abs(setpoint - pivot1.getRotorPosition().getValue());
         double timeToAccelerate = ArmConstants.PIVOT_CRUISE_SPEED/(pivotAccel);
         boolean isAProfile = distance <=
                 timeToAccelerate * ArmConstants.PIVOT_CRUISE_SPEED*10;
@@ -148,9 +184,7 @@ public class Arm extends SubsystemBase {
 
     private Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(
-                Conversions.falconToDegrees(
-                        (pivot1.getSelectedSensorPosition() + pivot2.getSelectedSensorPosition())/2,
-                        ArmConstants.PIVOT_GEAR_RATIO)
+                falconToArmDegrees((pivot1.getRotorPosition().getValue() + pivot2.getRotorPosition().getValue())/2)
         );
     }
 
@@ -172,8 +206,7 @@ public class Arm extends SubsystemBase {
 
     protected void setRotation(Rotation2d rotation, boolean resetEncoders) {
         if (resetEncoders) resetToEncoder();
-        double angle = rotation.getDegrees();
-        pivot1.set(ControlMode.MotionMagic, Conversions.degreesToFalcon(angle, ArmConstants.PIVOT_GEAR_RATIO));
+        pivot1.setControl(positionControl.withPosition(armToFalcon(rotation)));
     }
 
     protected void setExtension(double extension) {
@@ -185,17 +218,18 @@ public class Arm extends SubsystemBase {
     }
 
     public void stopAll() {
-        pivot1.set(ControlMode.PercentOutput, 0);
+        pivot1.stopMotor();
         telescope.set(0);
     }
 
     public Rotation2d getGyroAngle() {
         short[] pigeonAccel = new short[3];
-        pigeon2.getBiasedAccelerometer(pigeonAccel);
+        ;
         double pigeonRoll;
-        if (pigeonAccel[0] > 0) {
-            pigeonRoll = pigeon2.getRoll() > 0 ? pigeon2.getRoll() - 180 : pigeon2.getRoll() + 180;
-        } else pigeonRoll = pigeon2.getRoll();
+        if (pigeon2.getAccelerationX().getValue() > 0) {
+            double raw = pigeon2.getRoll().getValue();
+            pigeonRoll = raw > 0 ? raw - 180 : raw + 180;
+        } else pigeonRoll = pigeon2.getRoll().getValue();
         return Rotation2d.fromDegrees(pigeonRoll + ArmConstants.PIGEON_OFFSET);
     }
 
@@ -213,18 +247,12 @@ public class Arm extends SubsystemBase {
 //                )
 //        );
         pivotEncoder.setPosition(getGyroAngle());
-        pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
-        );
+        pivot1.setRotorPosition(pivotEncoder.getRotation2d().getRotations()*ArmConstants.PIVOT_GEAR_RATIO);
     }
 
     public void resetToEncoder() {
-        pivot1.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
-        );
-        pivot2.setSelectedSensorPosition(
-                Conversions.degreesToFalcon(pivotEncoder.getDegrees(), ArmConstants.PIVOT_GEAR_RATIO)
-        );
+        pivot1.setRotorPosition(pivotEncoder.getRotation2d().getRotations()*ArmConstants.PIVOT_GEAR_RATIO);
+        pivot2.setRotorPosition(pivotEncoder.getRotation2d().getRotations()*ArmConstants.PIVOT_GEAR_RATIO);
     }
 
 
@@ -237,19 +265,19 @@ public class Arm extends SubsystemBase {
     }
 
     public void setRotatingSpeed(double speed) {
-        pivot1.set(ControlMode.PercentOutput, speed);
+        pivot1.set(speed);
     }
 
     public double getRotationSpeed() {
-        return Conversions.falconToRPM(
-                (pivot1.getSelectedSensorVelocity() + pivot2.getSelectedSensorVelocity()) / 2,
-                1
-        );
+        return (pivot1.getRotorVelocity().getValue() + pivot2.getRotorVelocity().getValue()) / 2/60;
     }
 
-    public void setRotationNeutralMode(NeutralMode mode){
-        pivot1.setNeutralMode(mode);
-        pivot2.setNeutralMode(mode);
+    public void setRotationNeutralMode(NeutralModeValue mode){
+        MotorOutputConfigs config = new MotorOutputConfigs();
+        pivot1.getConfigurator().refresh(config);
+        config.NeutralMode = mode;
+        pivot1.getConfigurator().apply(config);
+        pivot2.getConfigurator().apply(config);
     }
     public void setExtensionNeutralMode(CANSparkMax.IdleMode mode){
         telescope.setIdleMode(mode);
@@ -260,7 +288,9 @@ public class Arm extends SubsystemBase {
     }
 
     public void setPivotAccel(double pivotAccel){
-        pivot1.configMotionAcceleration(pivotAccel);
+        MotionMagicConfigs config = new MotionMagicConfigs();
+        config.MotionMagicAcceleration = pivotAccel;
+        pivot1.getConfigurator().apply(config);
         this.pivotAccel = pivotAccel;
     }
 
@@ -285,9 +315,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("arm/maxExtension", getMaxExtension());
         SmartDashboard.putNumber("arm/cartesianAngle", Conversions.actualToCartesian(getRotation2d()).getDegrees());
         SmartDashboard.putNumber("arm/absoluteEncoder", absEncoder.getAbsolutePosition() * 360);
-        short[] pigeonAccel = new short[3];
-        pigeon2.getBiasedAccelerometer(pigeonAccel);
-        SmartDashboard.putNumber("arm/pigeonAccelX", pigeonAccel[0]);
+        SmartDashboard.putNumber("arm/pigeonAccelX", pigeon2.getAccelerationX().getValue());
     }
 
     @Override
