@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import org.team1540.lib.math.Conversions;
 import org.team1540.lib.util.COTSFalconSwerveConstants;
 import org.team1540.lib.util.SwerveModuleConstants;
 import org.team1540.robot2023.utils.ArmState;
@@ -238,12 +239,31 @@ public final class Constants {
         public static final double PIGEON_OFFSET = 4.04;
     }
 
-    public static final class GrabberConstants {
-        public static final int CLAW_SOLENOID_CHANNEL = 0;
+    public static final class WristConstants {
+        public static final int CANCODER_ID = 18;
+        public static final double CANCODER_OFFSET = 0; // TODO: 8/29/2023 figure out cancoder offset
+        public static final double CANCODER_GEARING = 1; // TODO: 8/30/2023 find this gear ratio
 
+        public static final int WRIST_ID = 17;
+        public static final int WRIST_GEARING = 1; // TODO: 8/30/2023 find this gear ratio
+        public static final double WRIST_FORWARD_LIMIT = Conversions.degreesToFalcon(80, WRIST_GEARING); // TODO: 8/29/2023 figure out wrist soft limits
+        public static final double WRIST_REVERSE_LIMIT = Conversions.degreesToFalcon(-80, WRIST_GEARING);
+        public static final double WRIST_KP = 1;
+        public static final double WRIST_KI = 0;
+        public static final double WRIST_KD = 0;
+        public static final int WRIST_CURRENT = 30; // TODO: 8/29/2023 figure out wrist current limit
+    }
+
+    public static final class GrabberConstants {
         public static final int INTAKE_1_ID = 14;
         public static final int INTAKE_2_ID = 15;
 
         public static final double INTAKE_CURRENT_THRESH = 40;
+    }
+
+    public static final class RollerIntakeConstants {
+        public static final int ROLLER_INTAKE_ID = 16;
+        public static final int INTAKE_IDLE_CURRENT = 10; // TODO: 8/29/2023 find the intake idle current limit
+        public static final int INTAKE_AGGRO_CURRENT = 30; // TODO: 8/29/2023 find the intake aggravating current limit
     }
 }
