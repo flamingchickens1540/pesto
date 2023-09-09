@@ -265,5 +265,7 @@ public final class Constants {
         public static final int ROLLER_INTAKE_ID = 16;
         public static final int INTAKE_IDLE_CURRENT = 10; // TODO: 8/29/2023 find the intake idle current limit
         public static final int INTAKE_AGGRO_CURRENT = 30; // TODO: 8/29/2023 find the intake aggravating current limit
+        public static final double VELOCITY_THRESH = 200; // TODO: 9/8/2023 figure out velocity threshold for hasGamePiece
+
     }
 }
