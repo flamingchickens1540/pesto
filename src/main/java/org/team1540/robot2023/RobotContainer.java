@@ -60,6 +60,8 @@ public class RobotContainer {
 
     private Command intakeCommand = new GrabberIntakeCommand(intake);
     private boolean isCarefulDrivingMode = false;
+
+    public GamePiece gamePieceMode = GamePiece.CONE; // TODO: 9/9/2023 change default gamePieceMode depending on strategy
     // Commands
 
 
@@ -98,15 +100,15 @@ public class RobotContainer {
     //    // coop:button(RBumper, Substation Right [HOLD],pilot)
     //     driver.rightBumper().whileTrue(AutoSubstationAlign.get(drivetrain, arm, intake, driver, Constants.Auto.hpOffsetY));
         //Coop: button(B, Cone vision [HOLD], pilot)
-        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
+        driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, GamePiece.CONE));
         //Coop: button(X, Cube vision [HOLD], pilot)
-        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
+        driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, GamePiece.CUBE));
 
 
         // Copilot
 //        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(false));
-        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_PURPLE).onTrue(blinkins.commandSetGamepiece(GamePiece.CUBE));
+        controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(GamePiece.CONE));
 
        //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
         controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, true));

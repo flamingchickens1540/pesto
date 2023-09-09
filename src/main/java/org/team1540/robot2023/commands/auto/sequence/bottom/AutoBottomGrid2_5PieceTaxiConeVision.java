@@ -16,6 +16,7 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
+import org.team1540.robot2023.utils.GamePiece;
 import org.team1540.robot2023.utils.Limelight;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class AutoBottomGrid2_5PieceTaxiConeVision extends AutoCommand {
                             )
                         ),
                         Commands.sequence(
-                                new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE ),
+                                new TurnToGamePiece(drivetrain, null, GamePiece.CUBE ),
                                 new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance)        
                         )
                     )
@@ -76,7 +77,7 @@ public class AutoBottomGrid2_5PieceTaxiConeVision extends AutoCommand {
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.parallel(
-                                new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CONE, frontLimelight)
+                                new TurnToGamePiece(drivetrain, null, GamePiece.CONE, frontLimelight)
                             //    new DriveToGamePieceReverse(drivetrain, () -> Constants.Auto.autoDriveDistance)
                         )
                 )

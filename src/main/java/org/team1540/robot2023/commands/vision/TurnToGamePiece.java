@@ -4,20 +4,13 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import org.team1540.lib.RevBlinkin;
 import org.team1540.robot2023.Constants;
 import org.team1540.robot2023.LimelightManager;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
-import org.team1540.robot2023.utils.AverageFilter;
-import org.team1540.robot2023.utils.BlinkinManager;
-import org.team1540.robot2023.utils.Limelight;
-import org.team1540.robot2023.utils.MathUtils;
+import org.team1540.robot2023.utils.*;
 
 import java.util.function.DoubleSupplier;
-
-import javax.management.modelmbean.RequiredModelMBean;
 
 public class TurnToGamePiece extends CommandBase{
     
@@ -38,18 +31,6 @@ public class TurnToGamePiece extends CommandBase{
         //Limelight limelight = LimelightManager.getInstance().rearLimelight;
 
     ///}
-
-    public enum GamePiece {
-        CONE("cone", RevBlinkin.ColorPattern.YELLOW),
-        CUBE("cube", RevBlinkin.ColorPattern.VIOLET);
-
-        public final String identifier;
-        public final RevBlinkin.ColorPattern pattern;
-        GamePiece(String identifier, RevBlinkin.ColorPattern pattern) {
-            this.pattern = pattern;
-            this.identifier = identifier;
-        }
-    }
 
     public TurnToGamePiece(Drivetrain drivetrain, CommandXboxController controller, AHRS gyro, GamePiece gamepiece){
         this.drivetrain = drivetrain; 

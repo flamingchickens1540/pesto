@@ -44,12 +44,12 @@ public class BlinkinManager {
         rearBlinkin.setPattern(pair.rear);
     }
 
-    public void setGamepiece(boolean isCone) {
-        gamePieceStyle = isCone ? ColorPattern.ORANGE : ColorPattern.VIOLET;
+    public void setGamepiece(GamePiece gamePiece) {
+        gamePieceStyle  = gamePiece.pattern;
         set(ColorPair.TELEOP);
     }
-    public InstantCommand commandSetGamepiece(boolean isCone) {
-        return new InstantCommand(() -> setGamepiece(isCone));
+    public InstantCommand commandSetGamepiece(GamePiece gamePiece) {
+        return new InstantCommand(() -> setGamepiece(gamePiece));
     }
 
     public Command commandSet(ColorPattern pattern) {

@@ -13,16 +13,28 @@ public class RollerIntake extends SubsystemBase {
     private final TalonFX motor = new TalonFX(ROLLER_INTAKE_ID);
     private final AverageFilter averageFilter = new AverageFilter(5);
 
+    private double currentLimit;
+
     public RollerIntake() {
         motor.configStatorCurrentLimit(
                 new StatorCurrentLimitConfiguration(true, INTAKE_IDLE_CURRENT, INTAKE_IDLE_CURRENT, 0)
         );
+        currentLimit = INTAKE_IDLE_CURRENT;
         motor.setNeutralMode(NeutralMode.Brake);
         motor.setInverted(false); // TODO: 8/29/2023 figure out inversion
     }
 
     public void setSpeed(double speed) {
         motor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public void setCurrentLimit(double currentLimit) {
+        if (this.currentLimit != currentLimit) {
+            motor.configStatorCurrentLimit(
+                    new StatorCurrentLimitConfiguration(true, currentLimit, currentLimit, 0)
+            );
+            this.currentLimit = currentLimit;
+        }
     }
 
     public void stop() {

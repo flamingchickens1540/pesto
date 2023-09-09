@@ -16,6 +16,7 @@ import org.team1540.robot2023.commands.grabber.WheeledGrabber;
 import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
+import org.team1540.robot2023.utils.GamePiece;
 import org.team1540.robot2023.utils.Limelight;
 import org.team1540.robot2023.utils.PolePosition;
 
@@ -42,7 +43,7 @@ public class AutoTopGrid2PieceVision extends AutoCommand {
                                     )
                                 ),
                                 // Commands.sequence(/
-                                new TurnToGamePiece(drivetrain, null, TurnToGamePiece.GamePiece.CUBE), 
+                                new TurnToGamePiece(drivetrain, null, GamePiece.CUBE),
                                 new DriveToGamePiece(drivetrain, () -> Constants.Auto.autoDriveDistance), 
                                 // ),
                                 Commands.parallel(
