@@ -120,6 +120,13 @@ public class Drivetrain extends SubsystemBase {
         return LimelightManager.getInstance().applyFrontEstimates(poseEstimator, getYaw(), getModulePositions());
     }
 
+    public Command updateOdometryAnd(Command cmd) {
+        return new ParallelCommandGroup(
+                new InstantCommand(this::updateWithScoringApriltags),
+                cmd
+        );
+    }
+
 
     public void resetAllToAbsolute() {
         DataLogManager.log("Zeroing swerve module relative encoders");

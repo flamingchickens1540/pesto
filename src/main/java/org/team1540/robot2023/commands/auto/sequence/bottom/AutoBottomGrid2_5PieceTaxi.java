@@ -26,7 +26,7 @@ public class AutoBottomGrid2_5PieceTaxi extends AutoCommand {
         }, false);
         setName("BottomGrid2.5PieceTaxi");
         addCommands(
-                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake,null,false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(

@@ -1,6 +1,7 @@
 package org.team1540.robot2023.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
@@ -12,7 +13,7 @@ import org.team1540.robot2023.utils.GridScoreData;
 import java.util.function.BooleanSupplier;
 
 public class AutoCube extends SequentialCommandGroup {
-    public AutoCube(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, boolean shouldAlign){
+    public AutoCube(Drivetrain drivetrain, Arm arm, GridScoreData positions, WheeledGrabber intake, CommandXboxController controller, boolean shouldAlign){
         BooleanSupplier shouldRun;
         if (shouldAlign) {
             shouldRun = drivetrain::updateWithScoringApriltags;
@@ -28,11 +29,11 @@ public class AutoCube extends SequentialCommandGroup {
                                         new SetArmPosition(arm, positions.approach),
                                         Commands.sequence(
                                                 new ProxyCommand(() -> new WaitCommand((arm.timeToState(positions.approach)-150)/1000)),
+
                                                 new GrabberOuttakeCommand(intake)
 
                                         )
                                 ),
-                                //                                    new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null || positions.polePosition == PolePosition.CENTER),
                                 Commands.deadline(
                                         Commands.sequence(
                                                 new SetArmPosition(arm, AutoHybrid.catchNull(positions.retreat)).unless(() -> positions.retreat == null),
