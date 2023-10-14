@@ -122,7 +122,7 @@ public class Drivetrain extends SubsystemBase {
 
     public Command updateOdometryAnd(Command cmd) {
         return new ParallelCommandGroup(
-                new InstantCommand(this::updateWithScoringApriltags),
+                new InstantCommand(this::updateWithScoringApriltags).andThen(new InstantCommand(this::zeroFieldOrientation)),
                 cmd
         );
     }
