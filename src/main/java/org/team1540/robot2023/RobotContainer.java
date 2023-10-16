@@ -98,7 +98,7 @@ public class RobotContainer {
         driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
         //Coop: button(X, Cube vision [HOLD], pilot)
         driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
-        driver.a().onTrue(drivetrain.updateOdometryAnd(new PrintCommand("aahsldkfshdlkfhdzlkfhjdwlksfhjkldsfsdklhfdskjlfhewdjklsfhjkgewasleghrlsdfg")));
+        driver.a().onTrue(drivetrain.updateOdometryAnd(new PrintCommand("Updating odometry")));
 
         // Copilot
 //        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
