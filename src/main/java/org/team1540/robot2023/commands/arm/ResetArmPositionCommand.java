@@ -27,7 +27,7 @@ public class ResetArmPositionCommand extends CommandBase {
     public ResetArmPositionCommand(Arm arm, boolean shouldZero) {
         this.arm = arm;
         this.shouldZero = shouldZero;
-        this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-30), Constants.ArmConstants.ARM_BASE_LENGTH);
+        this.setpoint = ArmState.fromRotationExtension(Rotation2d.fromDegrees(-15), Constants.ArmConstants.ARM_BASE_LENGTH);
         addRequirements(arm);
     }
 
