@@ -31,7 +31,7 @@ public class AutoBottomGrid2PieceTaxiVision extends AutoCommand {
 
         addCommands(
                 new InstantCommand(() -> limelight.setPipeline(Limelight.Pipeline.GAME_PIECE)),
-                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(

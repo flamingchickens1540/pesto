@@ -27,7 +27,7 @@ public class AutoTopGrid2PieceVision extends AutoCommand {
         limelight.setPipeline(Limelight.Pipeline.GAME_PIECE);
         addCommands(
 
-                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, false),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(

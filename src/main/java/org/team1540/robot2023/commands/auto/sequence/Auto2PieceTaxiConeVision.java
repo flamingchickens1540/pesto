@@ -49,7 +49,7 @@ public class Auto2PieceTaxiConeVision extends AutoCommand {
                                 )
                         )
                 ),
-                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, true)
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, true)
 
         );
     }

@@ -6,10 +6,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.team1540.lib.RevBlinkin;
@@ -101,7 +98,7 @@ public class RobotContainer {
         driver.b().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CONE));
         //Coop: button(X, Cube vision [HOLD], pilot)
         driver.x().whileTrue(new TurnToGamePiece(drivetrain,driver, TurnToGamePiece.GamePiece.CUBE));
-
+        driver.a().onTrue(drivetrain.updateOdometryAnd(new PrintCommand("Updating odometry")));
 
         // Copilot
 //        driver.start().onTrue(new InstantCommand(drivetrain::updateWithApriltags).andThen(new PrintCommand("Rezeroing")).ignoringDisable(true));
@@ -109,15 +106,15 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.STYLE_YELLOW).onTrue(blinkins.commandSetGamepiece(true));
 
        //coop:button(LTrigger, Confirm alignment [PRESS], pilot)
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(new AutoCube(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake, driver, true));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake, driver));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_LEFT     ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_CENTER   ).whileTrue(drivetrain.updateOdometryAnd(new AutoCube(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.TOP_RIGHT    ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(drivetrain.updateOdometryAnd(new AutoCube(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver, false)));
 
         // coop:button(A, Run Intake [PRESS],copilot)
         copilot.a().toggleOnTrue(intakeCommand);
@@ -226,7 +223,7 @@ public class RobotContainer {
 //        manager.addAuto(new Auto2PieceTaxi(drivetrain, arm, intake, ScoringGridLocation.BOTTOM_GRID));
 //        manager.addAuto("MiddleGrid1PieceSideBalance", new Auto1PieceSideBalance(drivetrain, arm, intake));
 //        manager.addAuto("MiddleGridSideBalance", new AutoSideBalance(drivetrain, arm, intake));
-        manager.addAuto("ScoreHighCube", new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, true));
+        manager.addAuto("ScoreHighCube", new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false));
         manager.addAuto("ScoreMidCube", new AutoHybrid(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake));
         manager.addDefaultAuto("DoNothing", new InstantCommand(), null);
     }
