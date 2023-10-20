@@ -24,18 +24,11 @@ public class AutoCube extends SequentialCommandGroup {
                 new ConditionalCommand(
                         Commands.sequence(
                                 new AutoGridAlign(drivetrain, positions, shouldAlign),
-                                //                            new ProxiedGridDriveCommand(drivetrain, positions),
-                                Commands.deadline(
-                                        new SetArmPosition(arm, positions.approach),
-                                        Commands.sequence(
-                                                new ProxyCommand(() -> new WaitCommand((arm.timeToState(positions.approach)-150)/1000)),
-
-                                                new GrabberOuttakeCommand(intake)
-
-                                        )
-                                ),
+                                new SetArmPosition(arm, positions.approach),
+                                new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null),
                                 Commands.deadline(
                                         Commands.sequence(
+                                                new WaitCommand(0.1),
                                                 new SetArmPosition(arm, AutoHybrid.catchNull(positions.retreat)).unless(() -> positions.retreat == null),
                                                 new ResetArmPositionCommand(arm, false),
                                                 new ResetArmPositionCommand(arm, true)
