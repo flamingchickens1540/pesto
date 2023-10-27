@@ -28,12 +28,12 @@ public class AutoCube extends SequentialCommandGroup {
                                 new WaitUntilCommand(() -> controller.getLeftTriggerAxis() > 0.95).unless(() -> controller == null),
                                 Commands.deadline(
                                         Commands.sequence(
-                                                new WaitCommand(0.1),
+                                                new WaitCommand(0.3),
                                                 new SetArmPosition(arm, AutoHybrid.catchNull(positions.retreat)).unless(() -> positions.retreat == null),
                                                 new ResetArmPositionCommand(arm, false),
                                                 new ResetArmPositionCommand(arm, true)
                                         ),
-                                        new GrabberOuttakeCommand(intake)
+                                        new GrabberOuttakeCommand(intake,0.3)
 
                                 )
                         ),
