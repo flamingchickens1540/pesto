@@ -7,6 +7,7 @@ import org.team1540.robot2023.commands.arm.Arm;
 import org.team1540.robot2023.commands.arm.PivotCommand;
 import org.team1540.robot2023.commands.arm.ResetArmPositionCommand;
 import org.team1540.robot2023.commands.arm.SetArmPosition;
+import org.team1540.robot2023.commands.auto.AutoCube;
 import org.team1540.robot2023.commands.drivetrain.Drivetrain;
 import org.team1540.robot2023.commands.grabber.GrabberIntakeCommand;
 import org.team1540.robot2023.commands.grabber.GrabberOuttakeCommand;
@@ -15,6 +16,7 @@ import org.team1540.robot2023.commands.vision.DriveToGamePiece;
 import org.team1540.robot2023.commands.vision.TurnToGamePiece;
 import org.team1540.robot2023.utils.AutoCommand;
 import org.team1540.robot2023.utils.Limelight;
+import org.team1540.robot2023.utils.PolePosition;
 
 import java.util.List;
 
@@ -27,13 +29,7 @@ public class AutoBottomGrid2_5PieceTaxiVision extends AutoCommand {
         setName("BottomGrid2.5PieceTaxiVision");
         addCommands(
                 new InstantCommand(()-> limelight.setPipeline(Limelight.Pipeline.GAME_PIECE)),
-                Commands.deadline(
-                        new SetArmPosition(arm, Constants.Auto.highCube.approach),
-                        Commands.sequence(
-                                new ProxyCommand(() -> new WaitCommand((arm.timeToState(Constants.Auto.highCube.approach)-150)/1000)),
-                                new GrabberOuttakeCommand(intake)
-                        )
-                ),
+                new AutoCube(drivetrain, arm, Constants.Auto.highCube.withPolePosition(PolePosition.CENTER), intake, null, false),
                 Commands.parallel(
                         new GrabberIntakeCommand(intake),
                         Commands.sequence(

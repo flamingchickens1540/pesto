@@ -112,9 +112,9 @@ public class RobotContainer {
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_LEFT  ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.LEFT),     intake, driver, false)));
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_CENTER).whileTrue(drivetrain.updateOdometryAnd(new AutoCube(drivetrain, arm,Constants.Auto.midCube.withPolePosition(PolePosition.CENTER),     intake, driver, false)));
         controlPanel.onButton(ButtonPanel.PanelButton.MIDDLE_RIGHT ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.midCone.withPolePosition(PolePosition.RIGHT),     intake, driver, false)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.LEFT),  intake, driver, false)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.middleHybridNode.withPolePosition(PolePosition.CENTER),  intake, driver, false)));
-        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(drivetrain.updateOdometryAnd(new AutoHybrid(drivetrain, arm,Constants.Auto.hybridNode.withPolePosition(PolePosition.RIGHT),  intake, driver, false)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_LEFT  ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.LEFT),    intake, driver, true)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_CENTER).whileTrue(drivetrain.updateOdometryAnd(new AutoCube(drivetrain, arm,Constants.Auto.highCube.withPolePosition(PolePosition.CENTER),    intake, driver, true)));
+        controlPanel.onButton(ButtonPanel.PanelButton.BOTTOM_RIGHT ).whileTrue(drivetrain.updateOdometryAnd(new AutoCone(drivetrain, arm,Constants.Auto.highCone.withPolePosition(PolePosition.RIGHT),    intake, driver, true)));
 
         // coop:button(A, Run Intake [PRESS],copilot)
         copilot.a().toggleOnTrue(intakeCommand);
